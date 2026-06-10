@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: google.redirect.302-instead-of-301
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [google, shared]}
+    detector: {type: hard_rule, fn: detectors.redirect.status_check, inputs: [redirect_history]}
+    bydfi_business_impact: "永久 redirect 应用 301（302 不传递 PageRank）"
+    tags: [redirect, status-code]
+
+  - id: google.redirect.meta-refresh-used
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.93
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.redirect.meta_refresh_check, inputs: [head_meta]}
+    bydfi_business_impact: "meta refresh 不应用于 SEO 重定向"
+    tags: [redirect, meta-refresh]
+
+  - id: google.redirect.js-redirect-on-load
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.redirect.js_redirect_check, inputs: [raw_html]}
+    bydfi_business_impact: "JS redirect 可能被识别为 cloaking"
+    tags: [redirect, javascript, cloaking-risk]
+
+  - id: google.redirect.https-www-canonical
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.97
+    applies_to: {page_types: [domain], platforms: [google, shared]}
+    detector: {type: hard_rule, fn: detectors.redirect.normalize_check, inputs: [url_variants]}
+    bydfi_business_impact: "http / https / www / non-www 必须 301 到统一版本"
+    tags: [redirect, canonical, normalization]

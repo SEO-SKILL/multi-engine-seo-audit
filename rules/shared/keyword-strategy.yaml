@@ -1,0 +1,40 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.keyword.title-not-front-loaded
+    source: google-search-central
+    severity: low
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.keyword.title_position_check, inputs: [title, target_keyword]}
+    bydfi_business_impact: "主关键词应在 title 前 60 字符"
+    tags: [keyword, title]
+
+  - id: shared.keyword.density-too-low
+    source: google-search-central
+    severity: low
+    confidence_default: 0.75
+    applies_to: {page_types: [learn, news], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.keyword.density_check, inputs: [visible_text, target_keyword]}
+    args: {min_density: 0.005, max_density: 0.025}
+    bydfi_business_impact: "关键词密度 < 0.5% 主题信号弱，> 2.5% 嫌疑堆砌"
+    tags: [keyword, density]
+
+  - id: shared.keyword.lsi-coverage-low
+    source: google-search-central
+    severity: low
+    confidence_default: 0.70
+    applies_to: {page_types: [learn, news], platforms: [shared]}
+    detector: {type: llm_judge, prompt_template: prompts/lsi_coverage_judge.md, model: haiku}
+    bydfi_business_impact: "缺相关语义词汇影响主题完整度"
+    tags: [keyword, lsi, semantic]
+
+  - id: shared.keyword.cannibalization-risk
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to: {page_types: [all], platforms: [shared, google]}
+    detector: {type: hybrid, fn: detectors.keyword.cannibalization_check, inputs: [page_inventory, target_keyword]}
+    bydfi_business_impact: "多页面竞争同一关键词 = 自相残杀"
+    tags: [keyword, cannibalization]

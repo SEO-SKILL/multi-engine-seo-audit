@@ -1,0 +1,49 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/google-discover
+
+rules:
+  - id: google.discover.eligibility-signals
+    source: google-search-central
+    severity: info
+    confidence_default: 0.78
+    applies_to:
+      page_types: [news, blog]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.discover.eligibility_check
+      inputs: [page_url, jsonld, content_quality, image_quality]
+      args:
+        required_signals:
+          - 高质量大图（>=1200px wide）
+          - NewsArticle / Article schema
+          - 明确发布日期
+          - 移动友好
+          - 有作者权威性
+    bydfi_business_impact: |
+      Google Discover 对加密类内容流量贡献大（移动端推荐流）。
+      BYDFi 新闻 / 行业分析应针对 Discover 优化。
+    tags: [discover, news, mobile-traffic]
+
+  - id: google.discover.image-too-small
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [news, blog]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.discover.image_size_check
+      inputs: [page_images]
+      args:
+        min_width: 1200
+        require_max_image_preview_large: true
+    patch_hint:
+      template: patches/discover_image_upgrade.diff.j2
+      priority: P2
+    bydfi_business_impact: |
+      Discover 要求图片宽度 >= 1200px。
+    tags: [discover, image]

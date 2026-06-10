@@ -1,0 +1,155 @@
+# 规则冲突解决 — 多规则同时命中时的优先级
+# 用途：orchestrator 聚合多 agent findings 时按这个优先级合并
+# 创建：2026-06-10
+
+schema_version: "1.0"
+
+# 一、规则来源优先级（从高到低）
+source_priority:
+  1: bydfi-incident             # BYDFi 自家事故复盘（MEXC）权威性最高
+  2: google-status-dashboard    # Google 实时状态
+  3: google-spam-policy         # Google 垃圾内容政策
+  4: google-search-central      # Google 官方文档
+  5: bing-webmaster
+  6: naver-search-advisor
+  7: yandex-webmaster
+  8: llm-engine-docs
+  9: industry-incident          # 其他公司事故案例
+  10: bydfi-compliance          # BYDFi 内部合规
+  11: third-party-research      # 第三方研究（仅 alert）
+  12: internal-llm-extraction   # LLM 提取（需人工 review 后 promote）
+
+# 二、平台优先级（多平台规则同时命中时）
+platform_priority:
+  blocker_rules:
+    # 阻断规则按"最严"原则：任何平台说阻断就阻断
+    aggregation: max_severity
+
+  growth_rules:
+    # 增长规则按当前页面 locale 的主战场为准
+    aggregation: by_locale_primary
+    locale_primary:
+      en: google
+      pt: google
+      es: google
+      vi: google
+      tr: google
+      zh-CN: google
+      ja: google     # Yahoo Japan 用 Google 索引
+      ko: naver      # 60%+
+      ru: yandex     # 65%+
+
+# 三、冲突场景与解决方案
+
+scenarios:
+
+  scenario_1_blocker_overrides_growth:
+    description: |
+      Google 命中 blocker（如垃圾政策违反）+ Naver 命中 growth 建议
+      → 直接按 blocker 处理，growth 建议作为附属信息
+    rule:
+      - if: any rule.severity == blocker
+        then: Final Verdict = 暂不上线
+        and: growth recommendations 不计入 verdict 但保留在 report
+
+  scenario_2_cross_platform_disagreement:
+    description: |
+      Google 建议加 FAQ Schema，Naver 建议减少 schema → 不冲突，按 locale 路由
+    rule:
+      - apply by locale routing
+      - 在 report 中明示"为 Google 优化 vs 为 Naver 优化"差异
+
+  scenario_3_bydfi_internal_overrides_google:
+    description: |
+      BYDFi 合规要求"必须有风险提示"，Google 没有此要求 → BYDFi 规则胜出
+    rule:
+      - source: bydfi-compliance > all platform rules for content compliance
+      - source: bydfi-incident always wins on duplicate detection scenario
+
+  scenario_4_confidence_low_with_high_severity:
+    description: |
+      LLM judge 给出 severity=blocker 但 confidence=0.4 → 不能直接阻断
+    rule:
+      - if: severity >= high AND confidence < 0.5
+        then: degrade to needs_human_review, gate=REQUEST_REVIEW (不阻断)
+      - if: severity == blocker AND confidence < 0.65
+        then: escalate to Opus or human review
+
+  scenario_5_hard_rule_vs_llm_judge_disagree:
+    description: |
+      硬规则说"违反"，LLM judge 说"合规" → 硬规则胜，但记录 LLM 异议
+    rule:
+      - hard_rule wins on factual checks (schema fields, canonical, etc.)
+      - llm_judge wins on semantic / intent / quality checks
+      - 冲突时按 detector.type 维度路由
+
+  scenario_6_old_rule_vs_new_rule:
+    description: |
+      规则库 git diff 后新规则与旧规则冲突
+    rule:
+      - 新规则的 valid_from 时间晚于旧规则 → 新规则胜
+      - 旧规则自动标 superseded_at + superseded_by
+      - git log 留痕
+
+  scenario_7_same_id_different_versions:
+    description: |
+      同一 rule.id 在两个文件中（应避免，但万一）
+    rule:
+      - rule loader 在启动时报错，禁止启动
+      - 必须修复后才能运行
+
+# 四、Final Verdict 决策树（多 finding 聚合后）
+
+verdict_decision_tree:
+  step_1_check_blockers:
+    if: any finding.severity == blocker
+    then: verdict = 暂不上线
+    record: blocker_findings 列入 must_fix 区
+
+  step_2_check_highs:
+    if: any finding.severity == high
+    then:
+      - if command == gate: verdict = 暂不上线 (除非 owner override)
+      - else: verdict = 改后再审
+    record: high_findings 列入 should_fix 区
+
+  step_3_check_medium_count:
+    if: count(finding.severity == medium) >= 5
+    then: verdict = 改后再审
+    record: medium_findings 列入 nice_to_fix 区
+
+  step_4_check_low_count:
+    if: count(finding.severity == low) >= 15
+    then: verdict = 改后再审
+    record: low_findings 列入 nice_to_fix 区
+
+  step_5_default:
+    then: verdict = 上线
+    record: 列入 observations 区
+
+# 五、聚合 dedup 规则
+
+deduplication:
+  same_rule_id_same_evidence:
+    action: dedup
+    keep: 最高 confidence 的一条
+
+  same_rule_id_different_evidence:
+    action: keep_all
+    note: "同规则多处命中，全部保留"
+
+  different_rule_id_same_evidence:
+    action: keep_all_but_group
+    note: "多规则指向同一证据，group 在报告里"
+
+  semantic_duplicates_across_agents:
+    detection: LLM dedup pass (V2)
+    action: V1 不做，V2 加 dedup-agent
+
+# 六、Brand SEO Score 计算时的去重
+score_aggregation:
+  blocker_findings: 不去重，每个都计 100 分
+  high_findings: 同 rule.id 同 evidence 去重，每条计 75 分
+  medium_findings: 同 rule.id 去重（不看 evidence），每条计 50 分
+  low_findings: 每个 detector 类别最多取 3 条
+  info_findings: 不计入 score，只在报告展示

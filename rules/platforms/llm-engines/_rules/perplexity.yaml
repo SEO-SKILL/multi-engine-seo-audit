@@ -1,0 +1,189 @@
+# Perplexity GEO（Generative Engine Optimization）规则
+# 创建：2026-06-10
+# ⭐ Will 知识库没有任何 GEO 维度——我们独有
+# Perplexity 是 2026 重要的新流量来源，规则与传统 SEO 完全不同
+
+file_version: "1.0"
+file_purpose: "针对 Perplexity 引用率优化的规则集"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://docs.perplexity.ai/docs/getting-started
+  last_updated: 2026-04-22
+  pulled_at: 2026-06-10
+locale_focus: all
+
+# Perplexity 的核心抓取机制
+perplexity_mechanics:
+  index_source: 自有爬虫 + Bing 索引补足
+  ranking_factors:
+    - 内容可分块度（answerable chunks）
+    - 事实可验证性
+    - 来源权威性
+    - 时效性
+    - 内容结构化程度（H1-H6 / 列表 / 表格）
+  output_format: 引用式答案（带 [1] [2] [3] 来源链接）
+  user_behavior: 用户点引用来源访问站点
+
+rules:
+
+  - id: perplexity.geo.llms-txt-missing
+    source: llm-engine-docs
+    source_url: https://llmstxt.org
+    severity: low
+    confidence_default: 0.99
+    applies_to:
+      page_types: [homepage, all]
+      platforms: [llm-engines]
+      commands: [audit, gate, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.geo.llms_txt_exists
+      inputs: [domain]
+      args:
+        check_paths:
+          - /llms.txt
+          - /llms-full.txt
+    patch_hint:
+      template: patches/create_llms_txt.diff.j2
+      priority: P2
+      auto_apply: yes_with_diff_preview
+    bydfi_business_impact: |
+      `llms.txt` 是 LLM 时代的 `robots.txt`，向 LLM 声明站点结构和重点页面。
+      虽然不强制，但是 GEO 友好度的基础信号。
+    tags: [geo, llms-txt, perplexity]
+
+  - id: perplexity.geo.answerable-chunks
+    source: llm-engine-docs
+    severity: medium
+    confidence_default: 0.78
+    applies_to:
+      page_types: [learn, support, faq, tools, calculator]
+      platforms: [llm-engines, bydfi]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/answerable_chunks_judge.md
+      model: sonnet
+      inputs: [visible_text, h2_h3_structure, sections]
+      args:
+        signals:
+          - 每个 H2/H3 下是否能独立回答一个问题
+          - 段落是否能脱离上下文被引用
+          - 是否有清晰的 question-answer 结构
+        min_answerable_sections: 3
+    patch_hint:
+      template: patches/restructure_answerable_chunks.md.j2
+      priority: P2
+      auto_apply: false
+    bydfi_business_impact: |
+      Perplexity / ChatGPT Search 偏好"能被切成独立可答片段"的内容。
+      BYDFi 的 /learn / /support 页面应每个 H2 都能独立回答一个具体问题。
+    tags: [geo, content-structure, perplexity, chatgpt-search]
+
+  - id: perplexity.geo.fact-verifiability
+    source: llm-engine-docs
+    severity: medium
+    confidence_default: 0.82
+    applies_to:
+      page_types: [news, blog, learn, crypto-review]
+      platforms: [llm-engines]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/fact_verifiability_judge.md
+      model: sonnet
+      inputs: [visible_text, citations, external_links]
+      args:
+        required_signals:
+          - 关键事实有来源引用
+          - 数字/统计有出处
+          - 引用源域权威性
+        min_citations_per_1000_words: 3
+    bydfi_business_impact: |
+      LLM 偏好可验证、可溯源的内容。BYDFi 金融数据 / 交易量 / 费率说明
+      必须引用 CoinGecko / DefiLlama / Etherscan / 官方公告等权威源。
+    tags: [geo, verifiability, ymyl]
+
+  - id: perplexity.geo.citation-friendliness
+    source: llm-engine-docs
+    severity: low
+    confidence_default: 0.75
+    applies_to:
+      page_types: [all]
+      platforms: [llm-engines]
+    detector:
+      type: hybrid
+      fn: detectors.geo.citation_friendliness
+      inputs: [visible_text, jsonld, structured_elements]
+      args:
+        signals:
+          - 关键结论用列表/表格呈现（LLM 容易抓）
+          - 关键数字醒目（粗体 / table cell）
+          - 段落长度适中（70-150 字最易被引用）
+          - 用陈述句而不是问句开头
+    bydfi_business_impact: |
+      LLM 引用时偏好抓"列表中的一条"或"表格的一行"。
+      BYDFi 教育内容应多用列表、表格、数据呈现关键信息。
+    tags: [geo, citation, structure]
+
+  - id: perplexity.geo.brand-mention-density
+    source: llm-engine-docs
+    severity: info
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [llm-engines]
+    detector:
+      type: hard_rule
+      fn: detectors.geo.brand_mention_count
+      inputs: [visible_text]
+      args:
+        brand_terms: [BYDFi, BYDFi.com]
+        target_per_1000_words: 2-5
+        red_flag_density_above: 8   # 过度堆砌
+    bydfi_business_impact: |
+      合理的品牌词密度让 LLM 在引用时识别这是 BYDFi 的内容。
+      但堆砌会被视为 spam。2-5/千字是合理区间。
+    tags: [geo, brand-mention]
+
+  - id: perplexity.geo.outdated-content-penalty
+    source: llm-engine-docs
+    severity: medium
+    confidence_default: 0.92
+    applies_to:
+      page_types: [news, learn, support, price]
+      platforms: [llm-engines]
+    detector:
+      type: hard_rule
+      fn: detectors.geo.content_freshness
+      inputs: [date_modified, content_topic_volatility]
+      args:
+        max_stale_days_by_topic:
+          price_data: 1
+          regulatory: 7
+          product_features: 30
+          general_education: 180
+    bydfi_business_impact: |
+      Perplexity 偏好新鲜内容，尤其在加密 / 监管这种高变动主题。
+      过期内容 LLM 不会引用，等于不存在。
+    tags: [geo, freshness, perplexity]
+
+  - id: perplexity.geo.actual-citation-test
+    source: llm-engine-docs
+    severity: info
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [llm-engines]
+      commands: [audit, watch]
+    detector:
+      type: external_api
+      fn: integrations.perplexity.citation_rate_test
+      inputs: [target_keywords, target_url]
+      args:
+        v1_mode: sampling   # V1 抽样测试
+        v2_mode: full
+        sample_queries_per_url: 5
+    bydfi_business_impact: |
+      最直接的 GEO 指标：拿主关键词去 Perplexity 实搜，看 BYDFi 页面是否被引用。
+      V1 抽样（每个 URL 5 次查询），V2 全量。
+    tags: [geo, citation-rate, perplexity, measurement]

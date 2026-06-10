@@ -1,0 +1,58 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: google.image.alt-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [google, shared]}
+    detector: {type: hard_rule, fn: detectors.image.alt_check, inputs: [images]}
+    patch_hint: {template: patches/add_image_alt.diff.j2, priority: P2, auto_apply: with_review}
+    bydfi_business_impact: "alt 缺失影响图片 SEO + 无障碍合规"
+    tags: [image, accessibility]
+
+  - id: google.image.no-modern-format
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.format_check, inputs: [images]}
+    bydfi_business_impact: "使用 WebP/AVIF 替代 JPG/PNG 提升加载速度"
+    tags: [image, performance]
+
+  - id: google.image.lazy-load-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.lazy_loading_check, inputs: [images]}
+    bydfi_business_impact: "首屏外图片应 lazy load"
+    tags: [image, performance]
+
+  - id: google.image.responsive-srcset-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.responsive_check, inputs: [images]}
+    bydfi_business_impact: "应使用 srcset 提供多尺寸图片"
+    tags: [image, responsive]
+
+  - id: google.image.file-name-meaningless
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.filename_check, inputs: [image_urls]}
+    bydfi_business_impact: "图片文件名 IMG_1234.jpg 不利于图片 SEO"
+    tags: [image, file-name]
+
+  - id: google.image.preferred-image-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [news, blog, learn], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.preferred_image_check, inputs: [jsonld, og_image]}
+    bydfi_business_impact: "Article schema 应有 image 字段 + OG image"
+    tags: [image, schema]

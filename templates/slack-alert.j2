@@ -1,0 +1,38 @@
+{
+  "text": "🚨 SEO Alert: {{ severity_label }} finding on {{ target.url }}",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "{{ severity_emoji }} {{ severity_label }} — {{ target.url }}"
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+        {"type": "mrkdwn", "text": "*Project:* {{ project }}"},
+        {"type": "mrkdwn", "text": "*Command:* {{ command }}"},
+        {"type": "mrkdwn", "text": "*Verdict:* {{ final_verdict.value }}"},
+        {"type": "mrkdwn", "text": "*Score:* {{ '%.1f' % brand_seo_score }}/100"}
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Top Findings:*\n{% for f in top_findings %}• `{{ f.id }}` — {{ f.recommendation }}\n{% endfor %}"
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {"type": "plain_text", "text": "View Full Report"},
+          "url": "{{ report_url }}"
+        }
+      ]
+    }
+  ]
+}

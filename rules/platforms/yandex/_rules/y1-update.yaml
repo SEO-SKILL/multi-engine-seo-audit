@@ -1,0 +1,31 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+locale_focus: ru
+
+rules:
+  - id: yandex.y1.content-quality-low
+    source: yandex-webmaster
+    severity: high
+    confidence_default: 0.80
+    applies_to: {page_types: [news, learn, blog], platforms: [yandex], locales: [ru]}
+    detector: {type: llm_judge, prompt_template: prompts/yandex_quality_judge.md, model: sonnet}
+    bydfi_business_impact: "Y1 算法严格筛低质内容（机翻/无价值/规模化）"
+    tags: [yandex, y1, content-quality]
+
+  - id: yandex.y1.commercial-intent-mismatch
+    source: yandex-webmaster
+    severity: medium
+    confidence_default: 0.78
+    applies_to: {page_types: [tools, price], platforms: [yandex]}
+    detector: {type: llm_judge, prompt_template: prompts/yandex_intent_judge.md, model: haiku}
+    bydfi_business_impact: "Yandex 偏好商业意图与页面类型匹配"
+    tags: [yandex, y1, intent]
+
+  - id: yandex.y1.over-optimized-anchors
+    source: yandex-webmaster
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [yandex]}
+    detector: {type: hard_rule, fn: detectors.yandex.anchor_overoptimization, inputs: [internal_links]}
+    bydfi_business_impact: "Yandex 对精确锚文本过度优化处罚很重"
+    tags: [yandex, y1, anchor-text]

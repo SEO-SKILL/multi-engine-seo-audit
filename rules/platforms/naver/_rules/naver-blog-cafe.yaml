@@ -1,0 +1,48 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+locale_focus: ko
+
+rules:
+  - id: naver.ecosystem.no-naver-blog-presence
+    source: naver-search-advisor
+    severity: info
+    confidence_default: 0.92
+    applies_to:
+      page_types: [homepage]
+      platforms: [naver]
+      locales: [ko]
+      commands: [watch]
+    detector:
+      type: external_api
+      fn: integrations.naver.brand_presence_check
+      inputs: [brand_name]
+      args:
+        check_platforms:
+          - Naver Blog
+          - Naver Cafe
+          - Naver Post
+    bydfi_business_impact: |
+      Naver SERP VIEW collection 优先 Naver 生态内容。
+      BYDFi 想在韩国曝光必须考虑：
+      1. 开 BYDFi Naver Blog 官方账号
+      2. 在加密类 Naver Cafe 建立存在
+      3. Naver Post 发布精选内容
+    tags: [naver, ecosystem, korean]
+
+  - id: naver.content.korean-honorific-usage
+    source: naver-search-advisor
+    severity: low
+    confidence_default: 0.75
+    applies_to:
+      page_types: [all]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/naver_honorific_judge.md
+      model: haiku
+      inputs: [visible_text]
+    bydfi_business_impact: |
+      韩文敬语等级必须一致（습니다체 vs 해요체）。
+      混用会让韩国读者觉得"不专业"。
+    tags: [naver, korean, honorific]

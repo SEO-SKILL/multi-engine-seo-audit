@@ -1,0 +1,61 @@
+[project]
+name = "bydfi-seo-audit"
+version = "0.1.0"
+description = "BYDFi SEO audit skill orchestration skeleton."
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.109.1",
+    "beautifulsoup4>=4.15.0",
+    "diskcache>=5.6.3",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "jsonschema>=4.26.0",
+    "lxml>=6.1.0",
+    "orjson>=3.11.0",
+    "playwright>=1.60.0",
+    "pydantic>=2.13.0",
+    "pyyaml>=6.0.0",
+    "structlog>=26.1.0",
+    "tenacity>=9.1.0",
+    "typer>=0.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "pytest>=9.0.0",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.15.0",
+]
+
+[project.scripts]
+seo-audit = "cli:app"
+audit = "cli:audit_entry"
+gate = "cli:gate_entry"
+compare = "cli:compare_entry"
+watch = "cli:watch_entry"
+
+[build-system]
+requires = ["setuptools>=69.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["cli", "orchestrator"]
+
+[tool.setuptools.packages.find]
+include = ["agents*"]
+namespaces = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+warn_unused_ignores = true

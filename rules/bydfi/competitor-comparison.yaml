@@ -1,0 +1,32 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: bydfi.compare.best-of-language
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.88
+    applies_to: {page_types: [compare], platforms: [bydfi]}
+    detector: {type: llm_judge, prompt_template: prompts/best_of_language_judge.md, model: haiku}
+    bydfi_business_impact: "'Best crypto exchange' 类话术受多国金融监管审查"
+    tags: [bydfi, compare, regulatory]
+    human_review_required: true
+
+  - id: bydfi.compare.competitor-fact-accuracy
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.80
+    applies_to: {page_types: [compare], platforms: [bydfi]}
+    detector: {type: llm_judge, prompt_template: prompts/competitor_fact_judge.md, model: sonnet}
+    bydfi_business_impact: "竞品对比的事实必须准确（错误事实可能被起诉）"
+    tags: [bydfi, compare, legal]
+    human_review_required: true
+
+  - id: bydfi.compare.last-verified-date
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.95
+    applies_to: {page_types: [compare], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.last_verified_check, inputs: [page_content]}
+    bydfi_business_impact: "对比数据必须有'最后验证日期'（竞品费率/规则常变）"
+    tags: [bydfi, compare, freshness]

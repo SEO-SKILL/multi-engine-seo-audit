@@ -1,0 +1,21 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: copilot.indexability.bingbot-required
+    source: llm-engine-docs
+    severity: medium
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [llm-engines, bing]}
+    detector: {type: hard_rule, fn: detectors.ai.robots_txt_check, inputs: [robots_txt], args: {required_allow_for_ua: [bingbot, copilot]}}
+    bydfi_business_impact: "Microsoft Copilot 使用 Bing 索引，bingbot 必须放行"
+    tags: [copilot, bing, robots]
+
+  - id: copilot.content.code-snippet-quality
+    source: llm-engine-docs
+    severity: low
+    confidence_default: 0.75
+    applies_to: {page_types: [learn, tools], platforms: [llm-engines]}
+    detector: {type: hard_rule, fn: detectors.ai.code_snippet_check, inputs: [page_content]}
+    bydfi_business_impact: "Copilot 偏好可复用代码片段（API 文档 / 量化策略）"
+    tags: [copilot, code-snippet]

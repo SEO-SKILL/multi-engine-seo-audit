@@ -1,0 +1,31 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.breadcrumb.too-deep
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.navigation.breadcrumb_depth_check, inputs: [breadcrumbs]}
+    args: {max_depth: 5}
+    bydfi_business_impact: "breadcrumb > 5 层说明信息架构问题"
+    tags: [breadcrumb, ia]
+
+  - id: shared.breadcrumb.last-item-clickable
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.navigation.breadcrumb_last_clickable, inputs: [breadcrumbs]}
+    bydfi_business_impact: "breadcrumb 最后一项（当前页）不应可点击"
+    tags: [breadcrumb, ux]
+
+  - id: shared.breadcrumb.first-item-not-home
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.navigation.breadcrumb_first_check, inputs: [breadcrumbs]}
+    bydfi_business_impact: "breadcrumb 第一项应是首页"
+    tags: [breadcrumb, structure]

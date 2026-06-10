@@ -1,0 +1,21 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.experiment.ab-test-no-canonical
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.experiment.ab_canonical_check, inputs: [url_variants]}
+    bydfi_business_impact: "A/B 测试变体必须 canonical 到主版本"
+    tags: [experiment, ab-test, canonical]
+
+  - id: shared.experiment.ab-test-too-long
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to: {page_types: [all], platforms: [shared, google]}
+    detector: {type: external_api, fn: integrations.gsc.ab_test_duration_check, inputs: [url]}
+    bydfi_business_impact: "A/B 测试运行超过 90 天 = Google 视为多版本而非测试"
+    tags: [experiment, ab-test, duration]

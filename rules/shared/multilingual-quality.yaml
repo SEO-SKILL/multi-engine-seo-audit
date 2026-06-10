@@ -1,0 +1,69 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.multilingual.translation-quality
+    source: google-search-central
+    severity: high
+    confidence_default: 0.78
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+      locales: [zh-CN, ja, ko, vi, tr, pt, es, ru]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/translation_quality_judge.md
+      model: sonnet
+      inputs: [visible_text, locale, source_text_if_available]
+    bydfi_business_impact: |
+      机翻质量直接影响 Google + 本地搜索引擎排名。
+      BYDFi 9 语言版本必须真本地化（非纯机翻）。
+    tags: [multilingual, translation, localization]
+
+  - id: shared.multilingual.locale-specific-content-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.82
+    applies_to:
+      page_types: [learn, support, how-to-buy]
+      platforms: [shared]
+      locales: [zh-CN, ja, ko, vi, tr, pt, es, ru]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/locale_specific_judge.md
+      model: haiku
+      inputs: [visible_text, locale]
+      args:
+        signals_per_locale:
+          ko: [韩国本地货币 KRW, 韩国监管表述, 韩国本地支付方式]
+          ja: [日本円 JPY, 日本金融厅备案, 日本本地支付]
+          ru: [Russian Ruble RUB, 俄罗斯监管]
+          tr: [Turkish Lira TRY]
+    bydfi_business_impact: |
+      仅机翻不够，必须有目标地区的真实内容上下文。
+    tags: [multilingual, localization-depth]
+
+  - id: shared.multilingual.currency-mismatch
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.93
+    applies_to:
+      page_types: [price, how-to-buy, tools]
+      platforms: [shared]
+      locales: [zh-CN, ja, ko, vi, tr, pt, es, ru]
+    detector:
+      type: hard_rule
+      fn: detectors.multilingual.currency_check
+      inputs: [visible_text, locale]
+      args:
+        primary_currency_per_locale:
+          en: USD
+          zh-CN: CNY|USD
+          ja: JPY
+          ko: KRW
+          ru: RUB
+          tr: TRY
+    bydfi_business_impact: |
+      韩文页只显示 USD 价格 = 用户体验差 + 本地 SEO 信号弱。
+      应同时显示 KRW + USD 双货币。
+    tags: [multilingual, currency]

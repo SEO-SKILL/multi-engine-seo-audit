@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+  Golden Fixture: hreflang 错配样例
+  用途：验证 google.hreflang.* 6 条规则全部能命中
+  对应规则：
+    - google.hreflang.alternate-returns-404 (severity: high)
+    - google.hreflang.alternate-blocked-by-robots (severity: high)
+    - google.hreflang.language-mismatch (severity: high)
+    - google.hreflang.missing-return-tag (severity: medium)
+    - google.hreflang.canonical-not-self (severity: high)
+    - google.hreflang.x-default-handling (severity: low)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Example Page</title>
+
+  <!-- 问题: canonical 不是自己（指向英文版）-->
+  <link rel="canonical" href="https://bydfi.com/en/example">
+
+  <!-- 问题: alternate 含 robots 禁止的路径 -->
+  <link rel="alternate" hreflang="tr-TR" href="https://bydfi.com/tr-TR/example">
+
+  <!-- 问题: alternate 返回 404 -->
+  <link rel="alternate" hreflang="bg" href="https://bydfi.com/bg/example-not-exists">
+
+  <!-- 问题: language mismatch（声明是 ko 但内容是英文）-->
+  <link rel="alternate" hreflang="ko" href="https://bydfi.com/ko/example-still-english">
+
+  <!-- 问题: 缺 return tag - sibling 页面没有声明本页 -->
+  <link rel="alternate" hreflang="ja" href="https://bydfi.com/ja/example">
+
+  <!-- 问题: 缺 x-default -->
+  <!-- 没有 hreflang="x-default" -->
+</head>
+<body>
+  <h1>Example Page</h1>
+  <p>Content...</p>
+</body>
+</html>

@@ -1,0 +1,190 @@
+# Naver C-Rank（Creator Rank）算法规则
+# 创建：2026-06-10
+# ⭐ Will 知识库没有任何 Naver 维度——我们独有
+# C-Rank 是 Naver 的核心排名算法，与 Google PageRank 完全不同的逻辑
+
+file_version: "1.0"
+file_purpose: "Naver C-Rank 算法适配规则（韩国市场 60%+ 份额）"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://searchadvisor.naver.com/guide/seo-naver-rank
+  last_updated: 2026-03-15
+  pulled_at: 2026-06-10
+locale_focus: ko
+
+# Naver C-Rank 核心维度（与 Google 截然不同）
+c_rank_dimensions:
+  - 创作者权威性（不是页面权威性）
+  - 内容主题专注度
+  - 用户互动数据（点击、停留、回访）
+  - Naver 内部生态曝光（Blog/Cafe/Post）
+  - 时效性
+  - 本地化质量（真韩文 vs 机翻）
+
+# 与 Google 的核心差异
+key_differences_from_google:
+  external_backlinks: "几乎不看（vs Google 高权重）"
+  schema_org: "几乎不看（vs Google 重要）"
+  pagerank: "无（vs Google 核心）"
+  internal_naver_ecosystem: "极重（vs Google 不存在）"
+  user_behavior: "极重（vs Google 中等）"
+  freshness: "重（vs Google 看主题）"
+  korean_authenticity: "必须真韩文且符合韩国阅读习惯"
+
+rules:
+
+  - id: naver.crank.korean-content-authenticity
+    source: naver-search-advisor
+    severity: blocker
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [naver, bydfi]
+      locales: [ko]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.naver.korean_authenticity
+      inputs: [visible_text, locale, machine_translation_signals]
+      args:
+        red_flags:
+          - 直译痕迹明显（"为了" → 위해서 用法不自然）
+          - 量词使用错误（韩文有特殊量词系统）
+          - 名词中文化（如 "거래소" 写成 "交易所"）
+          - 敬语等级混用
+          - 缺少韩国本地化引用（KRW / 韩国法规）
+        require_signals:
+          - 韩国本地货币 KRW 提及
+          - 韩国监管/法规相关说明（如必要）
+          - 韩国用户语境（"한국 사용자")
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/naver_korean_authenticity_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/naver_korean_rewrite.md.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    fixtures:
+      positive: fixtures/naver-machine-translated-page.html
+      negative: fixtures/naver-native-korean-page.html
+    bydfi_business_impact: |
+      韩国用户占 BYDFi 流量重要部分，Naver 60%+ 搜索份额。
+      机翻韩文页直接被 Naver 视为低质，不参与排名。
+      必须真韩国本土化内容，包含韩国 KRW、韩国监管表述、符合韩国阅读习惯。
+    tags: [naver-critical, localization, korean]
+    human_review_required: true
+
+  - id: naver.crank.creator-authority-signal
+    source: naver-search-advisor
+    severity: high
+    confidence_default: 0.78
+    applies_to:
+      page_types: [news, blog, learn, support]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: hybrid
+      fn: detectors.naver.creator_authority_check
+      inputs: [author_metadata, author_history_data, naver_blog_signals]
+      args:
+        signals:
+          - 作者在 Naver 生态有历史内容
+          - 作者主题专注度（不跨太多主题）
+          - 作者历史内容的互动量
+          - 是否有 Naver 认证（如 Naver Expert）
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.75
+      prompt_template: prompts/naver_creator_judge.md
+      model: sonnet
+    bydfi_business_impact: |
+      C-Rank 看的是"作者"而不是"页面"。BYDFi 韩文内容应该由固定作者持续输出，
+      让 Naver 识别 BYDFi 韩文团队是"加密领域专家"，而非随机内容农场。
+    tags: [naver-critical, c-rank, author-authority]
+
+  - id: naver.crank.topic-focus
+    source: naver-search-advisor
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/naver_topic_focus_judge.md
+      model: haiku
+      inputs: [site_recent_content_topics]
+      args:
+        period_days: 90
+        max_off_topic_ratio: 0.30
+    bydfi_business_impact: |
+      Naver 偏好"主题专注"的站点。BYDFi 韩文版应保持 90%+ 内容在加密/交易/金融主题。
+      不要发跨度太大的内容（如生活方式、娱乐）冲淡主题。
+    tags: [naver, topic-focus]
+
+  - id: naver.crank.user-engagement-signals
+    source: naver-search-advisor
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [news, learn, blog]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: hybrid
+      fn: detectors.naver.engagement_signals_check
+      inputs: [naver_webmaster_data, ga_data]
+      args:
+        signals:
+          - avg_dwell_time_seconds > 60
+          - bounce_rate < 0.70
+          - return_visitor_ratio
+          - inbound_clicks_from_naver
+    bydfi_business_impact: |
+      Naver 比 Google 更重视用户行为数据（停留 / 回访 / 互动）。
+      内容质量低导致跳出的页面，Naver 会直接降权。
+    tags: [naver, engagement]
+
+  - id: naver.crank.naver-ecosystem-integration
+    source: naver-search-advisor
+    severity: low
+    confidence_default: 0.70
+    applies_to:
+      page_types: [news, learn]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: hard_rule
+      fn: detectors.naver.ecosystem_links_check
+      inputs: [outbound_links]
+      args:
+        encouraged_sources:
+          - naver_news_links
+          - naver_blog_links (when appropriate)
+          - naver_cafe_links
+    bydfi_business_impact: |
+      Naver 偏好提及 Naver 生态内的可信来源。
+      如果引用韩国新闻，优先用 Naver News 链接。
+    tags: [naver, ecosystem]
+
+  - id: naver.crank.korean-server-or-cdn
+    source: naver-search-advisor
+    severity: low
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: hard_rule
+      fn: detectors.naver.serving_region_check
+      inputs: [http_headers, cdn_region]
+    bydfi_business_impact: |
+      Naver 偏好韩国 IP 服务的内容。BYDFi 韩文页面应通过韩国 CDN 节点服务。
+      可通过 Cloudflare/AWS 配置韩国 PoP。
+    tags: [naver, serving-region]

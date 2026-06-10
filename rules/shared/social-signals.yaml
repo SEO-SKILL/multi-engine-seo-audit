@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.social.og-tags-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [shared, bing]}
+    detector: {type: hard_rule, fn: detectors.social.og_tags_check, inputs: [head_meta]}
+    bydfi_business_impact: "Open Graph 标签影响 FB/LinkedIn/Telegram 分享卡"
+    tags: [social, og]
+
+  - id: shared.social.twitter-card-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.social.twitter_card_check, inputs: [head_meta]}
+    bydfi_business_impact: "Twitter Card 影响 X/Twitter 分享显示"
+    tags: [social, twitter]
+
+  - id: shared.social.share-buttons-broken
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [news, blog, learn], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.social.share_button_check, inputs: [dom_buttons]}
+    bydfi_business_impact: "分享按钮失效降低社交流量"
+    tags: [social, ux]
+
+  - id: shared.social.og-image-too-small
+    source: google-search-central
+    severity: low
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.social.og_image_size_check, inputs: [og_image_url]}
+    bydfi_business_impact: "og:image 应至少 1200x630"
+    tags: [social, og, image]

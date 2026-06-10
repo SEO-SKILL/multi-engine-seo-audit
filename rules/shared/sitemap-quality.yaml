@@ -1,0 +1,137 @@
+# Sitemap 健康度规则
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "Sitemap.xml 完整性、合法性、与索引一致性"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+
+rules:
+
+  - id: shared.sitemap.missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+      commands: [audit, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.exists_check
+      inputs: [domain]
+      args:
+        check_paths:
+          - /sitemap.xml
+          - /sitemap_index.xml
+          - robots.txt sitemap directive
+    patch_hint:
+      template: patches/create_sitemap.diff.j2
+      priority: P1
+    bydfi_business_impact: |
+      9 语言版本 × 数千页面，必须有 sitemap index。
+    tags: [sitemap]
+
+  - id: shared.sitemap.contains-404
+    source: google-search-central
+    severity: high
+    confidence_default: 0.99
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+      commands: [audit, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.url_validity_check
+      inputs: [sitemap_urls, fetched_status_per_url]
+      args:
+        sample_rate: 100   # 全量抽查
+        max_404_ratio: 0.01
+    bydfi_business_impact: |
+      sitemap 含 404 = 浪费 Googlebot crawl budget + 信号差。
+    tags: [sitemap, 404]
+
+  - id: shared.sitemap.contains-redirects
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.url_validity_check
+      inputs: [sitemap_urls, fetched_status_per_url]
+      args:
+        flag_3xx_in_sitemap: true
+    bydfi_business_impact: |
+      sitemap 应只含 final URL，不含被重定向的 URL。
+    tags: [sitemap, redirect]
+
+  - id: shared.sitemap.blocked-by-robots
+    source: bydfi-incident
+    severity: high
+    confidence_default: 0.97
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.robots_conflict_check
+      inputs: [sitemap_urls, robots_txt_parsed]
+    bydfi_business_impact: |
+      MEXC 事故 L03 类似问题：sitemap 包含 robots 禁止的 URL。
+      sitemap 里的 URL 必须能被 Googlebot 抓取。
+    tags: [sitemap, robots, mexc-incident]
+
+  - id: shared.sitemap.missing-lastmod
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.lastmod_check
+      inputs: [sitemap_entries]
+      args:
+        require_lastmod: true
+        warn_if_all_same_date: true
+    bydfi_business_impact: |
+      lastmod 帮助 Googlebot 决定 crawl 频率。
+      但不要所有 URL 都用同一个 lastmod（假新鲜信号）。
+    tags: [sitemap, lastmod, freshness]
+
+  - id: shared.sitemap.hreflang-misalignment
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.93
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.hreflang_consistency_check
+      inputs: [sitemap_entries, hreflang_in_html]
+    bydfi_business_impact: |
+      sitemap 中的 hreflang 必须与 HTML 中的 hreflang 一致。
+    tags: [sitemap, hreflang]
+
+  - id: shared.sitemap.size-exceeds-limit
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [domain]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.size_check
+      inputs: [sitemap_file_size, sitemap_url_count]
+      args:
+        max_urls_per_file: 50000
+        max_file_size_mb: 50
+    bydfi_business_impact: |
+      超出限制必须拆分多个 sitemap，用 sitemap index 组织。
+    tags: [sitemap, size-limit]

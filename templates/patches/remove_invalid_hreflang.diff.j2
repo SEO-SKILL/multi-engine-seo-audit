@@ -1,0 +1,13 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+{% for invalid in invalid_alternates %}
+-  <link rel="alternate" hreflang="{{ invalid.locale }}" href="{{ invalid.url }}">
+{% endfor %}
+
+# Patch: 移除返回 404 的 hreflang alternate
+# Rule: google.hreflang.alternate-returns-404
+# Priority: P0
+{% for invalid in invalid_alternates %}
+# - {{ invalid.url }} → HTTP {{ invalid.status }}
+{% endfor %}

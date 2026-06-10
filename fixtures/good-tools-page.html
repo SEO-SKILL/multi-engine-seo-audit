@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!--
+  Golden Fixture: 合格的 BYDFi 工具页样板
+  用途：验证我们的规则不会误报"合格页面"
+  对应规则：应触发 0 个 blocker / 0 个 high finding
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTC Liquidation Calculator | Calculate Bitcoin Futures Liquidation Price - BYDFi</title>
+  <meta name="description" content="Use BYDFi's BTC liquidation calculator to estimate your Bitcoin futures liquidation price based on entry, leverage, margin mode, and position size. Free, instant, accurate.">
+
+  <link rel="canonical" href="https://bydfi.com/en/liquidation-calculator/btc-usdt">
+
+  <link rel="alternate" hreflang="en" href="https://bydfi.com/en/liquidation-calculator/btc-usdt">
+  <link rel="alternate" hreflang="ja" href="https://bydfi.com/ja/liquidation-calculator/btc-usdt">
+  <link rel="alternate" hreflang="ko" href="https://bydfi.com/ko/liquidation-calculator/btc-usdt">
+  <link rel="alternate" hreflang="x-default" href="https://bydfi.com/en/liquidation-calculator/btc-usdt">
+
+  <!-- JSON-LD SSR 输出 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "BTC Liquidation Calculator",
+    "description": "Calculate Bitcoin futures liquidation price",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "BYDFi",
+      "url": "https://bydfi.com"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header><nav>...</nav></header>
+
+  <main>
+    <article>
+      <h1>BTC Liquidation Calculator</h1>
+
+      <p class="intro">
+        Calculate the estimated liquidation price for your BTCUSDT perpetual futures position.
+        Enter your BTC entry price, leverage, margin mode, and position direction.
+      </p>
+
+      <!-- 首屏工具模块（SSR）-->
+      <section class="calculator-tool">
+        <form>
+          <label>Direction: <select><option>Long</option><option>Short</option></select></label>
+          <label>Entry Price (USD): <input type="number" value="60000"></label>
+          <label>Leverage: <input type="number" value="10"></label>
+          <label>Margin Mode: <select><option>Isolated</option><option>Cross</option></select></label>
+          <label>Position Size (BTC): <input type="number" value="0.1"></label>
+          <button type="submit">Calculate</button>
+        </form>
+
+        <div class="result">
+          <strong>Estimated Liquidation Price: $54,300</strong>
+          <span>Distance: 9.5%</span>
+          <span class="risk-level">Risk: Medium</span>
+        </div>
+      </section>
+
+      <!-- 风险提示（PRD §12.4 强制要求）-->
+      <aside class="risk-disclaimer">
+        <strong>Risk Disclaimer:</strong> This result is for estimation only and does not constitute
+        financial advice. Actual results may vary due to market volatility, fees, funding rates,
+        margin rules, mark price, liquidity, and platform risk controls.
+      </aside>
+
+      <!-- 内容增量 -->
+      <h2>How to Use the BTC Liquidation Calculator</h2>
+      <p>Enter your position details to estimate when your BTC futures position would be liquidated...</p>
+
+      <h2>What Is BTC Liquidation Price?</h2>
+      <p>BTC liquidation price is the price at which your margin balance falls below the maintenance margin requirement...</p>
+
+      <h2>BTC Long Liquidation Example</h2>
+      <p>If you long 0.1 BTC at $60,000 with 10x leverage in isolated margin mode...</p>
+
+      <h2>BTC Short Liquidation Example</h2>
+      <p>If you short 0.1 BTC at $60,000 with 10x leverage...</p>
+
+      <h2>How Leverage Affects BTC Liquidation Price</h2>
+      <p>Higher leverage means liquidation price is closer to your entry price...</p>
+
+      <h2>Isolated vs Cross Margin BTC Liquidation</h2>
+      <p>In isolated margin mode, only the margin allocated to this specific position can be lost...</p>
+
+      <h2>How to Reduce BTC Liquidation Risk</h2>
+      <ul>
+        <li>Use lower leverage</li>
+        <li>Set stop-loss orders</li>
+        <li>Monitor funding rates</li>
+        <li>Maintain healthy margin balance</li>
+      </ul>
+
+      <h2>Related BTC Futures Tools</h2>
+      <ul>
+        <li><a href="/en/futures-calculator/btc-usdt">BTC Futures PnL Calculator</a></li>
+        <li><a href="/en/funding-rate/btc-usdt">BTC Funding Rate</a></li>
+        <li><a href="/en/futures/btc-usdt">Trade BTC Futures</a></li>
+      </ul>
+
+      <h2>FAQ</h2>
+      <details>
+        <summary>What is the maintenance margin rate for BTC futures on BYDFi?</summary>
+        <p>The maintenance margin rate for BTC futures on BYDFi is 0.5%...</p>
+      </details>
+      <details>
+        <summary>Can the actual liquidation price differ from the calculator?</summary>
+        <p>Yes, actual liquidation prices may differ due to mark price calculations...</p>
+      </details>
+
+      <!-- 作者 + 审核 + 更新时间（E-E-A-T）-->
+      <footer class="article-meta">
+        <p>
+          <strong>Author:</strong> BYDFi Research Team
+          | <strong>Reviewed by:</strong> BYDFi Risk Management Team
+          | <strong>Last Updated:</strong> 2026-06-08
+          | <strong>Sources:</strong>
+            <a href="https://bydfi.com/futures-rules">BYDFi Futures Rules</a>,
+            <a href="https://coingecko.com/btc">CoinGecko BTC</a>
+        </p>
+      </footer>
+    </article>
+  </main>
+
+  <footer>...</footer>
+</body>
+</html>

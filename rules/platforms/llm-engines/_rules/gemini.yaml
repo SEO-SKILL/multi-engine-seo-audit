@@ -1,0 +1,87 @@
+# Gemini / Google AI Overview 引用率规则
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "Gemini + Google AI Overview 引用率优化"
+maintainer: kelly@bydfi.com
+
+gemini_mechanics:
+  google_search_integration: 紧密（AI Overview 直接调用 Gemini）
+  bot_name: Google-Extended（用于训练）/ Googlebot（用于搜索）
+  output: AI Overview 卡片 + 内联引用
+
+rules:
+
+  - id: gemini.indexability.google-extended-decision
+    source: llm-engine-docs
+    source_url: https://developers.google.com/search/blog/2023/09/google-extended
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [llm-engines, google]
+    detector:
+      type: hard_rule
+      fn: detectors.ai.robots_txt_check
+      inputs: [robots_txt_parsed]
+      args:
+        check_ua: Google-Extended
+        report_both: [allowed, blocked]
+    bydfi_business_impact: |
+      Google-Extended 是 Gemini 训练 bot。
+      禁 Google-Extended ≠ 禁 Google Search（Googlebot 走另一条）。
+      Kelly 拍板：禁 Google-Extended（不让 Google 训练）+ 允许 Googlebot（保留搜索）。
+    tags: [gemini, google-extended, robots]
+
+  - id: gemini.ai-overview.eligibility
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/appearance/ai-features
+    severity: low
+    confidence_default: 0.78
+    applies_to:
+      page_types: [learn, support, faq, tools, news]
+      platforms: [google, llm-engines]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/ai_overview_eligibility_judge.md
+      model: sonnet
+      inputs: [visible_text, jsonld, page_structure]
+      args:
+        eligibility_signals:
+          - 第一段直接回答 query
+          - 关键事实有来源
+          - YMYL 类必须有审核状态
+          - 数据时效性强
+          - 结构清晰（H1-H6 / 列表 / 表格）
+        exclusion_signals:
+          - 营销话术过重
+          - 缺受众
+          - 缺事实来源
+          - 内容过期
+    bydfi_business_impact: |
+      AI Overview 占 Google SERP 首屏，零点击但带品牌曝光 + 引用流量。
+      BYDFi /learn /tools 内容应针对 AI Overview 优化（TL;DR + 表格 + 数据源）。
+    tags: [gemini, ai-overview, google]
+
+  - id: gemini.brand-mention-in-llm
+    source: llm-engine-docs
+    severity: info
+    confidence_default: 0.80
+    applies_to:
+      page_types: [homepage, brand]
+      platforms: [llm-engines]
+      commands: [watch]
+    detector:
+      type: external_api
+      fn: integrations.gemini.brand_mention_test
+      inputs: [brand_name]
+      args:
+        test_queries:
+          - "What is BYDFi?"
+          - "Is BYDFi safe?"
+          - "BYDFi vs Binance"
+          - "BYDFi fees"
+    bydfi_business_impact: |
+      "LLM 时代的品牌词监控"：定期问主流 LLM 关于 BYDFi 的描述。
+      负面 / 错误描述需要通过 PR / 内容优化来纠正。
+    tags: [gemini, brand-monitoring]

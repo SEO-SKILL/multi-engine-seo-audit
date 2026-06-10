@@ -1,0 +1,126 @@
+# Google Canonical 规范化规则
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "Canonical 标签 + cross-domain canonical + canonical chain 检测"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://developers.google.com/search/docs/crawling-indexing/canonicalization
+  last_updated: 2025-09-15
+  pulled_at: 2026-06-10
+
+rules:
+
+  - id: google.canonical.missing
+    source: google-search-central
+    severity: high
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+      commands: [audit, gate, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.canonical.exists_and_valid
+      inputs: [raw_html, rendered_dom, http_headers]
+      args:
+        check_in: [html_link_rel_canonical, http_link_header]
+        require_absolute_url: true
+        require_ssr: true   # raw HTML 必须有，不能仅 CSR
+    patch_hint:
+      template: patches/add_canonical.diff.j2
+      priority: P0
+      auto_apply: yes_with_diff_preview
+    fixtures:
+      positive: fixtures/no-canonical-page.html
+      negative: fixtures/good-canonical-page.html
+    bydfi_business_impact: |
+      所有 BYDFi 页面必须有 canonical。CSR 注入的 canonical 等于没有（lessons L04）。
+    tags: [canonical, indexability]
+
+  - id: google.canonical.self-canonical-on-republished
+    source: bydfi-incident
+    severity: blocker
+    confidence_default: 0.88
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google, bing, bydfi]
+    detector:
+      type: hybrid
+      fn: detectors.canonical.republished_self_canonical_check
+      inputs: [canonical_url, visible_text, external_source_url]
+      args:
+        republished_detection:
+          - main_content_similarity_threshold: 0.80
+          - source_link_present: true
+        verdict_when:
+          self_canonical_and_high_similarity: blocker
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/republished_content_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/cross_domain_canonical.diff.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    bydfi_business_impact: |
+      MEXC 事故核心：转载 BlockchainReporter 但 self-canonical 自己。
+      转载内容必须 cross-domain canonical 到原文 或 noindex 或 补足原创增量。
+    tags: [bydfi-critical, canonical, mexc-incident, content-duplication]
+    human_review_required: true
+
+  - id: google.canonical.chain-too-long
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.canonical.chain_length
+      inputs: [canonical_url, redirect_chain]
+      args:
+        max_chain_length: 1   # canonical 不应再 redirect
+    patch_hint:
+      template: patches/fix_canonical_chain.diff.j2
+      priority: P1
+    bydfi_business_impact: |
+      Canonical URL 本身应该返回 200，不应是 301/302。
+    tags: [canonical, indexability]
+
+  - id: google.canonical.points-to-noindex
+    source: google-search-central
+    severity: high
+    confidence_default: 0.97
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.canonical.target_indexable
+      inputs: [canonical_url, fetched_canonical_target]
+    bydfi_business_impact: |
+      Canonical 指向被 noindex 的页面 = Google 看不到任何可索引页面。
+    tags: [canonical, indexability]
+
+  - id: google.canonical.disagrees-with-google
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: external_api
+      fn: integrations.gsc.canonical_disagreement_check
+      inputs: [url]
+      args:
+        gsc_endpoint: url_inspection
+    bydfi_business_impact: |
+      GSC URL Inspection 可查看 Google 选定的 canonical 与我们声明的是否一致。
+      不一致说明我们的 canonical 信号弱或被覆盖。
+    tags: [canonical, gsc]

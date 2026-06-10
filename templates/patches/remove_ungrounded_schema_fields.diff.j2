@@ -1,0 +1,26 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+ {
+   "@context": "https://schema.org",
+   "@type": "NewsArticle",
+   "headline": "...",
+-  "aggregateRating": {
+-    "@type": "AggregateRating",
+-    "ratingValue": "{{ ungrounded_rating }}",
+-    "reviewCount": "{{ ungrounded_count }}"
+-  },
+-  "relatedLink": [
+-    "{{ unrelated_link_1 }}",
+-    "{{ unrelated_link_2 }}"
+-  ]
+ }
+
+# Patch: 移除无可见内容支撑的 schema 字段
+# Rule: google.schema.field-not-grounded-in-visible-content
+# Priority: P0
+# Removed fields:
+{% for field in removed_fields %}
+#   - {{ field.path }}: {{ field.reason }}
+{% endfor %}
+# Requires human review: true

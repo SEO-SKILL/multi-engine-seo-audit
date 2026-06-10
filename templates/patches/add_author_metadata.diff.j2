@@ -1,0 +1,18 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+ <article>
+   <h1>{{ article_title }}</h1>
++
++  <div class="article-meta">
++    <p>
++      <strong>Author:</strong> <a href="/author/{{ author_slug }}">{{ author_name }}</a>
++      | <strong>Reviewed by:</strong> {{ reviewer_name }}
++      | <strong>Published:</strong> <time datetime="{{ published_at }}">{{ published_at_formatted }}</time>
++      | <strong>Last Updated:</strong> <time datetime="{{ updated_at }}">{{ updated_at_formatted }}</time>
++    </p>
++  </div>
+
+# Patch: 添加作者 / 审核 / 日期 元数据
+# Rule: google.eeat.author-attribution-missing
+# Priority: P1

@@ -1,0 +1,59 @@
+# Naver ViewSearch（整合搜索结果）
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "Naver 整合搜索结果适配 — Naver SERP 与 Google 完全不同"
+maintainer: kelly@bydfi.com
+locale_focus: ko
+
+rules:
+
+  - id: naver.view.naver-collection-priority
+    source: naver-search-advisor
+    severity: info
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: external_api
+      fn: integrations.naver.search_result_check
+      inputs: [target_keyword, brand_name]
+      args:
+        check_collections:
+          - VIEW (blog/cafe/post)
+          - 통합검색 (integrated search)
+          - 뉴스 (news)
+          - 이미지 (image)
+          - 동영상 (video)
+          - 지식인 (Q&A)
+    bydfi_business_impact: |
+      Naver SERP 默认显示 VIEW collection（Naver 内部生态）在前。
+      BYDFi 想在 Naver 排名好，需要：
+      1. 自家页面进入 VIEW 困难（Naver 偏好 Naver Blog/Cafe）
+      2. 考虑在 Naver Blog 建立官方账号
+      3. 通用搜索（통합검색）抓 BYDFi 网站，竞争激烈
+    tags: [naver, view-search, ecosystem]
+
+  - id: naver.view.kakao-ecosystem-mention
+    source: naver-search-advisor
+    severity: low
+    confidence_default: 0.70
+    applies_to:
+      page_types: [news, learn]
+      platforms: [naver]
+      locales: [ko]
+    detector:
+      type: hard_rule
+      fn: detectors.naver.korean_ecosystem_links
+      inputs: [outbound_links, content_references]
+      args:
+        encouraged_references:
+          - KakaoTalk
+          - Naver Pay
+          - 韩国本土加密交易所（Upbit / Bithumb）
+    bydfi_business_impact: |
+      韩国用户期望看到韩国本土生态引用。
+      BYDFi 韩文内容可在介绍 onboarding 时提及 KakaoTalk 验证等本地化流程。
+    tags: [naver, korean-ecosystem]

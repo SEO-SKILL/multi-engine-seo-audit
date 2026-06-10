@@ -1,0 +1,76 @@
+# Google Page Experience（Core Web Vitals + INP）
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "Core Web Vitals / INP / 页面体验信号"
+maintainer: kelly@bydfi.com
+
+rules:
+
+  - id: google.cwv.lcp-poor
+    source: google-search-central
+    source_url: https://web.dev/vitals/
+    severity: medium
+    confidence_default: 0.96
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: external_api
+      fn: integrations.crux.lcp_check
+      inputs: [url]
+      args:
+        red_flag_p75_seconds: 2.5
+    bydfi_business_impact: |
+      LCP > 2.5s 影响 Google 排名。BYDFi 工具页 first contentful paint 必须 < 1.5s。
+    tags: [cwv, lcp, performance]
+
+  - id: google.cwv.inp-poor
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.95
+    applies_to:
+      page_types: [tools, calculator, futures, copy-trading]
+      platforms: [google]
+    detector:
+      type: external_api
+      fn: integrations.crux.inp_check
+      inputs: [url]
+      args:
+        red_flag_p75_ms: 200
+    bydfi_business_impact: |
+      INP（Interaction to Next Paint）取代 FID。
+      BYDFi 计算器交互卡顿 > 200ms 影响 CWV。
+    tags: [cwv, inp, interactivity]
+
+  - id: google.cwv.cls-poor
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: external_api
+      fn: integrations.crux.cls_check
+      inputs: [url]
+      args:
+        red_flag_p75: 0.1
+    bydfi_business_impact: |
+      CLS > 0.1 = 视觉抖动严重。BYDFi 行情卡懒加载需预留固定高度。
+    tags: [cwv, cls, layout-shift]
+
+  - id: google.mobile.usability-issues
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: external_api
+      fn: integrations.gsc.mobile_usability_check
+      inputs: [url]
+    bydfi_business_impact: |
+      移动优先索引时代必备。GSC 移动可用性报告任何 issue 都要修。
+    tags: [mobile, usability]

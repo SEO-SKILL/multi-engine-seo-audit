@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.ugc.unmoderated-spam
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [questions, support, blog], platforms: [shared, google]}
+    detector: {type: llm_judge, prompt_template: prompts/ugc_spam_judge.md, model: haiku}
+    bydfi_business_impact: "未审核 UGC 充斥垃圾内容 = Google 整页降权"
+    tags: [ugc, spam, moderation]
+
+  - id: shared.ugc.user-rel-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to: {page_types: [questions, blog], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.ugc.rel_ugc_check, inputs: [user_links]}
+    bydfi_business_impact: "UGC 链接应加 rel='ugc' 或 rel='nofollow'"
+    tags: [ugc, rel-attribute]
+
+  - id: shared.ugc.moderation-status-visible
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [questions], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.ugc.moderation_signal_check, inputs: [page_content]}
+    bydfi_business_impact: "UGC 应显示'已审核'状态（增加可信度）"
+    tags: [ugc, trust]
+
+  - id: shared.ugc.author-not-authenticated
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to: {page_types: [questions, blog], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.ugc.author_auth_check, inputs: [user_metadata]}
+    bydfi_business_impact: "UGC 作者应有认证标识（KYC 用户 / 专业用户）"
+    tags: [ugc, authentication]

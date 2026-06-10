@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+  Golden Fixture: Cloaking 嫌疑样例
+  用途：验证 google.cloaking.* 规则能命中
+  注意：本 fixture 在测试时配合 crawler-agent 用不同 UA 抓取应得到不同内容
+  对应规则：
+    - google.cloaking.googlebot-vs-user-content-diff (severity: blocker)
+    - google.cloaking.csr-renders-different-content (severity: high)
+    - google.cloaking.hidden-text-via-css (severity: medium)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crypto Investment Platform - BYDFi</title>
+  <style>
+    .keyword-stuffing-block {
+      color: white;
+      background: white;     /* 隐藏文字（color = background）*/
+      font-size: 1px;        /* 极小字号 */
+      position: absolute;
+      left: -9999px;         /* 屏外定位 */
+    }
+    .hidden-by-display { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Cryptocurrency Trading Platform</h1>
+
+  <!-- 真实用户看到的内容 -->
+  <section class="visible-content">
+    <p>BYDFi is a cryptocurrency trading platform offering spot and futures trading.</p>
+  </section>
+
+  <!-- Cloaking 嫌疑 1: 隐藏的关键词堆砌 -->
+  <div class="keyword-stuffing-block">
+    best crypto exchange 2026 best crypto exchange 2026 cheap crypto trading platform
+    low fee crypto exchange highest leverage crypto futures BTC USDT ETH USDT SOL USDT
+    XRP USDT DOGE USDT crypto futures calculator crypto liquidation calculator
+    funding rate calculator perpetual futures margin trading copy trading bot trading
+    grid trading DCA crypto trading bot
+  </div>
+
+  <!-- Cloaking 嫌疑 2: display:none 大量关键词 -->
+  <div class="hidden-by-display">
+    crypto investment platform crypto investment platform crypto investment platform
+    crypto investment platform crypto investment platform crypto investment platform
+  </div>
+
+  <!-- Cloaking 嫌疑 3: CSR 注入大量额外内容 -->
+  <div id="csr-content"></div>
+  <script>
+    // 这段脚本只在真实浏览器执行，Googlebot 可能看不到
+    // 但内容主题与可见区域完全不同（关键词游戏 vs 交易平台）
+    if (navigator.userAgent.indexOf('Googlebot') === -1) {
+      document.getElementById('csr-content').innerHTML = `
+        <h2>Crypto Gambling Strategies</h2>
+        <p>Discover the best crypto gambling strategies for 2026...</p>
+        <p>Slot games, dice games, blackjack - all crypto-friendly...</p>
+      `;
+    } else {
+      document.getElementById('csr-content').innerHTML = `
+        <h2>Crypto Trading Education</h2>
+        <p>Learn responsible cryptocurrency trading...</p>
+      `;
+    }
+  </script>
+</body>
+</html>

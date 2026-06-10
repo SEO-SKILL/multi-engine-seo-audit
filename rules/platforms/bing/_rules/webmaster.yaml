@@ -1,0 +1,134 @@
+# Bing Webmaster Guidelines
+# 创建：2026-06-10
+# ⭐ 重要性：Bing 是 ChatGPT Search / Copilot 的索引来源，GEO 时代 Bing 价值 ↑↑↑
+
+file_version: "1.0"
+file_purpose: "Bing 排名因子 + ChatGPT Search 后台依赖优化"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://www.bing.com/webmasters/help/webmaster-guidelines-30fba23a
+  last_updated: 2025-11-08
+  pulled_at: 2026-06-10
+
+bing_key_differences:
+  vs_google:
+    - 更看 social signals（Facebook share / Twitter mention）
+    - 更看 exact match domain（虽然 BYDFi.com 无影响）
+    - 多媒体内容（图片 / 视频）权重更高
+    - Bing IndexNow（实时通知索引）
+    - title 权重更高（Bing 算法对 title 更敏感）
+
+rules:
+
+  - id: bing.indexability.bing-webmaster-verification
+    source: bing-webmaster
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [homepage]
+      platforms: [bing]
+      commands: [audit, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.bing.webmaster_verification_check
+      inputs: [domain, dns_records, html_meta]
+      args:
+        check_methods: [bing_site_auth_xml, meta_msvalidate_01, dns_txt]
+    patch_hint:
+      template: patches/add_bing_verification.diff.j2
+      priority: P2
+    bydfi_business_impact: |
+      Bing Webmaster Tools 提供独立的 SEO 数据。
+      ChatGPT Search 用 Bing 索引，所以 Bing 收录 = ChatGPT 可见。
+    tags: [bing, verification, indexnow]
+
+  - id: bing.indexnow.not-implemented
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [bing]
+      commands: [audit, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.bing.indexnow_setup_check
+      inputs: [domain, indexnow_key_file]
+    bydfi_business_impact: |
+      Bing IndexNow 协议让新页面/更新页面可实时通知 Bing 抓取。
+      对 BYDFi /news /price 这种高频更新内容价值大。
+    tags: [bing, indexnow, freshness]
+
+  - id: bing.title.too-long-or-stuffed
+    source: bing-webmaster
+    severity: medium
+    confidence_default: 0.93
+    applies_to:
+      page_types: [all]
+      platforms: [bing]
+    detector:
+      type: hard_rule
+      fn: detectors.bing.title_quality
+      inputs: [title, target_keyword]
+      args:
+        max_length_chars: 65
+        keyword_stuffing_threshold: 3
+        check_pipe_separator_usage: true
+    bydfi_business_impact: |
+      Bing 对 title 比 Google 更敏感。BYDFi title 应：
+      - 60-65 字符
+      - 主关键词在前
+      - 不堆砌 ticker（如 "BTC BTC Bitcoin price BTC..."）
+    tags: [bing, title]
+
+  - id: bing.media-content.weak
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.78
+    applies_to:
+      page_types: [learn, news, blog, crypto-review]
+      platforms: [bing]
+    detector:
+      type: hard_rule
+      fn: detectors.bing.media_richness
+      inputs: [images, videos, infographics]
+      args:
+        min_images_per_1000_words: 2
+        prefer_video: true
+    bydfi_business_impact: |
+      Bing 比 Google 更喜欢图文并茂的内容。
+      BYDFi 教育内容应每千字至少 2 张图，加密图表/截图/示意图都算。
+    tags: [bing, media]
+
+  - id: bing.social-signals.weak
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.75
+    applies_to:
+      page_types: [news, blog]
+      platforms: [bing]
+    detector:
+      type: external_api
+      fn: integrations.social.signal_check
+      inputs: [url, twitter_api, facebook_api]
+    bydfi_business_impact: |
+      Bing 看社交信号（X / FB / LinkedIn shares）。
+      BYDFi 新闻 / 博客发布时应同步推 @bydfi_official + Twitter / Telegram。
+    tags: [bing, social-signals]
+
+  - id: bing.exact-match.url-keyword
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.82
+    applies_to:
+      page_types: [all]
+      platforms: [bing]
+    detector:
+      type: hard_rule
+      fn: detectors.bing.url_keyword_match
+      inputs: [url, primary_keyword]
+    bydfi_business_impact: |
+      Bing 偏好 URL slug 含主关键词。
+      `/en/liquidation-calculator/btc-usdt` 比 `/en/tool-1234` 好。
+    tags: [bing, url-structure]

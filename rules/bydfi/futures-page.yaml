@@ -1,0 +1,48 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: bydfi.futures.leverage-disclosure
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.95
+    applies_to: {page_types: [futures], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.leverage_disclosure_check, inputs: [page_content]}
+    bydfi_business_impact: "合约页必须显示最大杠杆 + 杠杆风险提示"
+    tags: [bydfi, futures, leverage, compliance]
+
+  - id: bydfi.futures.fee-table-incomplete
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [futures], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.fee_table_check, inputs: [page_content]}
+    bydfi_business_impact: "费用表应含 taker/maker/资金费率/出入金"
+    tags: [bydfi, futures, fees]
+
+  - id: bydfi.futures.maintenance-margin-tier
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [futures], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.margin_tier_check, inputs: [page_content]}
+    bydfi_business_impact: "应公开各 tier 的维护保证金率（透明度）"
+    tags: [bydfi, futures, margin]
+
+  - id: bydfi.futures.contract-spec-missing
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [futures], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.contract_spec_check, inputs: [page_content]}
+    bydfi_business_impact: "合约规格（最小变动价位 / 最小数量 / tick size）应公开"
+    tags: [bydfi, futures, contract-spec]
+
+  - id: bydfi.futures.funding-rate-history
+    source: bydfi-compliance
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [futures], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.funding_rate_check, inputs: [page_content]}
+    bydfi_business_impact: "永续合约页应提供资金费率历史"
+    tags: [bydfi, futures, funding-rate]

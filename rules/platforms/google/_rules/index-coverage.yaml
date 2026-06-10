@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: google.index.discovered-not-indexed
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: external_api, fn: integrations.gsc.coverage_check, inputs: [url]}
+    bydfi_business_impact: "已发现未索引 = 内容质量信号弱"
+    tags: [index-coverage, gsc]
+
+  - id: google.index.crawled-not-indexed
+    source: google-search-central
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: external_api, fn: integrations.gsc.coverage_check, inputs: [url]}
+    bydfi_business_impact: "已抓取未索引 = 内容质量被判定低（MEXC 事故子症状）"
+    tags: [index-coverage, gsc, quality]
+
+  - id: google.index.indexing-status-changed
+    source: google-search-central
+    severity: high
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [google], commands: [watch]}
+    detector: {type: external_api, fn: integrations.gsc.index_status_diff, inputs: [url, snapshot_history]}
+    bydfi_business_impact: "之前已索引 → 当前未索引 = 警报信号"
+    tags: [index-coverage, watch]
+
+  - id: google.index.canonical-disagreement
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: external_api, fn: integrations.gsc.canonical_disagreement_check, inputs: [url]}
+    bydfi_business_impact: "我们声明的 canonical 与 Google 选定的不一致 = 信号弱"
+    tags: [index-coverage, canonical]

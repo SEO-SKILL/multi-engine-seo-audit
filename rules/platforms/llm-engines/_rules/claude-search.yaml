@@ -1,0 +1,57 @@
+# Claude Search 引用率规则
+# 创建：2026-06-10
+# Claude Code / Claude Web 内置 web search
+
+file_version: "1.0"
+file_purpose: "Claude (Anthropic) Search 引用率优化"
+maintainer: kelly@bydfi.com
+
+claude_search_mechanics:
+  bot_name: ClaudeBot / anthropic-ai
+  ranking: 偏好可验证、有 citation 的内容
+  output: 内联引用 + URL
+  user_segment: 开发者 / 知识工作者（与 BYDFi 用户重叠度低，但价值高）
+
+rules:
+
+  - id: claude.indexability.bot-allowed
+    source: llm-engine-docs
+    source_url: https://docs.claude.com/en/docs/agents-and-tools/web-search
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [llm-engines]
+    detector:
+      type: hard_rule
+      fn: detectors.ai.robots_txt_check
+      inputs: [robots_txt_parsed]
+      args:
+        required_allow_for_ua:
+          - ClaudeBot
+          - anthropic-ai
+          - Claude-Web
+    bydfi_business_impact: |
+      Claude 用户群是开发者 + 高端知识工作者，BYDFi 想覆盖这部分人群必须放行。
+    tags: [claude, robots]
+
+  - id: claude.content.technical-depth
+    source: llm-engine-docs
+    severity: low
+    confidence_default: 0.75
+    applies_to:
+      page_types: [learn, tools, api-docs]
+      platforms: [llm-engines]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/claude_technical_depth_judge.md
+      model: haiku
+      inputs: [visible_text, page_topic]
+      args:
+        signals:
+          - 技术深度匹配读者（不要给开发者讲基础）
+          - 有具体代码 / 公式 / 数据
+          - 有可执行示例
+    bydfi_business_impact: |
+      Claude 用户偏好技术深度。BYDFi 的 API 文档 / 量化策略页对这部分用户价值高。
+    tags: [claude, technical-content]

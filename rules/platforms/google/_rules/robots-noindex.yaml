@@ -1,0 +1,61 @@
+# Google robots / noindex / X-Robots-Tag 规则
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "robots.txt / meta robots / X-Robots-Tag 一致性检测"
+maintainer: kelly@bydfi.com
+
+rules:
+
+  - id: google.robots.conflicting-directives
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag
+    severity: high
+    confidence_default: 0.97
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.robots.conflict_check
+      inputs: [robots_txt, meta_robots, x_robots_tag_header]
+    bydfi_business_impact: |
+      robots.txt allow 但 meta robots noindex = 矛盾。
+      Googlebot 会按"最严格"原则处理 → 不索引。
+    tags: [robots, conflict]
+
+  - id: google.robots.noindex-on-key-pages
+    source: google-search-central
+    severity: blocker
+    confidence_default: 0.99
+    applies_to:
+      page_types: [homepage, landing, tools, learn, price]
+      platforms: [google, bing, naver, yandex]
+    detector:
+      type: hard_rule
+      fn: detectors.robots.noindex_on_critical_check
+      inputs: [page_url, meta_robots, x_robots_tag, critical_page_list]
+    bydfi_business_impact: |
+      防止部署事故把关键页面 noindex。
+      gate 命令必须阻断这类 commit。
+    tags: [robots, noindex, critical]
+
+  - id: google.robots.disallow-blocks-resources
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.92
+    applies_to:
+      page_types: [domain]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.robots.blocked_resources_check
+      inputs: [robots_txt_parsed, page_required_resources]
+      args:
+        red_flag_blocked:
+          - CSS files
+          - JS files affecting rendering
+          - critical image files
+    bydfi_business_impact: |
+      robots.txt 禁 CSS / JS → Googlebot 渲染页面失败 → 看到的是骨架。
+    tags: [robots, rendering]

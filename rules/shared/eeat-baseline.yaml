@@ -1,0 +1,73 @@
+# 跨平台 E-E-A-T 基线规则（vs google/_rules/e-e-a-t.yaml 是 Google 专属）
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "跨搜索引擎 E-E-A-T 通用基线"
+maintainer: kelly@bydfi.com
+
+rules:
+
+  - id: shared.eeat.author-page-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [learn, news, blog]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.eeat.author_profile_page_exists
+      inputs: [author_name, author_url]
+      args:
+        require_author_profile_page: true
+        check_profile_completeness: true
+    bydfi_business_impact: |
+      文章作者必须有独立的 /author/{name} 页面，含简介 + 历史文章 + 联系方式。
+      作者权威性是 E-E-A-T 关键信号。
+    tags: [eeat, author, authority]
+
+  - id: shared.eeat.organization-credentials-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [homepage, about]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.eeat.org_credentials_check
+      inputs: [page_content, jsonld_organization, footer]
+      args:
+        required_signals:
+          - 公司注册信息
+          - 营业执照 / 牌照号
+          - 物理地址（如适用）
+          - 联系方式
+          - 监管资质
+    bydfi_business_impact: |
+      BYDFi 应在 /about /security /transparency 等页面披露完整公司信息。
+      金融行业可信度的基础。
+    tags: [eeat, organization, transparency]
+
+  - id: shared.eeat.review-component-authentic
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [crypto-review, compare]
+      platforms: [shared]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/review_authenticity_judge.md
+      model: sonnet
+      inputs: [review_content, review_metadata]
+      args:
+        signals:
+          - 真实 reviewer 信息
+          - 评分有理由
+          - 优缺点都有
+          - 利益冲突声明
+    bydfi_business_impact: |
+      评测内容（crypto-review / compare 页）必须 authentic。
+      虚假评论 / 一边倒好评 = Google YMYL 红线。
+    tags: [eeat, review, ymyl]

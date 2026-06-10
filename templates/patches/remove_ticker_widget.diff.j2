@@ -1,0 +1,16 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+-  <div class="ticker-widget" data-symbol="{{ misidentified_ticker }}">
+-    <span>{{ misidentified_ticker }} Price: {{ price }}</span>
+-    <a href="/trade/{{ misidentified_ticker }}_USDT" class="cta-button">
+-      Buy {{ misidentified_ticker }} Now
+-    </a>
+-  </div>
+
+# Patch: 移除上下文不匹配的 ticker widget
+# Rule: bydfi.l02.ticker-context-mismatch
+# Priority: P0
+# Reason: ticker "{{ misidentified_ticker }}" 在本页上下文中应理解为
+#         "{{ correct_context }}"，而非 "{{ misidentified_project }}" 代币
+# Requires human review: true

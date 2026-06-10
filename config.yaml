@@ -1,0 +1,122 @@
+# BYDFi SEO Audit Skill — 全局配置
+# 创建：2026-06-10
+
+default_project: bydfi
+
+projects:
+  bydfi:
+    primary_domain: bydfi.com
+    locales:
+      - en
+      - zh-CN
+      - ja
+      - ko
+      - vi
+      - tr
+      - pt
+      - es
+      - ru
+
+    # 6 家核心竞品
+    competitors:
+      - binance.com
+      - bybit.com
+      - okx.com
+      - mexc.com
+      - weex.com
+      - coinglass.com
+
+    # 跨国合规区域
+    compliance_regions:
+      - US-SEC
+      - EU-MiCA
+      - SG-MAS
+      - JP-JFSA
+      - HK-SFC
+
+    # 多搜索引擎按语言路由
+    platform_routing:
+      en: [google, bing, llm-engines]
+      pt: [google, bing, llm-engines]
+      es: [google, bing, llm-engines]
+      vi: [google, bing, llm-engines]
+      tr: [google, bing, llm-engines]
+      zh-CN: [google, bing, llm-engines]
+      ja: [google, bing, llm-engines]   # Yahoo Japan 用 Google 索引
+      ko: [naver, google, bing, llm-engines]    # Naver 60%+
+      ru: [yandex, google, bing, llm-engines]   # Yandex 65%+
+
+    # 外部 API
+    integrations:
+      gsc_property: sc-domain:bydfi.com
+      cloudflare_zone: bydfi.com
+      slack_webhook_env: BYDFI_SLACK_WEBHOOK
+      ahrefs_csv_dir: ~/.claude/skills/seo-audit/data/ahrefs/
+
+    # 风险关键词黑名单
+    risk_keywords:
+      - guaranteed return
+      - risk-free
+      - 100% profit
+      - certain profit
+
+    # 敏感 ticker（防 PROS 案例）
+    sensitive_tickers:
+      - PROS    # Pharos vs Pros and Cons
+      - BTC     # 防止小币干扰
+      - SEC     # 美国监管 vs 通用词
+      - GAS     # ETH gas vs 通用词
+      - APE     # 多个项目用此符号
+
+# 框架配置
+framework:
+  cost_control:
+    # 模型分级
+    model_routing:
+      simple_classification: haiku
+      semantic_judgment: opus
+      report_synthesis: sonnet
+
+    # 预算护栏（美元）
+    # 决策：V1 hard cap $0.03，平均 < $0.02；V2 优化到 hard cap $0.02
+    budget:
+      per_audit_warn: 0.015
+      per_audit_hard_cap: 0.03
+      per_audit_target_avg: 0.02
+      per_day: 10.00
+      per_month: 200.00
+
+    # Prompt Caching
+    prompt_caching:
+      enabled: true
+      target_hit_rate: 0.80
+
+  rate_limit:
+    crawler:
+      requests_per_second: 2
+      max_concurrent: 5
+    gsc_api:
+      daily_quota: 1200
+    perplexity_api:
+      requests_per_minute: 20
+
+  observability:
+    log_level: info
+    trace_enabled: true
+    llm_io_log: false  # debug 模式开
+
+  rule_sync:
+    daily_pull_cron: "0 6 * * *"  # 早 6 点
+    sources:
+      google:
+        - https://developers.google.com/search/blog
+        - https://status.search.google.com
+      bing:
+        - https://blogs.bing.com/webmaster
+      naver:
+        - https://searchadvisor.naver.com
+      yandex:
+        - https://yandex.com/blog/webmaster
+      third_party:
+        - https://www.searchenginejournal.com
+        - https://www.seroundtable.com

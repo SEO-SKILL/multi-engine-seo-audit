@@ -1,0 +1,23 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
++  <script type="application/ld+json">
++  {
++    "@context": "https://schema.org",
++    "@type": "BreadcrumbList",
++    "itemListElement": [
++      {% for crumb in breadcrumbs %}
++      {
++        "@type": "ListItem",
++        "position": {{ loop.index }},
++        "name": "{{ crumb.name }}",
++        "item": "{{ crumb.url }}"
++      }{% if not loop.last %},{% endif %}
++      {% endfor %}
++    ]
++  }
++  </script>
+
+# Patch: 添加 BreadcrumbList schema
+# Rule: google.breadcrumb.schema-missing
+# Priority: P2

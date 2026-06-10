@@ -1,0 +1,22 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
++  <!-- JSON-LD SSR 输出（移到 head，不要在 DOMContentLoaded 注入）-->
++  <script type="application/ld+json">
++  {{ jsonld_content }}
++  </script>
+ </head>
+ <body>
+   ...
+-  <script>
+-    window.addEventListener('DOMContentLoaded', function() {
+-      var ldScript = document.createElement('script');
+-      ldScript.type = 'application/ld+json';
+-      ldScript.textContent = JSON.stringify({...});
+-      document.head.appendChild(ldScript);
+-    });
+-  </script>
+
+# Patch: JSON-LD 必须 SSR 输出
+# Rule: google.schema.jsonld-csr-only
+# Priority: P0

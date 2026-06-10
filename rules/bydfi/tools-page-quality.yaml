@@ -1,0 +1,57 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: bydfi.tools.calculator-formula-missing
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [tools, calculator], platforms: [bydfi, google]}
+    detector: {type: hard_rule, fn: detectors.bydfi.calculator_formula_check, inputs: [page_content]}
+    bydfi_business_impact: "强平/PnL 计算器必须公开计算公式"
+    tags: [bydfi, tools, transparency]
+
+  - id: bydfi.tools.maintenance-margin-rate-missing
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [tools, calculator], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.margin_rate_check, inputs: [page_content]}
+    bydfi_business_impact: "强平计算器必须说明维护保证金率取值"
+    tags: [bydfi, tools, futures]
+
+  - id: bydfi.tools.csr-only-calculator-shell
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.93
+    applies_to: {page_types: [tools, calculator], platforms: [google, bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.calc_ssr_check, inputs: [raw_html]}
+    bydfi_business_impact: "工具首屏不能是 JS 空壳，必须 SSR 输出工具结构"
+    tags: [bydfi, tools, ssr]
+
+  - id: bydfi.tools.faq-missing
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [tools, calculator], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.tools_faq_check, inputs: [page_content]}
+    bydfi_business_impact: "工具页应有 FAQ 段落（PRD §9 结构）"
+    tags: [bydfi, tools, content-structure]
+
+  - id: bydfi.tools.related-tools-missing
+    source: bydfi-compliance
+    severity: low
+    confidence_default: 0.88
+    applies_to: {page_types: [tools], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.related_tools_check, inputs: [internal_links]}
+    bydfi_business_impact: "工具页应内链相关工具（强平 ↔ PnL ↔ 资金费率）"
+    tags: [bydfi, tools, internal-linking]
+
+  - id: bydfi.tools.trading-cta-missing
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [tools, calculator], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.trade_cta_check, inputs: [page_ctas]}
+    bydfi_business_impact: "工具页应有交易 CTA（导向合约对应交易对）"
+    tags: [bydfi, tools, conversion]

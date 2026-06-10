@@ -1,0 +1,31 @@
+file_version: "1.0"
+file_purpose: "V2 A/B 测试能力规则"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.experiment.title-ab-pending
+    source: bydfi-compliance
+    severity: info
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [shared], commands: [watch]}
+    detector: {type: external_api, fn: integrations.ab_engine.experiment_status, inputs: [url]}
+    bydfi_business_impact: "记录正在跑的 title A/B 测试"
+    tags: [experiment, ab-test, v2, title]
+
+  - id: shared.experiment.meta-ab-pending
+    source: bydfi-compliance
+    severity: info
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [shared], commands: [watch]}
+    detector: {type: external_api, fn: integrations.ab_engine.experiment_status, inputs: [url]}
+    bydfi_business_impact: "记录正在跑的 meta description A/B 测试"
+    tags: [experiment, ab-test, v2, meta]
+
+  - id: shared.experiment.winning-variant-not-applied
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [shared], commands: [watch]}
+    detector: {type: external_api, fn: integrations.ab_engine.unapplied_winners, inputs: [domain]}
+    bydfi_business_impact: "A/B 测试胜出变体应转为正式版"
+    tags: [experiment, ab-test, v2, action]

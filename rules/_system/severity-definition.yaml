@@ -1,0 +1,162 @@
+# 严重程度（Severity）定义 — 5 级标准
+# 用途：所有规则的 severity 字段必须使用这 5 级之一
+# 创建：2026-06-10
+
+schema_version: "1.0"
+
+# 5 级 severity 标准
+severity_levels:
+
+  blocker:
+    name: 阻断
+    score: 100
+    color: "#D32F2F"  # 深红
+    icon: 🔴
+    definition: |
+      检出即不可上线 / 必须立即修。继续保留会触发 Google 人工处置 / 严重影响索引 /
+      法律合规风险 / 数据安全风险。
+    examples:
+      - Hacked content（被黑塞菠菜/赌博/色情）
+      - Cloaking 嫌疑（Googlebot 与真实用户看到不同主题内容）
+      - Schema 字段虚假（AggregateRating 但页面无评价 → 触发结构化数据人工处置）
+      - 转载内容自 self-canonical 且原创增量 < 20%（MEXC 事故场景）
+      - 风险关键词违法表述（"guaranteed return" 在 SEC 监管区）
+      - Ticker 上下文严重错配（PROS / Pharos 案例）
+    gate_behavior: HARD_BLOCK  # Pre-publish Gate 必须阻断
+    audit_verdict: 暂不上线
+    watch_alert: IMMEDIATE     # 立即 Slack 告警
+    autopatch: false           # 不允许自动 patch
+    requires_owner_approval: true
+    sla_to_fix_hours: 24
+
+  high:
+    name: 高危
+    score: 75
+    color: "#F57C00"  # 橙红
+    icon: 🟠
+    definition: |
+      显著影响 SEO 表现 / 高度可能导致索引问题或排名下降 /
+      影响用户信任和品牌权威。需要在 1 周内修复。
+    examples:
+      - hreflang 与 robots/canonical 冲突（MEXC 事故 L03）
+      - JSON-LD 仅 CSR 渲染（MEXC 事故 L04）
+      - E-E-A-T 严重弱：YMYL 金融页无作者/审核/来源
+      - 分类标签明显不准（MEXC 事故 L05）
+      - 关键页面不被 Googlebot 抓取
+      - Sitemap 大量 404 / 重定向链
+      - Cannibalization 严重（多个页面同关键词竞争）
+    gate_behavior: BLOCK_UNLESS_OVERRIDE  # 默认阻断，可 owner override
+    audit_verdict: 改后再审
+    watch_alert: WITHIN_DAY
+    autopatch: with_review
+    requires_owner_approval: false
+    sla_to_fix_hours: 168     # 1 周
+
+  medium:
+    name: 中
+    score: 50
+    color: "#FBC02D"  # 黄
+    icon: 🟡
+    definition: |
+      影响 SEO 但不致命。建议在 1 个月内修复。
+      累积过多 medium 等同于一个 high。
+    examples:
+      - meta description 缺失或过长
+      - 图片缺 alt
+      - 内链结构可优化
+      - 标题不够吸引点击（CTR 预估偏低）
+      - Schema 字段不完整（不影响合法性，影响富结果资格）
+      - 多语言页面有 1-2 个 alternate 失效
+      - 内容深度 / 阅读级别可优化
+    gate_behavior: WARN
+    audit_verdict: 改后再审 或 上线
+    watch_alert: WEEKLY_DIGEST
+    autopatch: yes_with_diff_preview
+    sla_to_fix_hours: 720     # 1 个月
+
+  low:
+    name: 低
+    score: 25
+    color: "#7CB342"  # 浅绿
+    icon: 🟢
+    definition: |
+      轻微问题或最佳实践建议。不影响上线决策，可在迭代时顺手处理。
+    examples:
+      - Open Graph 字段不完整
+      - Twitter Card 字段不完整
+      - 关键词密度偏低/偏高
+      - 微小的内链文案优化空间
+      - 图片可改 WebP/AVIF
+      - 加载性能小幅可优化
+    gate_behavior: PASS
+    audit_verdict: 上线
+    watch_alert: MONTHLY_DIGEST
+    autopatch: yes
+    sla_to_fix_hours: null
+
+  info:
+    name: 信息
+    score: 0
+    color: "#039BE5"  # 蓝
+    icon: ℹ️
+    definition: |
+      非问题，只是观察 / 数据 / 建议。
+    examples:
+      - 当前关键词排名情况
+      - 竞品对比观察
+      - SERP feature 占位情况
+      - 历史快照对比
+      - GEO 引用率快照
+    gate_behavior: PASS
+    audit_verdict: 上线
+    watch_alert: NONE
+    autopatch: na
+    sla_to_fix_hours: null
+
+# Final Verdict 决策规则
+final_verdict_rules:
+  暂不上线:
+    triggers:
+      - any: blocker
+    blocking: true
+
+  改后再审:
+    triggers:
+      - any: high
+      - count_medium: ">= 5"
+      - count_low: ">= 15"
+    blocking: false
+    note: "Pre-publish Gate 默认 BLOCK_UNLESS_OVERRIDE"
+
+  上线:
+    triggers:
+      - no: blocker
+      - no: high
+      - count_medium: "< 5"
+      - count_low: "< 15"
+    blocking: false
+
+# Brand SEO Score (0-100) 计算口径
+brand_seo_score:
+  algorithm: |
+    score = 100 - (sum(blocker.score * 0.4) + sum(high.score * 0.3) +
+                   sum(medium.score * 0.2) + sum(low.score * 0.1))
+    score = clamp(score, 0, 100)
+
+  health_buckets:
+    excellent: 90-100
+    good: 75-89
+    needs_improvement: 60-74
+    at_risk: 40-59
+    critical: 0-39
+
+# 与外部标准的对照
+external_alignment:
+  google_manual_action: blocker
+  google_helpful_content_demotion: high
+  google_spam_policy_violation: blocker_or_high
+  google_structured_data_invalid: high
+  google_core_web_vitals_poor: medium
+  ahrefs_health_score_below_70: high
+  semrush_audit_critical: blocker
+  semrush_audit_warning: medium

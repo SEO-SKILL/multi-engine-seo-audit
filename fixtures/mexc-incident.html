@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--
+  Golden Fixture: MEXC 事故页（BYDFi 2026-Q1）
+  用途：V1 必须能检出 7 类问题
+  对应规则：
+    - bydfi.l01.republished-content-low-increment (severity: blocker)
+    - bydfi.l02.ticker-context-mismatch (severity: blocker)
+    - bydfi.l02.related-link-schema-pollution (severity: high)
+    - google.hreflang.alternate-blocked-by-robots (severity: high)
+    - google.hreflang.alternate-returns-404 (severity: high)
+    - google.schema.field-not-grounded-in-visible-content (severity: blocker)
+    - google.schema.jsonld-csr-only (severity: high)
+    - google.schema.copyrightnotice-inconsistent (severity: medium)
+    - google.schema.relatedlink-topic-mismatch (severity: high)
+    - bydfi.l05.tagging-topic-mismatch (severity: medium)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Techsslaash Review: Pros and Cons of New Creator Platform | MEXC News</title>
+  <meta name="description" content="A review of Techsslaash, a new fintech creator platform. We look at the pros and cons.">
+
+  <!-- 问题 1: self-canonical 但是转载内容 -->
+  <link rel="canonical" href="https://mexc.com/en/news/1057200">
+
+  <!-- 问题 2: hreflang 含 robots 禁止的路径 + 含 404 alternate -->
+  <link rel="alternate" hreflang="en" href="https://mexc.com/en/news/1057200">
+  <link rel="alternate" hreflang="en-TR" href="https://mexc.com/en-TR/news/1057200">  <!-- robots 禁止 -->
+  <link rel="alternate" hreflang="bg-BG" href="https://mexc.com/bg-BG/news/1057200">  <!-- 404 -->
+  <link rel="alternate" hreflang="de" href="https://mexc.com/de/news/1057200">       <!-- 仍是英文 -->
+  <link rel="alternate" hreflang="x-default" href="https://mexc.com/en/news/1057200">
+
+  <!-- raw HTML 中没有 NewsArticle JSON-LD（CSR 注入）— 触发 jsonld-csr-only -->
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/news">News</a>
+      <a href="/news/tag/sec">SEC</a>  <!-- 问题 5: 标签错配（正文是 fintech/AI，标签是 SEC）-->
+      <a href="/news/tag/lending">Lending</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h1>Techsslaash Review: Pros and Cons of New Creator Platform</h1>
+
+      <!-- 问题 6: 缺作者 bio（转载移除了原作者 Max Clark 信息）-->
+      <p class="byline">Published 2026-Q1</p>
+
+      <!-- 问题 7: PROS ticker 自动识别错配 -->
+      <div class="ticker-widget" data-symbol="PROS">
+        <span>PROS Price: $0.42</span>
+        <a href="/trade/PROS_USDT" class="cta-button">Buy PROS Now</a>
+      </div>
+
+      <section class="content">
+        <p>
+          Techsslaash is a new fintech creator platform that helps content creators monetize.
+          The platform offers SEO guest posting, link building, and creator monetization tools.
+        </p>
+
+        <h2>Pros and Cons</h2>
+
+        <h3>Pros</h3>
+        <ul>
+          <li>Easy onboarding</li>
+          <li>Multiple payout options</li>
+          <li>Good customer support</li>
+        </ul>
+
+        <h3>Cons</h3>
+        <ul>
+          <li>Limited geographic availability</li>
+          <li>High fees compared to competitors</li>
+        </ul>
+
+        <!-- 问题 1: 转载来源链接但无原创增量 -->
+        <p class="source">
+          Source: <a href="https://blockchainreporter.net/techsslaash-review/">BlockchainReporter</a>
+        </p>
+
+        <!-- 缺：FAQ / 目录 / 风险提示 / 编辑评审 / BYDFi 视角 -->
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <p>Contact: support@mexc.com</p>  <!-- 与 JSON-LD 中的 copyrightNotice 邮箱不一致 -->
+  </footer>
+
+  <!-- JSON-LD 在 CSR 后才注入（问题 4: jsonld-csr-only）-->
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var ldScript = document.createElement('script');
+      ldScript.type = 'application/ld+json';
+      ldScript.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": "Techsslaash Review: Pros and Cons of New Creator Platform",
+        "datePublished": "2026-01-15",
+        "author": {
+          "@type": "Person",
+          "name": "MEXC Editorial"  // 问题 6: 原作者 Max Clark 信息被移除
+        },
+        "copyrightNotice": {
+          "@type": "CopyrightNotice",
+          "email": "legal@mexc.com"  // 问题: 与 footer 的 support@mexc.com 不一致
+        },
+        // 问题 3: AggregateRating 但页面无评分组件
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "10234"
+        },
+        // 问题 7: relatedLink 指向 PROS 价格页（与文章主题无关）
+        "relatedLink": [
+          "https://mexc.com/price/PROS",
+          "https://mexc.com/trade/PROS_USDT"
+        ],
+        "image": "" // 缺图片
+      });
+      document.head.appendChild(ldScript);
+    });
+  </script>
+</body>
+</html>

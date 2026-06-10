@@ -1,0 +1,149 @@
+# URL 健康度规则
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "URL 结构 / 重定向 / 参数 / 大小写 / orphan pages 检测"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+
+rules:
+
+  - id: shared.url.redirect-chain-too-long
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.redirect_chain_length
+      inputs: [url, redirect_history]
+      args:
+        max_chain_length: 3
+        warn_chain_length: 2
+    patch_hint:
+      template: patches/flatten_redirect_chain.diff.j2
+      priority: P1
+    bydfi_business_impact: |
+      重定向链过长浪费 crawl budget + 损耗 PageRank。
+    tags: [url, redirect, technical-baseline]
+
+  - id: shared.url.redirect-loop
+    source: google-search-central
+    severity: blocker
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.redirect_loop_check
+      inputs: [url, redirect_history]
+    bydfi_business_impact: |
+      重定向循环让页面无法访问。
+    tags: [url, redirect, critical]
+
+  - id: shared.url.parameter-bloat
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.parameter_bloat_check
+      inputs: [url, query_parameters]
+      args:
+        max_param_count: 5
+        red_flag_params: [utm_, sessionid, _ga, fbclid, gclid]
+        require_canonical_for_param_pages: true
+    bydfi_business_impact: |
+      带追踪参数的 URL 不应被索引。BYDFi 必须 canonical 到无参版本。
+    tags: [url, parameters]
+
+  - id: shared.url.case-inconsistency
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.case_normalization_check
+      inputs: [url, sibling_urls]
+    bydfi_business_impact: |
+      /Tools 和 /tools 应该 301 到统一小写版本。
+    tags: [url, case]
+
+  - id: shared.url.trailing-slash-inconsistency
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.trailing_slash_check
+      inputs: [url, sibling_urls, http_response_per_variant]
+    bydfi_business_impact: |
+      /tools/ 和 /tools 必须统一（任选其一，301 另一个）。
+    tags: [url, trailing-slash]
+
+  - id: shared.url.orphan-page
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+      commands: [watch]
+    detector:
+      type: hard_rule
+      fn: detectors.url.orphan_check
+      inputs: [url, internal_link_graph]
+      args:
+        min_inbound_internal_links: 1
+    bydfi_business_impact: |
+      站内没有任何页面链接的"孤儿页"难以被 Googlebot 发现。
+      可能在 sitemap 里但无内链 = 权重 0。
+    tags: [url, internal-linking, orphan]
+
+  - id: shared.url.broken-internal-link
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.broken_internal_link_check
+      inputs: [internal_links, fetched_status_per_link]
+    patch_hint:
+      template: patches/fix_broken_links.diff.j2
+      priority: P1
+    bydfi_business_impact: |
+      站内死链浪费 crawl budget + 影响用户体验。
+    tags: [url, broken-link]
+
+  - id: shared.url.deep-url-structure
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.url.depth_check
+      inputs: [url]
+      args:
+        max_path_depth: 5
+    bydfi_business_impact: |
+      `/en/learn/futures/strategies/advanced/risk-management/` 这种 6+ 层深度
+      在 Google 看来权重很弱。
+    tags: [url, depth, ia]

@@ -1,0 +1,164 @@
+# Google E-E-A-T（Experience / Expertise / Authoritativeness / Trustworthiness）
+# 创建：2026-06-10
+# 对标 Will 知识库 01-帮助性内容与E-E-A-T.md，但更深 BYDFi 业务对齐
+
+file_version: "1.0"
+file_purpose: "E-E-A-T 信号检测，特别针对 YMYL 金融内容"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+last_synced_with_google: 2026-05-28
+
+source_doc:
+  url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+  last_updated: 2025-12-18
+  pulled_at: 2026-06-10
+
+rules:
+
+  - id: google.eeat.author-attribution-missing
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+    severity: high
+    confidence_default: 0.92
+    applies_to:
+      page_types: [news, blog, learn, support, questions, faq, crypto-review]
+      platforms: [google, bing, bydfi]
+      locales: [all]
+      commands: [audit, gate]
+    detector:
+      type: hybrid
+      fn: detectors.eeat.author_signal
+      inputs: [jsonld, visible_text, dom_metadata]
+      args:
+        required_signals_any_of:
+          - jsonld.author.name + jsonld.author.url
+          - visible_byline + clickable_author_profile
+          - meta[name=author]
+        ymyl_extra_required:
+          - author_bio_section
+          - author_credentials
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/eeat_author_judge.md
+      model: haiku
+    patch_hint:
+      template: patches/add_author_metadata.diff.j2
+      priority: P1
+      auto_apply: yes_with_diff_preview
+    fixtures:
+      positive: fixtures/no-author-financial-page.html
+      negative: fixtures/good-author-page.html
+    bydfi_business_impact: |
+      对 BYDFi 的 /learn /support /questions /crypto-review 频道必须严格执行。
+      尤其交易策略 / 评测 / 风险讲解类，作者权威性直接影响 Google 排名。
+
+      MEXC 事故起因之一就是移除了原作者 Max Clark 的 bio。
+    tags: [eeat, ymyl, fintech]
+
+  - id: google.eeat.first-hand-experience-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.78
+    applies_to:
+      page_types: [crypto-review, learn, support]
+      platforms: [google, bydfi]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/first_hand_experience_judge.md
+      model: sonnet
+      inputs: [visible_text, page_purpose]
+      args:
+        signals_to_detect:
+          - 第一人称叙述
+          - 实际操作截图
+          - 平台特定数据/事实
+          - 个人测试结论
+    bydfi_business_impact: |
+      "Experience" 在 E-E-A-T 中越来越重要（Google 2024 起加强）。
+      BYDFi 的 /crypto-review 类页面必须证明"我们真用过"，而不是堆 specifications。
+    tags: [eeat, experience, content-depth]
+
+  - id: google.eeat.publication-date-missing-or-stale
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/appearance/publication-dates
+    severity: medium
+    confidence_default: 0.96
+    applies_to:
+      page_types: [news, blog, learn, support, questions]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.eeat.publication_dates
+      inputs: [jsonld, visible_text, headers]
+      args:
+        required: [datePublished]
+        recommended: [dateModified]
+        ymyl_max_stale_months: 12
+        check_consistency_jsonld_vs_visible: true
+    patch_hint:
+      template: patches/add_publication_dates.diff.j2
+      priority: P1
+      auto_apply: yes_with_diff_preview
+    bydfi_business_impact: |
+      金融内容超过 12 个月未更新会被 Google 视为 stale。
+      日期必须 JSON-LD + 可见文本 + HTTP header 三处一致（MEXC 事故曾出现日期不一致）。
+    tags: [eeat, freshness, ymyl]
+
+  - id: google.eeat.fake-freshness-pattern
+    source: google-spam-policy
+    source_url: https://developers.google.com/search/docs/essentials/spam-policies
+    severity: high
+    confidence_default: 0.75
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/fake_freshness_judge.md
+      model: sonnet
+      inputs: [date_modified_history, content_hash_history, visible_text]
+    bydfi_business_impact: |
+      Google 明确禁止"假新鲜"：只改日期不改内容、机械化更新、为常新而常新。
+      BYDFi 不能用 cron 脚本周期性触发 dateModified 但不改内容。
+    tags: [eeat, spam-risk, helpful-content]
+
+  - id: google.eeat.thin-content-vs-serp
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.72
+    applies_to:
+      page_types: [tools, calculator, learn, price]
+      platforms: [google]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/thin-content-vs-serp.md
+      model: sonnet
+      inputs: [visible_text, page_purpose, target_keyword]
+      args:
+        comparison_signals:
+          - 是否比同 SERP 其他结果有实质增量
+          - 是否有原创信息
+          - 是否完整描述
+          - 是否清晰标题
+    bydfi_business_impact: |
+      工具页（liquidation calculator / futures calculator 等）不能只放工具壳。
+      必须有 PRD §9 工具页内容结构：工具+解释+案例+FAQ。
+    tags: [eeat, helpful-content, thin-content]
+
+  - id: google.eeat.audience-clarity-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to:
+      page_types: [learn, support, faq, crypto-review]
+      platforms: [google, bydfi]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/audience_clarity_judge.md
+      model: haiku
+      inputs: [visible_text, title, h1, page_purpose]
+    bydfi_business_impact: |
+      Google 要求"以用户为中心的内容应有明确受众"。
+      BYDFi 教育内容必须明示是给"新手 / 高频交易者 / 机构 / 韩国用户"等具体受众。
+    tags: [eeat, audience, helpful-content]

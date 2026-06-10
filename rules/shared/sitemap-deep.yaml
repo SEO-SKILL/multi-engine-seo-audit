@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.sitemap.news-sitemap-missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to: {page_types: [domain], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.sitemap.news_sitemap_check, inputs: [sitemaps]}
+    bydfi_business_impact: "新闻类站点应有独立 sitemap-news.xml"
+    tags: [sitemap, news]
+
+  - id: shared.sitemap.image-sitemap-missing
+    source: google-search-central
+    severity: info
+    confidence_default: 0.90
+    applies_to: {page_types: [domain], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.sitemap.image_sitemap_check, inputs: [sitemaps]}
+    bydfi_business_impact: "图片 SEO 站点应有 sitemap-images.xml"
+    tags: [sitemap, image]
+
+  - id: shared.sitemap.video-sitemap-missing
+    source: google-search-central
+    severity: info
+    confidence_default: 0.90
+    applies_to: {page_types: [domain], platforms: [shared, google]}
+    detector: {type: hard_rule, fn: detectors.sitemap.video_sitemap_check, inputs: [sitemaps]}
+    bydfi_business_impact: "视频内容应有 sitemap-videos.xml"
+    tags: [sitemap, video]
+
+  - id: shared.sitemap.indexnow-not-pinged
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [domain], platforms: [bing, shared]}
+    detector: {type: external_api, fn: integrations.bing.indexnow_ping_check, inputs: [domain]}
+    bydfi_business_impact: "Bing IndexNow 协议实时通知新页面"
+    tags: [sitemap, indexnow, bing]

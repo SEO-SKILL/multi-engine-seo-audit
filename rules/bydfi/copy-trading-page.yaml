@@ -1,0 +1,40 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: bydfi.copy.trader-roi-display
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [copy-trading], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.roi_display_check, inputs: [page_content]}
+    bydfi_business_impact: "跟单榜单 ROI 必须含时间范围 + 风险提示，不能只显示高收益"
+    tags: [bydfi, copy-trading, compliance, regulatory]
+    human_review_required: true
+
+  - id: bydfi.copy.past-performance-disclaimer
+    source: bydfi-compliance
+    severity: blocker
+    confidence_default: 0.95
+    applies_to: {page_types: [copy-trading], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.past_performance_disclaimer_check, inputs: [page_content]}
+    bydfi_business_impact: "'过往收益不代表未来表现' 在多国合规法规中是硬要求"
+    tags: [bydfi, copy-trading, regulatory]
+
+  - id: bydfi.copy.max-drawdown-required
+    source: bydfi-compliance
+    severity: high
+    confidence_default: 0.90
+    applies_to: {page_types: [copy-trading], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.max_drawdown_check, inputs: [page_content]}
+    bydfi_business_impact: "交易员页面必须显示最大回撤 + 胜率（透明度）"
+    tags: [bydfi, copy-trading, transparency]
+
+  - id: bydfi.copy.copy-fee-disclosure
+    source: bydfi-compliance
+    severity: medium
+    confidence_default: 0.92
+    applies_to: {page_types: [copy-trading], platforms: [bydfi]}
+    detector: {type: hard_rule, fn: detectors.bydfi.copy_fee_check, inputs: [page_content]}
+    bydfi_business_impact: "跟单费用结构必须透明"
+    tags: [bydfi, copy-trading, fees]

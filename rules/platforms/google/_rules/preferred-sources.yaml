@@ -1,0 +1,21 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: google.preferred.publisher-signals-weak
+    source: google-search-central
+    severity: low
+    confidence_default: 0.75
+    applies_to: {page_types: [news], platforms: [google]}
+    detector: {type: llm_judge, prompt_template: prompts/preferred_source_judge.md, model: haiku}
+    bydfi_business_impact: "首选来源扩展到所有支持语言 (2026-05 更新)"
+    tags: [preferred-source, news]
+
+  - id: google.preferred.original-reporting-low
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to: {page_types: [news], platforms: [google]}
+    detector: {type: llm_judge, prompt_template: prompts/original_reporting_judge.md, model: sonnet}
+    bydfi_business_impact: "原创报道（独立采访 / 一手数据 / 独家分析）= 首选来源信号"
+    tags: [preferred-source, originality]

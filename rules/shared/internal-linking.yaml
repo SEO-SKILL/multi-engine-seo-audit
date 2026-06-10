@@ -1,0 +1,88 @@
+# 内链结构 + 锚文本 规则
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.internal-link.anchor-text-keyword-stuffing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.anchor_text_distribution
+      inputs: [internal_links]
+      args:
+        max_exact_match_anchor_ratio: 0.30
+    bydfi_business_impact: |
+      锚文本过度精确匹配关键词 = Google 视为操纵。
+      BYDFi 内链应混用品牌锚 / 关键词锚 / 通用锚（"了解更多"）。
+    tags: [internal-linking, anchor-text]
+
+  - id: shared.internal-link.click-depth-too-deep
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.click_depth_check
+      inputs: [page_url, site_graph]
+      args:
+        max_click_depth_from_homepage: 4
+    bydfi_business_impact: |
+      重要页面距首页 > 4 跳 = 权重弱，难索引。
+      BYDFi 工具页应在首页 navigation / footer 直链。
+    tags: [internal-linking, depth]
+
+  - id: shared.internal-link.dead-link
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.dead_link_check
+      inputs: [internal_links, fetched_status]
+    patch_hint:
+      template: patches/fix_dead_internal_links.diff.j2
+      priority: P1
+    tags: [internal-linking, dead-link]
+
+  - id: shared.internal-link.no-follow-on-internal
+    source: google-search-central
+    severity: low
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.internal_nofollow_check
+      inputs: [internal_links]
+    bydfi_business_impact: |
+      内链不应该带 nofollow（除非是登录页 / 用户私人页）。
+      过度 nofollow = 浪费权重传递。
+    tags: [internal-linking, nofollow]
+
+  - id: shared.internal-link.cluster-orphan
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [shared]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.cluster_isolation_check
+      inputs: [page_url, internal_link_graph, topic_clusters]
+    bydfi_business_impact: |
+      工具页 cluster / 学习页 cluster 之间应该有交叉内链。
+      孤立的 cluster 让站点主题信号弱。
+    tags: [internal-linking, cluster]

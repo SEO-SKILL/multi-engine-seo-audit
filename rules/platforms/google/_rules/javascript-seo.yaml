@@ -1,0 +1,67 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics
+
+rules:
+  - id: google.js.hydration-flash
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.hydration_flash_check
+      inputs: [raw_html, rendered_dom, hydration_timing]
+    bydfi_business_impact: |
+      React/Next.js hydration 失败导致 Googlebot 看到骨架。
+      关键内容必须 SSR / static export。
+    tags: [javascript, hydration]
+
+  - id: google.js.client-side-routing-issues
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.82
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.spa_routing_check
+      inputs: [url_set, internal_navigation]
+    bydfi_business_impact: |
+      SPA 路由如果不用 History API，Googlebot 抓不到子页。
+    tags: [javascript, spa-routing]
+
+  - id: google.js.fragment-link-broken
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to:
+      page_types: [learn, support, faq]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.fragment_link_check
+      inputs: [page_content, anchors, js_behavior]
+    bydfi_business_impact: |
+      Google 搜索摘要深层链接（带 #fragment）必须能跳到正确位置。
+      前端不能在加载时移除 #fragment。
+    tags: [javascript, fragment]
+
+  - id: google.js.lazy-load-blocks-content
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.83
+    applies_to:
+      page_types: [news, learn, blog]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.lazy_load_check
+      inputs: [rendered_dom, lazy_loaded_content]
+    bydfi_business_impact: |
+      正文 lazy load 需要确保 Googlebot 能触发 → 看到完整内容。
+    tags: [javascript, lazy-load]

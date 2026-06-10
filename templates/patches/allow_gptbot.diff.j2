@@ -1,0 +1,40 @@
+--- a/robots.txt
++++ b/robots.txt
+@@ -X,Y +X,Y @@
++# Allow OpenAI ChatGPT Search bot (read-only, not training)
++User-agent: OAI-SearchBot
++Allow: /
++
++User-agent: ChatGPT-User
++Allow: /
++
++# Block GPTBot (training) — change to Allow if you want OpenAI to train on content
++User-agent: GPTBot
++Disallow: /
++
++# Allow Claude
++User-agent: ClaudeBot
++Allow: /
++
++User-agent: anthropic-ai
++Allow: /
++
++# Allow Perplexity
++User-agent: PerplexityBot
++Allow: /
++
++# Google-Extended for Gemini training — change to Allow if you want Google to train
++User-agent: Google-Extended
++Disallow: /
+
+# Patch: AI 引擎 bot 访问策略
+# Rules:
+#   - bing.ai.gptbot-allowed
+#   - bing.ai.claude-bot-allowed
+#   - bing.ai.perplexity-bot-allowed
+#   - chatgpt.indexability.bot-allowed
+#   - claude.indexability.bot-allowed
+#   - gemini.indexability.google-extended-decision
+# Priority: P1
+# 注意：训练 bot（GPTBot / Google-Extended）默认 Disallow
+#       搜索 bot 默认 Allow（保留 BYDFi 在 AI 搜索中的可见性）

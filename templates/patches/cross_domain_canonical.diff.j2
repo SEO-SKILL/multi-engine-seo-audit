@@ -1,0 +1,13 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+-  <link rel="canonical" href="{{ self_url }}">
++  <link rel="canonical" href="{{ original_source_url }}">
+
+# Patch: 转载内容 cross-domain canonical 到原文
+# Rule: google.canonical.self-canonical-on-republished
+# Priority: P0
+# 注意：此 patch 需要人工审核
+# 替代方案：
+# 1. noindex 此页（保留站内权重但不参与 Google 排名）
+# 2. 补充原创增量 ≥ 50%（编辑评审 / 风险边界 / 事实核验 / FAQ / 原作者 bio）

@@ -1,0 +1,48 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.schema.faqpage-deprecated
+    source: google-search-central
+    severity: low
+    confidence_default: 0.99
+    applies_to: {page_types: [faq, learn, support], platforms: [google, shared]}
+    detector: {type: hard_rule, fn: detectors.schema.deprecated_faqpage_check, inputs: [jsonld]}
+    bydfi_business_impact: "FAQ 富结果 2026-05 弃用（参考 Will 知识库），保留 schema 但不再有富结果"
+    tags: [schema, deprecation, faq]
+
+  - id: shared.schema.howto-deprecated
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to: {page_types: [learn, support], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.schema.deprecated_howto_check, inputs: [jsonld]}
+    bydfi_business_impact: "HowTo 富结果对桌面已限制，仍可保留 schema"
+    tags: [schema, deprecation, howto]
+
+  - id: shared.schema.breadcrumb-position-non-sequential
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.97
+    applies_to: {page_types: [all], platforms: [google, shared]}
+    detector: {type: hard_rule, fn: detectors.schema.breadcrumb_position_check, inputs: [jsonld]}
+    bydfi_business_impact: "BreadcrumbList position 必须连续 1,2,3..."
+    tags: [schema, breadcrumb]
+
+  - id: shared.schema.json-ld-syntax-error
+    source: google-search-central
+    severity: high
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.schema.syntax_validate, inputs: [jsonld_raw]}
+    bydfi_business_impact: "JSON-LD 语法错误 = Google 完全忽略 schema"
+    tags: [schema, syntax]
+
+  - id: shared.schema.multiple-products-on-same-page
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to: {page_types: [product, compare], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.schema.multiple_products_check, inputs: [jsonld]}
+    bydfi_business_impact: "同页多 Product 需用 ItemList 包装"
+    tags: [schema, product]

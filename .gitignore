@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual env
+.venv/
+venv/
+
+# uv
+uv.lock
+
+# Snapshots / cache（仓库不存运行时数据）
+snapshots/*/
+cache/*/
+!snapshots/.gitkeep
+!cache/.gitkeep
+
+# Secrets
+.env
+.env.local
+*.key
+*.pem
+secrets/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store

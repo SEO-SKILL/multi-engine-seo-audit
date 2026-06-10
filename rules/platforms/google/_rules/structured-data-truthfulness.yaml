@@ -1,0 +1,177 @@
+# Google 结构化数据真实性校验
+# 创建：2026-06-10
+# ⭐ Will 知识库没有这一维度——我们独有
+# 直接对标 MEXC 事故 L04：schema 字段虚假 + 仅 CSR 渲染
+
+file_version: "1.0"
+file_purpose: "JSON-LD 字段必须反映页面可见内容，否则触发结构化数据人工处置"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/structured-data/sd-policies
+  last_updated: 2025-11-20
+  pulled_at: 2026-06-10
+
+rules:
+
+  - id: google.schema.field-not-grounded-in-visible-content
+    source: bydfi-incident
+    severity: blocker
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.schema.field_grounding
+      inputs: [jsonld_parsed, visible_text, dom_screenshot]
+      args:
+        ground_required_for:
+          - AggregateRating.ratingValue
+          - AggregateRating.reviewCount
+          - Product.offers.price
+          - Product.offers.availability
+          - Article.author.name
+          - Article.datePublished
+          - Article.dateModified
+          - Event.startDate
+          - Recipe.cookTime
+          - FAQ.mainEntity.acceptedAnswer
+        grounding_method:
+          - exact_text_match
+          - semantic_match_via_llm
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.85
+      prompt_template: prompts/schema_grounding_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/remove_ungrounded_schema_fields.diff.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    fixtures:
+      positive: fixtures/schema-fake-rating.html
+      negative: fixtures/schema-grounded.html
+    bydfi_business_impact: |
+      MEXC 事故 L04 核心问题：schema 塞了 MEXC App 的 AggregateRating，但页面没有评分组件。
+      Google 政策：所有 JSON-LD 字段必须对应可见内容，否则视为误导，触发人工处置。
+    tags: [bydfi-critical, schema, mexc-incident, structured-data-manual-action]
+    human_review_required: true
+
+  - id: google.schema.jsonld-csr-only
+    source: bydfi-incident
+    severity: high
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.schema.ssr_vs_csr_diff
+      inputs: [raw_html, rendered_dom]
+      args:
+        check_schema_types: [Article, NewsArticle, Product, Organization, BreadcrumbList, FAQPage]
+        ssr_required: true
+    patch_hint:
+      template: patches/move_jsonld_to_ssr.diff.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    bydfi_business_impact: |
+      MEXC 事故核心：raw HTML 没有 NewsArticle JSON-LD，仅渲染后出现。
+      Googlebot 抓取时可能看不到 schema。所有关键 schema 类型必须 SSR 输出。
+    tags: [bydfi-critical, schema, ssr-required]
+
+  - id: google.schema.aggregaterating-without-review-component
+    source: google-spam-policy
+    source_url: https://developers.google.com/search/docs/appearance/structured-data/review-snippet
+    severity: high
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.schema.aggregaterating_review_grounding
+      inputs: [jsonld_parsed, visible_text, dom_components]
+      args:
+        require_visible_review_component: true
+        review_component_signals:
+          - dom 中有 review/comment 列表
+          - 可见 average rating star
+          - 用户可见的 review count
+    bydfi_business_impact: |
+      Google 明确规定 AggregateRating 必须对应页面可见的 review/rating 组件。
+      光放 schema 不放可见组件 = 操纵富结果 = 人工处置。
+    tags: [schema, aggregaterating, review-snippet]
+
+  - id: google.schema.copyrightnotice-inconsistent
+    source: bydfi-incident
+    severity: medium
+    confidence_default: 0.94
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.schema.copyrightnotice_consistency
+      inputs: [jsonld_parsed, visible_text, page_footer]
+      args:
+        check_fields:
+          - copyrightNotice.copyrightHolder.name
+          - copyrightNotice.email
+          - copyrightNotice.creditedAgent
+    bydfi_business_impact: |
+      MEXC 事故 L04 子问题：copyrightNotice 邮箱和页面可见邮箱不一致。
+      声明不一致降低富结果资格。
+    tags: [schema, mexc-incident, consistency]
+
+  - id: google.schema.relatedlink-topic-mismatch
+    source: bydfi-incident
+    severity: high
+    confidence_default: 0.86
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google, bing]
+    detector:
+      type: hybrid
+      fn: detectors.schema.relatedlink_topic_match
+      inputs: [jsonld_parsed, page_topic_classification, related_link_targets]
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/schema_relatedlink_topic_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/remove_unrelated_schema_links.diff.j2
+      priority: P0
+    bydfi_business_impact: |
+      MEXC 事故 L02 子问题：schema relatedLink 指向 PROS 价格页，
+      但页面主题是 Techsslaash 评测。
+      schema relatedLink 必须与页面主题语义一致。
+    tags: [bydfi-critical, schema, mexc-incident, ticker-mismatch]
+
+  - id: google.schema.deprecated-types
+    source: google-search-central
+    source_url: https://developers.google.com/search/blog/2026/01/structured-data-deprecations
+    severity: low
+    confidence_default: 0.98
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.schema.deprecated_types_check
+      inputs: [jsonld_parsed]
+      args:
+        deprecated_types:
+          - FAQPage  # 2026-05 后 FAQ 富结果弃用（参考 Will 知识库更新日志）
+          # 其他弃用类型按 daily-pull-agent 自动更新
+    patch_hint:
+      template: patches/remove_deprecated_schema.diff.j2
+      priority: P3
+    bydfi_business_impact: |
+      FAQ 富结果已弃用，继续保留 FAQPage schema 不会处置但占资源。
+    tags: [schema, deprecation]

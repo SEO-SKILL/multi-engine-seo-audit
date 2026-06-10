@@ -1,0 +1,207 @@
+# 规则元 Schema — 定义所有规则文件本身必须满足的结构
+# 用途：rule loader 启动时用这个 schema 校验每个 *.yaml 是否合法
+# 创建：2026-06-10
+
+schema_version: "1.0"
+
+# 单条规则的字段定义
+rule:
+  required_fields:
+    - id              # 唯一规则 ID，格式：<scope>.<category>.<name>
+    - source          # 规则来源类型
+    - severity        # 严重程度（参见 severity-definition.yaml）
+    - applies_to      # 应用范围
+    - detector        # 检测器（硬规则函数或 LLM judge）
+
+  optional_fields:
+    - source_url             # 官方文档链接
+    - source_published_at    # 官方文档最后更新时间
+    - pulled_at              # 我方最后核实时间
+    - confidence_default     # 默认置信度（参见 confidence-calibration.yaml）
+    - llm_judge              # LLM 复核配置
+    - patch_hint             # 修复 patch 模板
+    - fixtures               # 测试 fixture 路径
+    - bydfi_business_impact  # 对 BYDFi 业务的具体影响说明
+    - supersedes             # 被本规则替代的旧规则 ID
+    - valid_from             # 规则生效日期
+    - superseded_at          # 规则失效日期
+    - superseded_by          # 替代本规则的新规则 ID
+    - rules_git_sha          # 引入时的 git sha（自动填）
+    - human_review_required  # 是否必须人工审核（默认 false）
+    - tags                   # 标签数组（便于检索）
+
+# 字段类型约束
+fields:
+  id:
+    type: string
+    pattern: "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
+    examples:
+      - bydfi.l02.ticker-context-mismatch
+      - google.canonical.cross-domain-required
+      - naver.c-rank.korean-content-required
+      - shared.url.redirect-chain-too-long
+
+  source:
+    type: enum
+    values:
+      - bydfi-incident          # BYDFi 内部事故复盘（最高权威）
+      - bydfi-compliance        # BYDFi 合规要求
+      - google-search-central   # Google 官方 Search Central
+      - google-status-dashboard # Google Search Status Dashboard
+      - google-spam-policy      # Google 垃圾内容政策
+      - bing-webmaster          # Bing Webmaster Tools 官方
+      - naver-search-advisor    # Naver Search Advisor 官方
+      - yandex-webmaster        # Yandex Webmaster 官方
+      - llm-engine-docs         # LLM 引擎官方文档（OpenAI/Anthropic/Perplexity）
+      - industry-incident       # 行业事故案例（MEXC/Bybit/KuCoin 等）
+      - third-party-research    # 第三方研究（仅作 alert，不作硬规则）
+      - internal-llm-extraction # LLM 提取（需人工 review 后才能 promote）
+
+  severity:
+    type: enum
+    values: [blocker, high, medium, low, info]
+    # 详见 severity-definition.yaml
+
+  confidence_default:
+    type: float
+    range: [0.0, 1.0]
+    bucket_thresholds:
+      low: 0.0-0.5
+      medium: 0.5-0.8
+      high: 0.8-1.0
+    # 详见 confidence-calibration.yaml
+
+  applies_to:
+    type: object
+    fields:
+      page_types:
+        type: array
+        items_enum:
+          - all
+          - homepage
+          - landing
+          - product
+          - tools
+          - price
+          - how-to-buy
+          - learn
+          - support
+          - questions
+          - news
+          - blog
+          - faq
+          - calculator
+          - converter
+          - funding-rate
+          - liquidation
+          - copy-trading
+          - bot
+          - compare
+          - region
+      platforms:
+        type: array
+        items_enum: [google, bing, naver, yandex, baidu, duckduckgo, llm-engines, shared, bydfi]
+      locales:
+        type: array
+        items_enum: [en, zh-CN, ja, ko, vi, tr, pt, es, ru, all]
+      commands:
+        type: array
+        items_enum: [audit, gate, compare, watch, all]
+
+  detector:
+    type: object
+    one_of: [hard_rule, llm_judge, hybrid, external_api]
+    fields:
+      type:
+        type: enum
+        values: [hard_rule, llm_judge, hybrid, external_api]
+      fn:
+        type: string          # 函数路径，如 detectors.canonical.is_self_canonical
+      prompt_template:
+        type: string          # LLM judge 的 prompt 模板路径
+      model:
+        type: enum
+        values: [haiku, sonnet, opus]
+      inputs:
+        type: array
+      args:
+        type: object
+
+  llm_judge:
+    type: object
+    description: "硬规则置信度不足时升级 LLM 复核"
+    fields:
+      enabled: boolean
+      when: string             # 触发条件表达式
+      prompt_template: string
+      model: enum [haiku, sonnet, opus]
+      max_tokens: integer
+
+  patch_hint:
+    type: object
+    fields:
+      template: string         # patch 模板路径
+      priority: enum [P0, P1, P2, P3]
+      auto_apply: boolean      # 是否自动应用
+      requires_review: boolean
+
+  fixtures:
+    type: object
+    fields:
+      positive: string         # 应该触发本规则的 fixture
+      negative: string         # 不应触发本规则的 fixture
+      edge_cases: array        # 边界情况 fixture
+
+# 校验约束
+constraints:
+  id_uniqueness: global         # 全局唯一
+  source_url_required_when:
+    - source: google-search-central
+    - source: google-spam-policy
+    - source: bing-webmaster
+    - source: naver-search-advisor
+    - source: yandex-webmaster
+  human_review_required_when:
+    - severity: blocker
+    - source: internal-llm-extraction
+  detector_required: true       # 不能只有文字描述
+  fixtures_required_when:
+    - severity: blocker
+    - severity: high
+
+# 规则文件的整体结构
+file_structure:
+  header:
+    fields:
+      file_version: string
+      file_purpose: string
+      maintainer: string
+      last_reviewed_at: date
+  rules:
+    type: array
+    items: rule
+
+# 元规则文件示例（不是真实规则，仅作 schema 引用）
+example_rule:
+  id: example.demo.minimal
+  source: google-search-central
+  source_url: https://example.com
+  source_published_at: 2026-01-01
+  pulled_at: 2026-06-10
+  severity: medium
+  confidence_default: 0.85
+  applies_to:
+    page_types: [all]
+    platforms: [google]
+    locales: [all]
+    commands: [audit, gate]
+  detector:
+    type: hard_rule
+    fn: detectors.example.demo
+    inputs: [raw_html]
+    args:
+      threshold: 100
+  fixtures:
+    positive: fixtures/example-positive.html
+    negative: fixtures/example-negative.html
+  tags: [example, demo]

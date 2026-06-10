@@ -1,0 +1,132 @@
+# 置信度（Confidence）校准 — 0-1 浮点，3 个 bucket
+# 用途：每条 finding 必须带 confidence；snapshot test 比 bucket 而不是精确值
+# 创建：2026-06-10
+
+schema_version: "1.0"
+
+# 3 个 bucket 定义（基于 Codex 调研 §8 工程建议）
+buckets:
+
+  low:
+    range_min: 0.0
+    range_max_exclusive: 0.5
+    name: 低置信
+    icon: ❓
+    behavior:
+      action: needs_human_review     # 必须人工复核
+      gate_decision: REQUEST_REVIEW
+      autopatch: false
+      report_inclusion: 列入但标 [需复核]
+
+  medium:
+    range_min: 0.5
+    range_max_exclusive: 0.8
+    name: 中置信
+    icon: ⚠️
+    behavior:
+      action: include_with_warning
+      gate_decision: BLOCK_IF_SEVERITY_HIGH+
+      autopatch: with_diff_preview
+      report_inclusion: 列入主清单
+
+  high:
+    range_min: 0.8
+    range_max_inclusive: 1.0
+    name: 高置信
+    icon: ✅
+    behavior:
+      action: confident_decision
+      gate_decision: BLOCK_IF_SEVERITY_HIGH+
+      autopatch: yes
+      report_inclusion: 列入并自动 PR
+
+# 不同 source 的默认 confidence baseline
+default_by_source:
+  hard_rule:
+    baseline: 0.95
+    description: "纯函数判定，几乎确定"
+    adjustments:
+      regex_based: -0.1
+      multi_signal_required: -0.05
+
+  llm_judge:
+    baseline: 0.75
+    description: "LLM 单次判断"
+    adjustments:
+      with_cross_llm_validation: +0.15      # 跨 LLM 验证（V2）
+      with_evidence_grounding: +0.10        # 有具体 evidence 引用
+      with_few_shot: +0.05
+      contradicting_models: -0.30           # 跨 LLM 冲突时大幅降置信
+      ambiguous_context: -0.20
+
+  external_api:
+    baseline: 0.90
+    description: "外部 API 数据（GSC/CrUX/Ahrefs）"
+    adjustments:
+      data_age_over_7_days: -0.10
+      sample_size_below_30: -0.15
+
+  industry_incident:
+    baseline: 0.85
+    description: "行业事故案例推断（MEXC 等）"
+
+# 升级策略：何时把 LLM 置信度低的判断升 Sonnet/Opus
+escalation:
+  haiku_to_sonnet:
+    when: confidence < 0.75 AND severity >= medium
+  sonnet_to_opus:
+    when: confidence < 0.65 AND severity >= high AND command == "gate"
+  llm_to_human:
+    when: confidence < 0.50 AND severity == blocker
+
+# snapshot test 比对规则（来自 Codex 调研 §8）
+snapshot_diff_rules:
+  fail_conditions:
+    - lost_blocker_finding              # 丢失 blocker 直接 fail
+    - confidence_bucket_downgrade_on_blocker  # blocker 从 high → medium bucket fail
+
+  warn_conditions:
+    - new_low_or_info_finding            # 新增 low/info 只 warn
+    - confidence_value_diff_within_bucket # bucket 内的浮点差异忽略
+
+  require_human_approve:
+    - severity_changed                   # severity 跨级变化
+    - confidence_bucket_changed_non_blocker # 非 blocker 的 bucket 变化
+    - new_high_severity_finding          # 新增 high
+
+# Cross-LLM 验证置信度提升曲线（V2）
+cross_llm_validation:
+  three_llms_agree:
+    confidence_boost: +0.15
+    severity_lock: true     # severity 锁定不允许降级
+
+  two_llms_agree:
+    confidence_boost: +0.05
+    flag: needs_third_opinion
+
+  all_disagree:
+    confidence_penalty: -0.30
+    flag: requires_human_review
+
+# Confidence calibration 数据收集（self-evolution）
+calibration_feedback:
+  on_user_correction:
+    if_user_marked_误报:
+      adjustment: confidence -= 0.10 for similar findings
+    if_user_marked_准:
+      adjustment: confidence += 0.05 for similar findings
+    if_user_marked_补充:
+      action: spawn new rule candidate
+
+  quarterly_calibration_review:
+    metric: precision @ confidence > 0.8 should be >= 95%
+    action_if_below: 全量降低相关规则的 baseline confidence
+
+# 报告中的 confidence 呈现
+report_display:
+  always_show: true
+  format: "{bucket_icon} {bucket_name} ({value:.2f})"
+  examples:
+    - "✅ 高置信 (0.92)"
+    - "⚠️ 中置信 (0.68)"
+    - "❓ 低置信 (0.42) [需复核]"

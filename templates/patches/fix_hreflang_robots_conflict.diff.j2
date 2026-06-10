@@ -1,0 +1,13 @@
+--- a/{{ file_path }}
++++ b/{{ file_path }}
+@@ -X,Y +X,Y @@
+-  <link rel="alternate" hreflang="{{ blocked_locale }}" href="{{ blocked_url }}">
+
+# Patch: 移除被 robots 禁止的 hreflang alternate
+# Rule: google.hreflang.alternate-blocked-by-robots
+# Priority: P0
+# Reason: alternate URL {{ blocked_url }} 在 robots.txt 中被 Disallow
+# 修复选项：
+# 1. 移除该 alternate（本 patch 默认）
+# 2. 修改 robots.txt 允许此路径
+# Requires human review: true

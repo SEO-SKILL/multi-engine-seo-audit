@@ -1,0 +1,143 @@
+# Google Cloaking 检测
+# 创建：2026-06-10
+# ⭐ Will 知识库没有这一维度——我们独有
+# Cloaking = Googlebot 看到一个版本，用户看到另一个版本
+
+file_version: "1.0"
+file_purpose: "防止 cloaking（无论是有意还是 CDN/GeoIP 误配置导致）"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-10
+source_doc:
+  url: https://developers.google.com/search/docs/essentials/spam-policies#cloaking
+  last_updated: 2025-08-10
+  pulled_at: 2026-06-10
+
+rules:
+
+  - id: google.cloaking.googlebot-vs-user-content-diff
+    source: google-spam-policy
+    source_url: https://developers.google.com/search/docs/essentials/spam-policies#cloaking
+    severity: blocker
+    confidence_default: 0.78
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.cloaking.ua_content_diff
+      inputs: [fetch_results_per_ua]
+      args:
+        ua_profiles:
+          - googlebot_desktop
+          - googlebot_mobile
+          - real_chrome_desktop
+          - real_chrome_mobile
+        diff_dimensions:
+          - main_topic_classification  # LLM 判定的主题是否一致
+          - visible_text_similarity    # 文本相似度
+          - canonical
+          - robots_meta
+          - jsonld_types
+          - h1
+          - main_cta_text
+        thresholds:
+          topic_mismatch: blocker
+          text_similarity_below: 0.7 → high
+          h1_diff: high
+          canonical_diff: blocker
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/cloaking_topic_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/cloaking_remediation.md.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    fixtures:
+      positive: fixtures/cloaking-suspect.html
+      negative: fixtures/normal-multi-ua-page.html
+    bydfi_business_impact: |
+      Cloaking 是 Google 最严重的处置触发项之一，直接进 manual action 黑名单。
+      BYDFi 必须确保 Googlebot 和真实用户看到相同的主题内容。
+
+      高风险场景：
+      - CDN 按 UA 返回不同 cache
+      - GeoIP 错配（Googlebot 在美国 IP，但被识别成其他地区）
+      - A/B test 系统误把 Googlebot 当用户 bucket
+      - 反爬中间件误判 Googlebot
+    tags: [bydfi-critical, cloaking, manual-action-risk]
+    human_review_required: true
+
+  - id: google.cloaking.geoip-mismatch
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.cloaking.geoip_content_diff
+      inputs: [fetch_results_per_region]
+      args:
+        regions: [us-west, us-east, eu-west, asia-pacific, jp, kr]
+        diff_check_signals: [main_topic, canonical, available_products, cta_text]
+    bydfi_business_impact: |
+      BYDFi 9 语言版本可能因 GeoIP 让 Googlebot 看到不同内容。
+      尤其 KR/JP/EU 等监管严格区域，CDN 路由配置错误会触发 cloaking。
+    tags: [cloaking, geoip, multi-region]
+
+  - id: google.cloaking.csr-renders-different-content
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.cloaking.csr_post_render_diff
+      inputs: [raw_html, rendered_dom, googlebot_render_comparison]
+      args:
+        thresholds:
+          text_diff_chars: 5000
+          h1_diff: any
+          canonical_diff: any
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/csr_cloaking_judge.md
+      model: sonnet
+    bydfi_business_impact: |
+      Single Page App 在 hydration 后插入大量新内容可能被视为 cloaking。
+      Googlebot 抓取时若看到的是骨架，而用户看到的是完整内容，差异可能被误判。
+    tags: [cloaking, csr, ssr-recommended]
+
+  - id: google.cloaking.hidden-text-via-css
+    source: google-spam-policy
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.cloaking.hidden_text_check
+      inputs: [rendered_dom, computed_styles]
+      args:
+        red_flags:
+          - "color matches background_color"
+          - "font_size: 0 or 1px"
+          - "position: absolute with left/top: -9999px"
+          - "visibility: hidden + many keywords"
+          - "display: none with high keyword density"
+        whitelist:
+          - "正常使用的 accessibility hidden text (aria-hidden)"
+          - "正常 collapsed dropdown"
+    bydfi_business_impact: |
+      防止前端代码意外塞入隐藏的关键词堆砌（即使开发者无意）。
+      合法的 aria-hidden / 可展开 dropdown 不算 cloaking。
+    tags: [cloaking, hidden-content]

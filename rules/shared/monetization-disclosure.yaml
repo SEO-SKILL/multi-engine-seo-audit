@@ -1,0 +1,30 @@
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+rules:
+  - id: shared.disclosure.ads-not-marked
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.disclosure.ads_marking_check, inputs: [page_ads]}
+    bydfi_business_impact: "广告内容必须明示'广告'/sponsored/promotion"
+    tags: [disclosure, ads]
+
+  - id: shared.disclosure.affiliate-links-marked
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.92
+    applies_to: {page_types: [crypto-review, compare], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.disclosure.affiliate_marking_check, inputs: [external_links]}
+    bydfi_business_impact: "联盟链接 rel='sponsored' 是 Google 政策要求"
+    tags: [disclosure, affiliate]
+
+  - id: shared.disclosure.paid-content-marker
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [news, blog], platforms: [shared]}
+    detector: {type: hard_rule, fn: detectors.disclosure.paid_content_check, inputs: [page_metadata]}
+    bydfi_business_impact: "付费内容应有明确标识"
+    tags: [disclosure, paid]
