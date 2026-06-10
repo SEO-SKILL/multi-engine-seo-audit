@@ -1,0 +1,32 @@
+# 可抓取性页面级最佳组合
+# 创建：2026-06-10
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  canonical_present_and_ssr:  0.30
+  hreflang_with_x_default:    0.20
+  viewport_meta:              0.20
+  robots_meta_not_noindex:    0.30
+
+rules:
+
+  - id: shared.crawlability.page-composite-low
+    source: google-search-central
+    severity: high
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing, naver, yandex, shared]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.composite.crawlability_composite
+      inputs: [raw_html, headers, robots_txt]
+      args:
+        threshold_low: 0.60
+    bydfi_business_impact: |
+      可抓取性综合分 < 0.60 = canonical/hreflang/robots/viewport 多个同时缺失。
+      Google 看不到完整页面 = 不参与排名。
+    tags: [crawlability, composite]

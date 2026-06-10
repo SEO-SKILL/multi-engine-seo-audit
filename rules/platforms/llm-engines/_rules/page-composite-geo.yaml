@@ -1,0 +1,31 @@
+# GEO 页面级组合（B）
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  llms_txt_present:        0.10
+  answerable_chunks_ratio: 0.20
+  fact_citations:          0.20
+  tldr_present:            0.15
+  table_data_present:      0.10
+  list_steps_present:      0.10
+  ai_bots_allowed:         0.15
+
+rules:
+  - id: llm.geo.page-composite-low
+    source: llm-engine-docs
+    severity: low
+    confidence_default: 0.78
+    applies_to:
+      page_types: [learn, support, faq, tools]
+      platforms: [llm-engines]
+    detector:
+      type: hybrid
+      fn: detectors.composite.geo_composite_quality
+      inputs: [raw_html, robots_txt]
+      args:
+        threshold_low: 0.50
+    bydfi_business_impact: |
+      GEO 综合分低 = ChatGPT Search / Perplexity / Gemini 都难引用 BYDFi。
+      LLM 时代新流量入口失守。
+    tags: [geo, composite, llm]

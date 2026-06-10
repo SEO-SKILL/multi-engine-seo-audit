@@ -1,0 +1,30 @@
+# 内链结构页面级组合（B）
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  has_breadcrumb_visible:  0.20
+  anchor_text_diverse:     0.20
+  cluster_links_present:   0.15
+  no_orphan:               0.15
+  no_dead_links:           0.15
+  click_depth_reasonable:  0.15
+
+rules:
+  - id: shared.internal-link.page-composite-low
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.82
+    applies_to:
+      page_types: [news, blog, learn, tools, price]
+      platforms: [google, shared]
+    detector:
+      type: hybrid
+      fn: detectors.composite.internal_linking_composite_quality
+      inputs: [raw_html, site_link_graph]
+      args:
+        threshold_low: 0.55
+    bydfi_business_impact: |
+      内链综合分低 = 站内主题信号弱 + crawl 不通畅。
+      BYDFi 工具页矩阵尤其要看 cluster_links_present。
+    tags: [internal-linking, composite, ia]

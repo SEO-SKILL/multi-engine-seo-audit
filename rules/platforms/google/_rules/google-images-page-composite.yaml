@@ -1,0 +1,68 @@
+# Google Images SEO 页面级最佳组合规则
+# 创建：2026-06-10
+# 来源：https://developers.google.com/search/docs/appearance/google-images?hl=zh-cn
+# 核心理念：不是单点检查，而是「页面图片整体组合」是否符合 Google 最佳实践
+# 战略价值：Kelly 明确指出 — 该 Google 文档本质是"判断页面最佳组合"
+
+file_version: "1.0"
+file_purpose: "图片密集型页面的综合最佳实践评分"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/google-images
+  last_updated: 2026-03-03
+
+# 复合评分权重设计（Google 文档原文重要性映射）
+composite_weights:
+  img_element_used:          0.20  # 必须用 <img>（CSS bg 不索引）
+  alt_complete_not_stuffed:  0.15  # alt 完整且不堆砌
+  modern_format_ratio:       0.10  # WebP/AVIF 占比
+  lazy_loading_used:         0.10  # 首屏外 lazy load
+  responsive_srcset:         0.10  # srcset 自适应
+  filename_meaningful:       0.05
+  picture_fallback_ok:       0.05  # <picture> 必须有 <img> 兜底
+  image_sitemap_exists:      0.10
+  og_image_present:          0.10
+  article_image_in_schema:   0.05
+
+rules:
+
+  - id: google.image.page-composite-low
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/appearance/google-images
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [news, blog, learn, product]
+      platforms: [google, shared]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.composite.image_composite_quality
+      inputs: [raw_html, rendered_html, sitemap_has_images]
+      args:
+        threshold_low: 0.60
+        threshold_pass: 0.80
+    patch_hint:
+      template: patches/image_composite_remediation.md.j2
+      priority: P1
+    bydfi_business_impact: |
+      综合分 < 0.60 = 多个最佳实践同时缺失 → Google Images 流量损失大。
+      报告会输出"最弱环节"，便于定向修复。
+    tags: [image, composite, best-practices]
+
+  - id: google.image.page-composite-weak-link
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [news, blog, learn, product]
+      platforms: [google, shared]
+    detector:
+      type: hybrid
+      fn: detectors.composite.image_composite_quality
+      inputs: [raw_html, rendered_html]
+      args:
+        report_weakest: true
+    bydfi_business_impact: |
+      即使综合分及格，也要修复最弱环节（边际收益高）。
+    tags: [image, composite, weakest-link]

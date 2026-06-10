@@ -64,6 +64,8 @@ class Orchestrator:
         from agents import crawler, technical, semantic, safety, geo, lifecycle, report
 
         crawler_out = await crawler.run(ai)
+        composite_scores = self._compute_composite(crawler_out.artifacts, ai)
+        crawler_out.artifacts["composite_scores"] = composite_scores
         ai2 = ai.model_copy(update={
             "context": Context(snapshots={"crawler": crawler_out.artifacts})
         })
@@ -95,6 +97,28 @@ class Orchestrator:
         report_out = await report.run(report_input)
         outputs.append(report_out)
         return outputs
+
+    def _compute_composite(self, artifacts: dict, ai: AgentInput) -> dict:
+        from detectors import composite as comp
+        raw_html = artifacts.get("raw_html", "")
+        rendered_html = artifacts.get("rendered_html") or raw_html
+        headers = artifacts.get("headers", {})
+        if not raw_html:
+            return {}
+        try:
+            return {
+                "eeat": comp.eeat_composite_quality(raw_html),
+                "schema": comp.schema_composite_quality(raw_html, rendered_html),
+                "crawlability": comp.crawlability_composite(raw_html, headers),
+                "performance": comp.performance_composite_quality(raw_html, http_headers=headers),
+                "internal_linking": comp.internal_linking_composite_quality(raw_html),
+                "geo": comp.geo_composite_quality(raw_html),
+                "multilingual": comp.multilingual_composite_quality(raw_html, locale=ai.target.locale),
+                "image": comp.image_composite_quality(raw_html, rendered_html),
+            }
+        except Exception as e:
+            logger.warning("composite_failed", error=str(e))
+            return {}
 
     def _aggregate(self, ai: AgentInput, outputs: list[AgentOutput]) -> AuditReport:
         all_findings = [f for o in outputs for f in o.findings]

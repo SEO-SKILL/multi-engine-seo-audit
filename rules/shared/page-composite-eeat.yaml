@@ -1,0 +1,58 @@
+# E-E-A-T 页面级最佳组合
+# 创建：2026-06-10
+# 不是单点缺 author，而是 E-E-A-T 整体信号是否完整
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  author_name_jsonld:     0.15
+  author_profile_url:     0.15
+  visible_byline:         0.10
+  date_published:         0.10
+  date_modified:          0.10
+  reviewed_by_present:    0.15
+  external_sources_cited: 0.15
+  organization_schema:    0.10
+
+rules:
+
+  - id: shared.eeat.page-composite-ymyl-fail
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [learn, news, support, questions, crypto-review]
+      platforms: [google, shared, bydfi]
+      commands: [audit, gate]
+    detector:
+      type: hybrid
+      fn: detectors.composite.eeat_composite_quality
+      inputs: [raw_html, content_type]
+      args:
+        ymyl_threshold: 0.70
+        non_ymyl_threshold: 0.50
+    patch_hint:
+      template: patches/eeat_composite_remediation.md.j2
+      priority: P0
+    bydfi_business_impact: |
+      YMYL 金融页 E-E-A-T 综合分 < 0.70 = Google 不会让排到前 10。
+      关键缺失：作者 profile + reviewer + 引用源。
+    tags: [eeat, composite, ymyl]
+
+  - id: shared.eeat.page-composite-weakest-link
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [learn, news, support, questions, crypto-review]
+      platforms: [google, shared]
+    detector:
+      type: hybrid
+      fn: detectors.composite.eeat_composite_quality
+      inputs: [raw_html, content_type]
+      args:
+        report_weakest: true
+    bydfi_business_impact: |
+      E-E-A-T 总分及格但最弱环节明显 → 优先修该环节边际收益最高。
+    tags: [eeat, composite, weakest-link]

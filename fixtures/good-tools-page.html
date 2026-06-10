@@ -18,7 +18,7 @@
   <link rel="alternate" hreflang="ko" href="https://bydfi.com/ko/liquidation-calculator/btc-usdt">
   <link rel="alternate" hreflang="x-default" href="https://bydfi.com/en/liquidation-calculator/btc-usdt">
 
-  <!-- JSON-LD SSR 输出 -->
+  <!-- JSON-LD SSR 输出（含完整 E-E-A-T 信号）-->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -27,6 +27,8 @@
     "description": "Calculate Bitcoin futures liquidation price",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Any",
+    "datePublished": "2026-01-15",
+    "dateModified": "2026-06-08",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -35,10 +37,57 @@
     "publisher": {
       "@type": "Organization",
       "name": "BYDFi",
-      "url": "https://bydfi.com"
-    }
+      "url": "https://bydfi.com",
+      "logo": "https://bydfi.com/logo.png",
+      "sameAs": [
+        "https://twitter.com/bydfi_official",
+        "https://www.linkedin.com/company/bydfi",
+        "https://t.me/bydfi_official"
+      ]
+    },
+    "author": {
+      "@type": "Person",
+      "name": "BYDFi Research Team",
+      "url": "https://bydfi.com/author/research-team"
+    },
+    "reviewedBy": {
+      "@type": "Person",
+      "name": "BYDFi Risk Management Team",
+      "url": "https://bydfi.com/author/risk-team"
+    },
+    "image": "https://bydfi.com/og-images/liquidation-calculator.png"
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://bydfi.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://bydfi.com/en/tools"},
+      {"@type": "ListItem", "position": 3, "name": "Liquidation Calculator", "item": "https://bydfi.com/en/liquidation-calculator"},
+      {"@type": "ListItem", "position": 4, "name": "BTC/USDT", "item": "https://bydfi.com/en/liquidation-calculator/btc-usdt"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "BYDFi",
+    "url": "https://bydfi.com",
+    "logo": "https://bydfi.com/logo.png",
+    "sameAs": [
+      "https://twitter.com/bydfi_official",
+      "https://www.linkedin.com/company/bydfi"
+    ]
+  }
+  </script>
+  <meta property="og:image" content="https://bydfi.com/og-images/liquidation-calculator.png">
+  <meta property="og:title" content="BTC Liquidation Calculator | BYDFi">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bydfi.com/en/liquidation-calculator/btc-usdt">
+  <meta name="author" content="BYDFi Research Team">
 </head>
 <body>
   <header><nav>...</nav></header>
@@ -121,15 +170,26 @@
         <p>Yes, actual liquidation prices may differ due to mark price calculations...</p>
       </details>
 
-      <!-- 作者 + 审核 + 更新时间（E-E-A-T）-->
+      <!-- 作者 + 审核 + 更新时间（E-E-A-T 强信号）-->
       <footer class="article-meta">
+        <p class="byline">
+          <strong>Author:</strong> <a href="/author/research-team" rel="author">BYDFi Research Team</a>
+          | <strong>Reviewed by:</strong> <a href="/author/risk-team">BYDFi Risk Management Team</a>
+        </p>
         <p>
-          <strong>Author:</strong> BYDFi Research Team
-          | <strong>Reviewed by:</strong> BYDFi Risk Management Team
-          | <strong>Last Updated:</strong> 2026-06-08
-          | <strong>Sources:</strong>
-            <a href="https://bydfi.com/futures-rules">BYDFi Futures Rules</a>,
-            <a href="https://coingecko.com/btc">CoinGecko BTC</a>
+          <strong>Published:</strong> <time datetime="2026-01-15">January 15, 2026</time>
+          | <strong>Last Updated:</strong> <time datetime="2026-06-08">June 8, 2026</time>
+        </p>
+        <p>
+          <strong>Sources:</strong>
+            <a href="https://www.coingecko.com/en/coins/bitcoin">CoinGecko (BTC Live Data)</a>,
+            <a href="https://etherscan.io">Etherscan</a>,
+            <a href="https://defillama.com">DefiLlama</a>,
+            <a href="https://bydfi.com/futures-rules">BYDFi Futures Rules v2026.06</a>
+        </p>
+        <p>
+          <strong>Editorial Process:</strong> All BYDFi educational content is reviewed by our Risk Management Team
+          before publication. Reviewed by: BYDFi Risk Management Team.
         </p>
       </footer>
     </article>

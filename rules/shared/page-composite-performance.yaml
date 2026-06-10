@@ -1,0 +1,30 @@
+# 性能页面级最佳组合（B）
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  ttfb_under_800ms:        0.20
+  no_render_blocking:      0.25
+  modern_compression:      0.15
+  http2_or_higher:         0.10
+  html_size_reasonable:    0.15
+  cls_under_0.1:           0.15
+
+rules:
+  - id: shared.perf.page-composite-low
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google, shared]
+      commands: [audit, watch]
+    detector:
+      type: hybrid
+      fn: detectors.composite.performance_composite_quality
+      inputs: [raw_html, http_timing, http_headers]
+      args:
+        threshold_low: 0.60
+    bydfi_business_impact: |
+      性能综合分 < 0.60 = LCP/INP/CLS 多项同时差 → Google 排名直接受影响。
+    tags: [performance, composite, cwv]

@@ -45,6 +45,25 @@ def audit(
     console.print(f"\n[bold]Final Verdict:[/bold] {report.final_verdict.value}")
     console.print(f"[bold]Brand SEO Score:[/bold] {report.brand_seo_score:.1f}/100")
 
+    # 显示 composite scores
+    composite_scores = {}
+    for o in report.agent_outputs:
+        if o.agent == "crawler" and o.artifacts.get("composite_scores"):
+            composite_scores = o.artifacts["composite_scores"]
+            break
+    if composite_scores:
+        comp_table = Table(title="📊 Composite Scores (页面级最佳组合)")
+        comp_table.add_column("维度")
+        comp_table.add_column("分数")
+        comp_table.add_column("最弱环节")
+        for name, data in composite_scores.items():
+            if isinstance(data, dict) and "composite_score" in data and data["composite_score"] is not None:
+                score = data["composite_score"]
+                weakest = data.get("weakest_link", "—")
+                emoji = "✅" if score >= 0.8 else "🟡" if score >= 0.6 else "🟠" if score >= 0.4 else "🔴"
+                comp_table.add_row(name, f"{emoji} {score:.2f}", weakest)
+        console.print(comp_table)
+
 
 @app.command()
 def gate(md_file: str = typer.Argument(...)) -> None:

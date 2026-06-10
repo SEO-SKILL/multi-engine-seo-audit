@@ -1,0 +1,31 @@
+# 多语言页面级组合（B）
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+
+composite_weights:
+  hreflang_complete_set:   0.25
+  x_default_present:       0.10
+  language_actually_matches: 0.20
+  locale_specific_content: 0.20
+  currency_localized:      0.15
+  canonical_self:          0.10
+
+rules:
+  - id: shared.multilingual.page-composite-fail
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google, naver, yandex, shared]
+      locales: [ko, ja, vi, tr, pt, es, ru, zh-CN]
+    detector:
+      type: hybrid
+      fn: detectors.composite.multilingual_composite_quality
+      inputs: [raw_html, locale, sibling_alternates]
+      args:
+        threshold_low: 0.60
+    bydfi_business_impact: |
+      多语言综合分低 = 该 locale 完全不参与本地搜索。
+      MEXC 事故 L03 同源问题——hreflang/canonical/语言匹配多项同时缺。
+    tags: [multilingual, composite, mexc-related]
