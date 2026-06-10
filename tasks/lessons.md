@@ -125,6 +125,47 @@
 - 结构化规则（_rules/*.yaml）作为硬规则跑
 - 两者通过 rule.id 关联
 
+#### LE06 — Google 文档的本质是「页面最佳组合」，不是单点清单
+
+**触发场景**：Kelly 指出 Google Images SEO 文档真正讲的是"判断页面最佳组合"，不是单点清单。
+
+**Why**：单点规则查 50 个项目，告诉你每个是否合格——但 Google 真正关心的是**整体组合是否达标 + 哪里最弱**。
+
+**How to apply**：
+- 写 `detectors/composite.py` 含 8 个复合 detector
+- 每个 composite 输出 `composite_score (0-1) + weakest_link + breakdown`
+- 集成到 orchestrator pipeline，audit 命令直接输出 Composite Scores 表
+- 修 `good-tools-page.html` E-E-A-T 信号让它真正合格（0.30 → 1.00）
+- 8 维度：eeat / schema / crawlability / performance / internal_linking / geo / multilingual / image
+
+**关键洞察**：MEXC 事故按单点看是 7 个问题，按 composite 看是「**E-E-A-T 综合分 0.10**」一个核心——这是更高层级的诊断。
+
+**新增**：
+- `detectors/composite.py`
+- 8 个 composite 规则文件
+- orchestrator + cli 集成
+- 4 个 batch_audit snapshot 含 composite
+
+---
+
+#### LE07 — Site Migration 是 SEO 流量崩盘高风险场景
+
+**触发场景**：补 Google「网站迁移」文档到规则库。
+
+**Why**：BYDFi 未来切 CDN / 迁移服务器是必然。Google 列了完整迁移流程，最常见事故是"staging 的 noindex/robots 没移除"。
+
+**How to apply**：
+- 写 8 条 site-migration 规则
+- 写完整 site-migration-sop.md
+- 红线：6 条触发即回滚
+- 与 batch_audit.py 集成：迁移前后跑两次对比 composite scores
+
+**新增**：
+- `platforms/google/_rules/site-migration.yaml`（8 条）
+- `platforms/google/_knowledge/site-migration-sop.md`
+
+---
+
 #### LE05 — Manual Actions 是 18 大类型，预防比治疗重要
 
 **触发场景**：补 Google 官方「人工处置措施」文档（https://support.google.com/webmasters/answer/9044175）到规则库。
