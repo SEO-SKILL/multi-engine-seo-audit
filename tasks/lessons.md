@@ -125,6 +125,26 @@
 - 结构化规则（_rules/*.yaml）作为硬规则跑
 - 两者通过 rule.id 关联
 
+#### LE05 — Manual Actions 是 18 大类型，预防比治疗重要
+
+**触发场景**：补 Google 官方「人工处置措施」文档（https://support.google.com/webmasters/answer/9044175）到规则库。
+
+**Why**：BYDFi 2026-Q1 已经被 manual action 过一次（MEXC 事故）。Google 列了 18 大类型，**每一类都有专属预防规则 + Reconsideration Request 标准流程**。
+
+**How to apply**：
+- 15 条规则覆盖 18 大类型（部分类型合并）
+- 完整 `manual-actions-reconsideration.md` 知识 MD
+- 6 条规则标 `human_review_required: true`（不允许 LLM 单独决策）
+- watch 命令必须监控 GSC「人工处置措施」报告 API（V2 接入）
+
+**关键洞察**：MEXC 事故 L01（转载）+ L04（schema 虚假）+ L05（标签错配）正好对应 manual action 的「Thin Content」+「Structured Data Violation」+「内容质量低」三个类型 → 我们的规则库现在已 100% 覆盖。
+
+**新增**：
+- `platforms/google/_rules/manual-actions-prevention.yaml`（15 条规则）
+- `platforms/google/_knowledge/manual-actions-reconsideration.md`（含 SOP + 模板）
+
+---
+
 #### LE03 — Will 团队是 benchmark to beat，不是 dependency
 
 **触发场景**：本想 fork Will 知识库到 skill 内，被 Kelly 否决——Will 后续要用我们的 skill，我们必须比他做的好才能让他切换。
@@ -145,6 +165,26 @@
 2. **必含三段式**：触发场景 / Why / How to apply
 3. **关联到代码**：明确指向哪个 sub-agent / rule 文件
 4. **季度回顾**：每季度 review，把高频 lesson 升级为硬规则
+
+---
+
+## LE04 — Google Images SEO 是独立维度，不能只靠 alt 检测
+
+**触发场景**：Kelly 提供 https://developers.google.com/search/docs/appearance/google-images?hl=zh-cn 让我们补齐规则。
+
+**Why**：图片 SEO 在 Google Images / Discover / Top Stories 都是独立流量源。我们原 `image-seo.yaml` 只有 6 条基础规则（alt / format / lazy / srcset / filename / preferred image），不够。
+
+**How to apply**：
+- CSS background-image 不会被索引 → 关键内容必须 `<img>` 元素
+- `<picture>` 必须有 `<img src>` fallback
+- 支持的格式严格限制 BMP/GIF/JPEG/PNG/WebP/SVG/AVIF
+- 同一图片用同一 URL（让 Google 缓存复用，节省 crawl budget）
+- 图片旁应有相关文字提供上下文
+- SVG 应有 `<title>` 或 aria-labelledby
+- CDN 域名应在 GSC 验证
+- alt 不能堆砌关键词
+
+**新增规则**：`platforms/google/_rules/google-images-deep.yaml`（14 条）
 
 ---
 

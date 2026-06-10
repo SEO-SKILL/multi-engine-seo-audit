@@ -1,0 +1,171 @@
+{
+  "generated_at": "2026-06-10T08:28:15.649603",
+  "summary": {
+    "total": 10,
+    "blocker_count": 0,
+    "high_count": 0,
+    "score_avg": 76.5
+  },
+  "results": [
+    {
+      "label": "homepage",
+      "url": "https://bydfi.com",
+      "locale": null,
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "futures",
+      "url": "https://bydfi.com/en/futures",
+      "locale": "en",
+      "final_verdict": "上线",
+      "brand_seo_score": 57.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 4,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "shared.internal-link.anchor-text-keyword-stuffing",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "copy-trading",
+      "url": "https://bydfi.com/en/copy-trading",
+      "locale": "en",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "learn",
+      "url": "https://bydfi.com/en/learn",
+      "locale": "en",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "price",
+      "url": "https://bydfi.com/en/price/btc",
+      "locale": "en",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "support",
+      "url": "https://bydfi.com/en/support",
+      "locale": "en",
+      "final_verdict": "上线",
+      "brand_seo_score": 87.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 1,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "homepage-ko",
+      "url": "https://bydfi.com/ko",
+      "locale": "ko",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "homepage-ja",
+      "url": "https://bydfi.com/ja",
+      "locale": "ja",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "homepage-ru",
+      "url": "https://bydfi.com/ru",
+      "locale": "ru",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    },
+    {
+      "label": "homepage-zh",
+      "url": "https://bydfi.com/zh-CN",
+      "locale": "zh-CN",
+      "final_verdict": "上线",
+      "brand_seo_score": 77.5,
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 1,
+      "top_findings": [
+        "google.eeat.publication-date-missing-or-stale",
+        "perplexity.geo.answerable-chunks",
+        "perplexity.geo.llms-txt-missing"
+      ]
+    }
+  ]
+}

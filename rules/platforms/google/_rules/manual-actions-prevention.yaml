@@ -1,0 +1,371 @@
+# Google Manual Actions 预防规则集
+# 创建：2026-06-10
+# 来源：https://support.google.com/webmasters/answer/9044175?hl=zh-Hans
+# 战略价值：⭐⭐⭐ BYDFi 2026-Q1 MEXC 事故防复发核心
+
+file_version: "1.0"
+file_purpose: "针对 Google 18 类人工处置措施的预防 + 检测规则"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://support.google.com/webmasters/answer/9044175
+  last_updated: 2026-Q1
+  pulled_at: 2026-06-10
+
+# Google Manual Action 类型（按破坏性排序）
+manual_action_types:
+  pure_spam: 严重网络垃圾 — 全站影响
+  hacked_content: 被黑网页 — 安全问题
+  thin_content: 内容贫乏 — 通常 MEXC L01 同类
+  cloaking_or_deceptive_redirect: 伪装/欺骗性重定向 — 全站风险
+  unnatural_inbound_links: 指向你的非自然链接
+  unnatural_outbound_links: 你站发出的非自然链接
+  user_generated_spam: 用户生成垃圾内容
+  third_party_spam: 第三方垃圾内容大量充斥
+  structured_data_violation: 结构化数据违规（MEXC L04 类）
+  hidden_text_keyword_stuffing: 隐藏文字/关键字堆砌
+  cloaked_images: 伪装真实内容的图片
+  deceptive_mobile_redirects: 欺骗性移动重定向
+  back_button_hijacking: 返回按钮劫持
+  google_news_discover_violation: 新闻/Discover 政策违规
+  amp_content_mismatch: AMP 内容不匹配（AMP 已逐步淘汰）
+
+rules:
+
+  # === 第 1 大类：内容贫乏类（MEXC L01 同源最高风险）===
+  - id: google.manual-action.thin-content-doorway
+    source: google-spam-policy
+    source_url: https://support.google.com/webmasters/answer/9044175
+    severity: high
+    confidence_default: 0.82
+    applies_to:
+      page_types: [all]
+      platforms: [google, bydfi]
+      commands: [audit, gate, watch]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/thin_content_doorway_judge.md
+      model: sonnet
+      inputs: [visible_text, page_purpose, url_pattern]
+      args:
+        red_flags:
+          - 抄袭/转载内容
+          - 联属营销内容贫乏
+          - 门页（doorway）
+          - 自动生成无价值文字
+    patch_hint: {template: patches/thin_content_remediation.md.j2, priority: P0, requires_review: true}
+    bydfi_business_impact: |
+      MEXC 事故 L01 同类风险。BYDFi /news 转载、模板化币种页都要严格检查。
+      触发 = Google 立即人工处置 + 全站权重下降。
+    tags: [manual-action, thin-content, mexc-related]
+    human_review_required: true
+
+  # === 第 2 大类：Cloaking ===
+  - id: google.manual-action.cloaking-content-mismatch
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google, bydfi]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.cloaking.ua_content_diff
+      inputs: [fetch_results_per_ua]
+      args:
+        topic_diff_blocker: true
+        text_similarity_threshold: 0.7
+    bydfi_business_impact: |
+      Cloaking 是最严重的 manual action 之一（全站风险）。
+      A/B 测试 / GeoIP 配置错误 / CDN cache 都可能触发。
+    tags: [manual-action, cloaking, blocker]
+    human_review_required: true
+
+  - id: google.manual-action.deceptive-mobile-redirect
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.cloaking.geoip_content_diff
+      inputs: [fetch_results_per_region]
+      args:
+        check_mobile_ua: true
+    bydfi_business_impact: |
+      移动用户被重定向到与桌面不同的内容 = Cloaking 子类。
+      第三方广告脚本或被黑都可能触发。
+    tags: [manual-action, mobile-redirect, cloaking]
+    human_review_required: true
+
+  # === 第 3 大类：Hidden Text & Keyword Stuffing ===
+  - id: google.manual-action.hidden-text
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.cloaking.hidden_text_check
+      inputs: [rendered_dom, computed_styles]
+    bydfi_business_impact: |
+      与背景同色文字 / 1px 字号 / 屏外定位 / display:none 大量关键词。
+      前端代码 bug 或第三方脚本可能引入。
+    tags: [manual-action, hidden-text, spam]
+
+  - id: google.manual-action.keyword-stuffing
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.keyword.density_check
+      inputs: [visible_text, target_keyword]
+      args:
+        red_flag_density: 0.05
+        red_flag_repeated_strings: true
+    bydfi_business_impact: |
+      title / alt / heading / body 含无上下文重复字词列表 = manual action。
+    tags: [manual-action, keyword-stuffing]
+
+  # === 第 4 大类：Hacked Content ===
+  - id: google.manual-action.hacked-content
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [google, bydfi]
+      commands: [audit, watch]
+    detector:
+      type: hybrid
+      fn: detectors.security.hacked_content_check
+      inputs: [page_content]
+    bydfi_business_impact: |
+      被黑塞菠菜/赌博/色情/药品关键词 = 立即 manual action + 安全问题双重风险。
+      影响整站排名。
+    tags: [manual-action, hacked, security, blocker]
+    human_review_required: true
+
+  # === 第 5 大类：UGC Spam ===
+  - id: google.manual-action.user-generated-spam
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [questions, blog, support]
+      platforms: [google, bydfi]
+    detector:
+      type: hybrid
+      fn: detectors.ugc.spam_pattern_check
+      inputs: [user_content, user_links]
+      args:
+        red_flags:
+          - 偏离上下文的链接
+          - 自动生成的乱码
+          - 不真实用户名的宣传评论
+    bydfi_business_impact: |
+      BYDFi 论坛 / 评论区 / 问答区如果不审核 → 第三方塞垃圾 → manual action。
+      参考 Will 知识库防 UGC spam 文档。
+    tags: [manual-action, ugc, moderation]
+
+  - id: google.manual-action.third-party-spam-flooding
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.80
+    applies_to:
+      page_types: [domain]
+      platforms: [google, bydfi]
+      commands: [watch]
+    detector:
+      type: hard_rule
+      fn: detectors.security.third_party_spam_flooding
+      inputs: [site_inventory, recent_url_growth]
+      args:
+        red_flag_new_url_spike: true
+        red_flag_off_topic_keywords: true
+    bydfi_business_impact: |
+      文件上传 / 免费托管 / 内部搜索结果页被第三方利用塞垃圾。
+      log 中突然出现大量与主题无关的 URL = 警报。
+    tags: [manual-action, third-party-spam]
+
+  # === 第 6 大类：链接相关 ===
+  - id: google.manual-action.unnatural-inbound-links
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.78
+    applies_to:
+      page_types: [domain]
+      platforms: [google]
+      commands: [watch]
+    detector:
+      type: external_api
+      fn: integrations.gsc.inbound_links_check
+      inputs: [property]
+      args:
+        red_flag_spam_links_ratio: 0.10
+    bydfi_business_impact: |
+      竞品买垃圾链接指向 BYDFi 进行 negative SEO，或 BYDFi 自己买过链接。
+      Disavow Tool 是恢复手段（参考 link_quality.py detector）。
+    tags: [manual-action, links, inbound, negative-seo-risk]
+
+  - id: google.manual-action.unnatural-outbound-links
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.linking.paid_outbound_check
+      inputs: [outbound_links]
+      args:
+        require_rel_sponsored: true
+        red_flag_unmarked_paid: true
+    bydfi_business_impact: |
+      BYDFi 付费 KOL 内容 / 联盟链接必须 rel='sponsored' 或 'nofollow'。
+      Will 知识库已强调（参考 disclosure rules）。
+    tags: [manual-action, links, outbound, disclosure]
+
+  # === 第 7 大类：结构化数据违规（MEXC L04 同源）===
+  - id: google.manual-action.structured-data-policy-violation
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google, bydfi]
+    detector:
+      type: hybrid
+      fn: detectors.schema.field_grounding
+      inputs: [jsonld_parsed, visible_text]
+    bydfi_business_impact: |
+      MEXC 事故 L04 同源。AggregateRating 无对应可见评分 / Schema 字段虚假。
+      触发结构化数据 manual action。
+    tags: [manual-action, schema, mexc-related, blocker]
+    human_review_required: true
+
+  - id: google.manual-action.schema-misclassification
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/schema_misclassification_judge.md
+      model: sonnet
+      inputs: [jsonld_parsed, page_content]
+      args:
+        red_flags:
+          - Event schema 用在非活动内容
+          - Recipe schema 用在非食谱内容
+          - JobPosting hiringOrganization 不匹配
+          - JobPosting description 不完整或难以理解
+    bydfi_business_impact: |
+      BYDFi 可能误用 Event schema 给空投活动等。
+      Schema 类型必须匹配可见内容。
+    tags: [manual-action, schema, misclassification]
+
+  # === 第 8 大类：Pure Spam（最严重）===
+  - id: google.manual-action.pure-spam-pattern
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [google, bydfi]
+      commands: [audit, gate, watch]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/pure_spam_judge.md
+      model: sonnet
+      inputs: [visible_text, page_metadata, site_pattern]
+      args:
+        red_flags:
+          - 滥用规模化内容
+          - 多种 spam 技术叠加
+          - 屡次违反
+    patch_hint:
+      template: patches/pure_spam_remediation.md.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    bydfi_business_impact: |
+      "严重网络垃圾问题" = 全站影响 + 难以恢复。
+      Reconsideration 周期最长（可能数月）。
+    tags: [manual-action, pure-spam, blocker]
+    human_review_required: true
+
+  # === 第 9 大类：Back Button Hijacking ===
+  - id: google.manual-action.back-button-hijacking
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.back_button_hijack_check
+      inputs: [page_scripts]
+      args:
+        red_flag_patterns:
+          - "history.pushState 反复调用"
+          - "popstate 事件阻止默认行为"
+          - "window.location 在 beforeunload 重定向"
+    bydfi_business_impact: |
+      第三方广告脚本 / 跟踪 SDK 可能引入返回按钮劫持。
+      BYDFi 的 Cookie banner / 弹窗也要检查。
+    tags: [manual-action, back-button-hijack, javascript]
+
+  # === 第 10 大类：Google 新闻/Discover ===
+  - id: google.manual-action.google-news-discover-policy
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.78
+    applies_to:
+      page_types: [news, blog]
+      platforms: [google]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/google_news_policy_judge.md
+      model: sonnet
+      inputs: [page_content]
+      args:
+        red_flags:
+          - 危险内容（可能造成人身/动物伤害）
+          - 仇恨言论
+          - 错误信息
+          - 露骨内容
+          - 恶意行为
+    bydfi_business_impact: |
+      News / Discover 政策违规会让 BYDFi 失去这两个重要流量入口。
+      加密类内容容易踩"投资建议"边界。
+    tags: [manual-action, google-news, discover]
+
+  # === 第 11 大类：Cloaked Images ===
+  - id: google.manual-action.cloaked-images
+    source: google-spam-policy
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.image.cloaking_check
+      inputs: [images, googlebot_view, user_view]
+    bydfi_business_impact: |
+      Google 抓取看到的图片 ≠ 用户看到的图片 = Cloaking 子类。
+      可能是 lazy load 配置错或第三方图片优化服务。
+    tags: [manual-action, image, cloaking]

@@ -1,0 +1,279 @@
+# Google Images SEO 深度规则（补齐 Google 官方文档）
+# 创建：2026-06-10
+# 来源：https://developers.google.com/search/docs/appearance/google-images?hl=zh-cn
+# 官方文档最后更新：2026-03-03
+
+file_version: "1.0"
+file_purpose: "Google Images SEO 最佳实践深度规则集"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/google-images
+  last_updated: 2026-03-03
+  pulled_at: 2026-06-10
+
+rules:
+
+  - id: google.image.css-background-instead-of-img
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/appearance/google-images
+    severity: high
+    confidence_default: 0.98
+    applies_to:
+      page_types: [all]
+      platforms: [google, shared]
+      commands: [audit, gate, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.image.css_background_check
+      inputs: [rendered_dom, css_styles]
+      args:
+        red_flag_pattern: "background-image:url"
+        require_img_element: true
+    patch_hint:
+      template: patches/replace_css_bg_with_img.diff.j2
+      priority: P1
+      auto_apply: false
+      requires_review: true
+    bydfi_business_impact: |
+      Google 明确说不会索引 CSS background-image。
+      关键内容图片必须用 <img> 元素。BYDFi 头图 / 产品截图等都要检查。
+    tags: [image, indexability, html-vs-css]
+
+  - id: google.image.picture-element-fallback-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.picture_fallback_check
+      inputs: [picture_elements]
+      args:
+        require_img_fallback_with_src: true
+    patch_hint:
+      template: patches/add_picture_fallback.diff.j2
+      priority: P2
+    bydfi_business_impact: |
+      <picture> 元素必须有 <img src> 作为 fallback。
+      Google 文档明确：HTML 标准第 4.8.1 节要求。
+    tags: [image, picture-element, html-standard]
+
+  - id: google.image.unsupported-format
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.format_supported_check
+      inputs: [image_urls]
+      args:
+        supported_formats: [bmp, gif, jpeg, jpg, png, webp, svg, avif]
+    bydfi_business_impact: |
+      Google 仅索引 BMP/GIF/JPEG/PNG/WebP/SVG/AVIF。
+      其他格式（如 TIFF / HEIC / BMP raw）不会被索引。
+    tags: [image, format, indexability]
+
+  - id: google.image.no-context-around
+    source: google-search-central
+    severity: low
+    confidence_default: 0.75
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google]
+    detector:
+      type: llm_judge
+      prompt_template: prompts/image_context_judge.md
+      model: haiku
+      inputs: [images, surrounding_text]
+      args:
+        min_relevant_text_chars: 100
+    bydfi_business_impact: |
+      Google 文档：图片应放在相关文字附近，便于上下文理解。
+      BYDFi 教程 / 评测页的截图旁应有解释文字。
+    tags: [image, context, content-quality]
+
+  - id: google.image.same-image-different-urls
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google, shared]
+      commands: [watch]
+    detector:
+      type: hard_rule
+      fn: detectors.image.url_consistency_check
+      inputs: [page_inventory, image_urls]
+    bydfi_business_impact: |
+      Google 文档：同一图片用同一 URL 可让 Google 缓存复用，节省 crawl budget。
+      BYDFi logo / icon 等公共图片必须有统一引用 URL。
+    tags: [image, crawl-budget]
+
+  - id: google.image.svg-without-title
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [google, shared]
+    detector:
+      type: hard_rule
+      fn: detectors.image.svg_accessibility_check
+      inputs: [svg_elements]
+      args:
+        require_title_or_aria_label: true
+    patch_hint:
+      template: patches/add_svg_title.diff.j2
+      priority: P3
+    bydfi_business_impact: |
+      Google 文档：SVG 应有 <title> 或 aria-labelledby 提供文字说明。
+      影响图片 SEO + 无障碍。
+    tags: [image, svg, accessibility]
+
+  - id: google.image.no-image-sitemap
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to:
+      page_types: [domain]
+      platforms: [google]
+      commands: [audit, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.sitemap.image_sitemap_check
+      inputs: [sitemaps]
+    bydfi_business_impact: |
+      图片密集型站点（BYDFi /learn /support 截图多）应提交独立图片 sitemap。
+      Google 文档：image:loc 可指向其他网域（CDN 友好）。
+    tags: [image, sitemap]
+
+  - id: google.image.title-attribute-misuse
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.title_attr_check
+      inputs: [images]
+      args:
+        flag_when_title_equals_alt: true
+    bydfi_business_impact: |
+      Google 文档：title 属性不影响 SEO，只在鼠标悬停显示。
+      title 与 alt 重复内容浪费且无障碍体验差。
+    tags: [image, title-attribute]
+
+  - id: google.image.cdn-domain-not-verified
+    source: google-search-central
+    severity: low
+    confidence_default: 0.90
+    applies_to:
+      page_types: [domain]
+      platforms: [google]
+      commands: [watch]
+    detector:
+      type: hard_rule
+      fn: detectors.image.cdn_verification_check
+      inputs: [image_sitemaps, gsc_verified_domains]
+    bydfi_business_impact: |
+      如果用 CDN 托管图片（BYDFi 用 Cloudflare / CloudFront），
+      应在 GSC 验证 CDN 域名所有权，以接收抓取错误通知。
+    tags: [image, cdn, gsc]
+
+  - id: google.image.high-resolution-required
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to:
+      page_types: [news, blog, product]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.resolution_check
+      inputs: [og_image, hero_image]
+      args:
+        min_width_for_discover: 1200
+        min_width_for_top_stories: 1200
+    bydfi_business_impact: |
+      Google Discover / Top Stories 偏好高分辨率大图（>= 1200px wide）。
+      BYDFi 新闻 / 博客头图必须达到这个尺寸。
+    tags: [image, resolution, discover]
+
+  - id: google.image.duplicate-images-multiple-pages
+    source: google-search-central
+    severity: low
+    confidence_default: 0.78
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+      commands: [watch]
+    detector:
+      type: hard_rule
+      fn: detectors.image.duplicate_across_pages
+      inputs: [image_urls_per_page]
+    bydfi_business_impact: |
+      多个页面用同一独特图片说明内容相似度高，可能影响主题区分度。
+      Logo / icon 类公共图片例外。
+    tags: [image, duplicate, content-uniqueness]
+
+  - id: google.image.image-license-metadata-missing
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata
+    severity: info
+    confidence_default: 0.92
+    applies_to:
+      page_types: [news, blog, product]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.license_metadata_check
+      inputs: [images, jsonld]
+      args:
+        check_iptc_or_schema: true
+    bydfi_business_impact: |
+      图片版权 metadata（IPTC / ImageObject schema license 字段）
+      让 Google 在搜索结果中显示"可授权"标记。
+      对 BYDFi 原创图表 / 截图有版权保护价值。
+    tags: [image, license, copyright]
+
+  - id: google.image.safesearch-content-misclassified
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.safesearch_signal_check
+      inputs: [page_metadata, content_classification]
+    bydfi_business_impact: |
+      Google 文档：站点应明确告知 SafeSearch 分类。
+      BYDFi 金融内容应明确标记非露骨内容。
+    tags: [image, safesearch]
+
+  - id: google.image.alt-keyword-stuffing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.image.alt_stuffing_check
+      inputs: [images]
+      args:
+        max_alt_word_count: 16
+        max_keyword_density: 0.40
+    bydfi_business_impact: |
+      Google 文档：alt 应是简短自然描述，不是关键词列表。
+      过度堆砌触发 spam policy。
+    tags: [image, alt, spam-risk]
