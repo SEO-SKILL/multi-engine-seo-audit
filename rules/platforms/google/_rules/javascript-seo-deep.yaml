@@ -1,0 +1,203 @@
+# Google JavaScript SEO 深度规则
+# 创建：2026-06-10
+# 来源：https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics
+# 战略价值：BYDFi 是 Next.js/React SPA，JS SEO 是 MEXC 事故 L04 同源风险
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics
+  pulled_at: 2026-06-10
+
+# Google JS 处理 3 阶段: 抓取 → 渲染 → 索引
+# Googlebot 用 evergreen Chromium
+# 渲染队列等待时间从几秒到更长
+
+rules:
+
+  - id: google.js.shell-only-app-shell
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing]
+    detector:
+      type: hybrid
+      fn: detectors.js.app_shell_check
+      inputs: [raw_html, rendered_dom]
+      args:
+        red_flag_initial_html_chars: 500
+    bydfi_business_impact: |
+      App Shell 模式：raw HTML 不含实际内容，全靠 JS 渲染。
+      Googlebot 会执行 JS 但有限制 + 抓取队列延迟。
+      建议 SSR 或预渲染（Next.js getServerSideProps）。
+    tags: [javascript, app-shell, ssr]
+
+  - id: google.js.title-meta-injected-late
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.title_meta_ssr_check
+      inputs: [raw_html, rendered_html]
+      args:
+        check_title_in_raw: true
+        check_meta_description_in_raw: true
+    bydfi_business_impact: |
+      title / meta description 应在 raw HTML 中，不要 JS 注入。
+      虽然 JS 注入也能被 Google 抓到，但 SSR 更稳定。
+    tags: [javascript, title, meta, ssr]
+
+  - id: google.js.canonical-altered-by-js
+    source: google-search-central
+    severity: high
+    confidence_default: 0.92
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.canonical_consistency_check
+      inputs: [raw_canonical, rendered_canonical]
+    bydfi_business_impact: |
+      JS 不应把 canonical 改成与 raw HTML 不同的 URL。
+      要么 raw 设 canonical，要么 raw 不设而仅 JS 设，
+      但不能两者不一致。
+    tags: [javascript, canonical]
+
+  - id: google.js.404-on-200-html
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.soft_404_check
+      inputs: [http_status, visible_text, page_intent]
+      args:
+        red_flag_text:
+          - "Not Found"
+          - "Page does not exist"
+          - "404"
+        require_status_match: true
+    bydfi_business_impact: |
+      SPA 路由不存在时返回 200 + JS 显示"Not Found"= soft 404。
+      浪费 crawl budget + Google 索引到无价值页。
+      Next.js: 用 notFound() 返回真 404 状态码。
+    tags: [javascript, soft-404, spa-routing]
+
+  - id: google.js.nofollow-on-internal-links
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.internal_link_nofollow_check
+      inputs: [internal_links]
+    bydfi_business_impact: |
+      Google 文档：JS 注入的 link 应遵循"可抓取链接最佳实践"。
+      内链不应加 nofollow（除非确实是 UGC）。
+    tags: [javascript, nofollow, internal-link]
+
+  - id: google.js.lazy-loaded-content-blocks-render
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.lazy_render_trigger_check
+      inputs: [rendered_dom, lazy_load_strategy]
+      args:
+        require_intersection_observer: true
+    bydfi_business_impact: |
+      正文 lazy load 必须用 IntersectionObserver（Googlebot 支持）。
+      不要用 scroll listener 触发，Googlebot 不滚动。
+    tags: [javascript, lazy-load, intersection-observer]
+
+  - id: google.js.history-api-misuse
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.78
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hybrid
+      fn: detectors.js.history_api_check
+      inputs: [page_scripts]
+      args:
+        prefer: history.pushState
+        avoid: hash_based_routing
+    bydfi_business_impact: |
+      SPA 路由应用 History API 而非 hash routing。
+      hash (#) 后内容 Google 抓不到。
+    tags: [javascript, history-api, spa-routing]
+
+  - id: google.js.uses-deprecated-api
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.deprecated_api_check
+      inputs: [page_scripts]
+      args:
+        red_flag_apis:
+          - document.write
+          - "Application Cache (deprecated)"
+          - "Web SQL (deprecated)"
+    bydfi_business_impact: |
+      Googlebot 用 evergreen Chromium，但仍有 API 限制。
+      document.write 等会被忽略。
+    tags: [javascript, deprecated-api]
+
+  - id: google.js.async-script-blocking
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.script_loading_check
+      inputs: [head_scripts]
+      args:
+        prefer: [async, defer]
+        red_flag_blocking_count: 3
+    bydfi_business_impact: |
+      `<head>` 中阻塞脚本影响 LCP + Googlebot 渲染队列。
+      非关键脚本应 async/defer。
+    tags: [javascript, script-loading, performance]
+
+  - id: google.js.fragment-link-broken-on-csr
+    source: google-search-central
+    severity: low
+    confidence_default: 0.85
+    applies_to:
+      page_types: [learn, support, faq]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.js.fragment_navigation_check
+      inputs: [page_anchors, scroll_behavior_scripts]
+    bydfi_business_impact: |
+      Google 搜索片段链接 (#section-id) 必须能正确跳转。
+      前端脚本不要在加载时清除 #fragment 或滚动到顶部。
+    tags: [javascript, fragment-link]

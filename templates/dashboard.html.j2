@@ -110,6 +110,7 @@
     <h2>SEO Audit</h2>
     <nav>
       <a href="#verdict" class="active">Final Verdict</a>
+      <a href="#composite">Composite Scores</a>
       <a href="#summary">Summary</a>
       <a href="#blockers">Must Fix</a>
       <a href="#high">Should Fix</a>
@@ -129,6 +130,47 @@
       <p>Brand SEO Score</p>
       <div class="score-display">{{ '%.1f' % brand_seo_score }} / 100</div>
     </section>
+
+    {% if composite_scores %}
+    <section id="composite">
+      <h2>📊 Composite Scores (页面级最佳组合)</h2>
+      <table style="width:100%; border-collapse: collapse;">
+        <thead style="background: var(--brand-orange-light);">
+          <tr>
+            <th style="padding: 12px; text-align: left;">维度</th>
+            <th style="padding: 12px;">分数</th>
+            <th style="padding: 12px; text-align: left;">最弱环节</th>
+            <th style="padding: 12px;">明细</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for dim_name, dim_data in composite_scores.items() %}
+        {% if dim_data and dim_data.get('composite_score') is not none %}
+        <tr style="border-bottom: 1px solid var(--border-light);">
+          <td style="padding: 12px; font-weight: 600;">{{ dim_name }}</td>
+          <td style="padding: 12px; text-align: center;">
+            {% set s = dim_data.get('composite_score') %}
+            <span style="font-size: 18px; font-weight: bold; color: {% if s >= 0.8 %}var(--color-low){% elif s >= 0.6 %}var(--color-medium){% elif s >= 0.4 %}var(--color-high){% else %}var(--color-blocker){% endif %};">
+              {{ '%.2f' % s }}
+            </span>
+          </td>
+          <td style="padding: 12px;">
+            <code>{{ dim_data.get('weakest_link', '—') }}</code>
+          </td>
+          <td style="padding: 12px; font-size: 12px;">
+            {% if dim_data.get('breakdown') %}
+              {% for k, v in dim_data.get('breakdown', {}).items() %}
+                <span style="margin-right: 8px; opacity: {% if v.pass < 0.5 %}1{% else %}0.4{% endif %};">{{ k }}: {{ '%.1f' % v.pass }}</span>
+              {% endfor %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
 
     <section id="summary">
       <h2>Findings Summary</h2>
