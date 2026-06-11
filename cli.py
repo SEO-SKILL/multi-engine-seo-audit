@@ -142,6 +142,46 @@ def watch(site: str = typer.Argument(..., help="待监控站点（base URL）"))
 
 
 @app.command()
+def feedback(
+    rule_id: str = typer.Argument(..., help="规则 ID（如 bydfi.l02.ticker-context-mismatch）"),
+    verdict: str = typer.Argument(..., help="accurate / false_positive / missed / supplement"),
+    trace_id: str = typer.Option("manual", "--trace"),
+    notes: str = typer.Option(None, "--notes"),
+) -> None:
+    """记录用户反馈（让规则自进化）"""
+    from agents.feedback import record_feedback, calibration_summary
+    valid = {"accurate", "false_positive", "missed", "supplement"}
+    if verdict not in valid:
+        console.print(f"[red]verdict must be one of {valid}[/red]")
+        raise typer.Exit(code=1)
+    entry = record_feedback(rule_id, trace_id, verdict, notes)
+    console.print(f"[green]✅ Feedback recorded:[/green] {entry}")
+    cal = calibration_summary(rule_id=rule_id)
+    if cal["total_feedback"] >= 3:
+        console.print(f"\n[bold]Rule calibration ({rule_id}):[/bold]")
+        for r in cal.get("by_rule", []):
+            console.print(f"  precision={r['precision']:.2f}, fp={r['false_positive_count']}, adjustment={r['suggested_confidence_adjustment']:+.2f}")
+
+
+@app.command()
+def rules(
+    filter_locale: str = typer.Option(None, "--locale"),
+    filter_page_type: str = typer.Option(None, "--page-type"),
+    filter_command: str = typer.Option("audit", "--command"),
+) -> None:
+    """查询规则库（按 locale/page_type/command 过滤）"""
+    from _router import get_router
+    router = get_router()
+    stats = router.stats(locale=filter_locale, page_type=filter_page_type, command=filter_command)
+    t = Table(title=f"Rules for locale={filter_locale or 'ALL'}, page={filter_page_type or 'ALL'}, cmd={filter_command}")
+    t.add_column("Severity"); t.add_column("Count")
+    for sev in ["blocker", "high", "medium", "low", "info"]:
+        t.add_row(sev, str(stats["by_severity"].get(sev, 0)))
+    console.print(t)
+    console.print(f"\n[bold]Matched:[/bold] {stats['matched_for_context']} / {stats['total_rules']} ({stats['filtered_ratio']*100:.0f}%)")
+
+
+@app.command()
 def init(
     target_repo: str = typer.Argument(".", help="BYDFi 内容仓库路径"),
 ) -> None:

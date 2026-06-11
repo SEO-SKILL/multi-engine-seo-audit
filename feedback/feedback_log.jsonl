@@ -3,3 +3,17 @@
 {"ts": "2026-06-11T01:52:26.991857", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-2", "verdict": "accurate", "notes": null}
 {"ts": "2026-06-11T01:52:26.991888", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-3", "verdict": "false_positive", "notes": null}
 {"ts": "2026-06-11T01:52:26.991912", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-4", "verdict": "false_positive", "notes": null}
+{"ts": "2026-06-11T02:15:13.262566", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:15:13.263467", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:15:13.263509", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:15:13.263539", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:15:13.263567", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:15:13.263594", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "false_positive", "notes": null}
+{"ts": "2026-06-11T02:15:13.263619", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "false_positive", "notes": null}
+{"ts": "2026-06-11T02:17:11.208441", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:17:11.208987", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:17:11.209080", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:17:11.209144", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:17:11.209199", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T02:17:11.209250", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "false_positive", "notes": null}
+{"ts": "2026-06-11T02:17:11.209299", "rule_id": "test.rule.pytest-fixture", "finding_trace_id": "trace-test", "verdict": "false_positive", "notes": null}
