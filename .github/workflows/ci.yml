@@ -1,0 +1,69 @@
+name: BYDFi SEO Audit CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: latest
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint with ruff
+        run: uv run ruff check .
+
+      - name: Type check with mypy
+        run: uv run mypy . --ignore-missing-imports || true
+
+      - name: Validate all YAML rules
+        run: uv run python rule_loader.py
+
+      - name: Run unit + e2e tests
+        run: uv run pytest tests/ -v
+
+      - name: Check detector coverage
+        run: |
+          uv run python3 -c "
+          import yaml, pathlib, re, sys
+          ref = set()
+          for f in pathlib.Path('rules').rglob('*.yaml'):
+            if '_system' in str(f): continue
+            try:
+              d = yaml.safe_load(f.read_text())
+              if isinstance(d, dict):
+                for r in d.get('rules', []):
+                  fn = r.get('detector', {}).get('fn')
+                  if fn and fn.startswith('detectors.'):
+                    ref.add(fn)
+            except: pass
+          impl = set()
+          for f in pathlib.Path('detectors').glob('*.py'):
+            if f.name == '__init__.py': continue
+            for m in re.finditer(r'^(?:async\s+)?def (\w+)\(', f.read_text(), re.MULTILINE):
+              impl.add(f'detectors.{f.stem}.{m.group(1)}')
+          missing = ref - impl
+          coverage = (len(ref) - len(missing)) / len(ref) * 100
+          print(f'Coverage: {coverage:.1f}%')
+          if coverage < 95:
+            print(f'❌ Coverage below 95%, missing: {missing}')
+            sys.exit(1)
+          print('✅ Coverage acceptable')
+          "
+
+      - name: Run audit on MEXC fixture (golden test)
+        run: |
+          uv run pytest tests/test_e2e_mexc.py -v
