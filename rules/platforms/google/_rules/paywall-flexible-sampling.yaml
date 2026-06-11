@@ -1,0 +1,34 @@
+# 灵活抽样 / Paywall 内容
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/structured-data/paywalled-content
+
+rules:
+  - id: google.paywall.no-isaccessibleforfree
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [news, learn], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.schema.newsarticle_completeness, inputs: [jsonld]}
+    bydfi_business_impact: "Paywall 内容必须 schema 声明 isAccessibleForFree=false + cssSelector"
+    tags: [paywall, schema]
+
+  - id: google.paywall.cloaking-risk
+    source: google-spam-policy
+    severity: blocker
+    confidence_default: 0.85
+    applies_to: {page_types: [news, learn], platforms: [google]}
+    detector: {type: hybrid, fn: detectors.cloaking.ua_content_diff, inputs: [fetch_results_per_ua]}
+    bydfi_business_impact: "向 Googlebot 显示完整内容、向用户显示 paywall = Cloaking"
+    tags: [paywall, cloaking, blocker]
+    human_review_required: true
+
+  - id: google.flexible-sampling.first-click-free
+    source: google-search-central
+    severity: low
+    confidence_default: 0.80
+    applies_to: {page_types: [news, learn], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.schema.newsarticle_completeness, inputs: [page_metadata]}
+    bydfi_business_impact: "Flexible Sampling 让 Google 展示 paywall 片段"
+    tags: [paywall, sampling]

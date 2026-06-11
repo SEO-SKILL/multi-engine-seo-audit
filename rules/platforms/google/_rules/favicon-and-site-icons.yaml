@@ -1,0 +1,33 @@
+# Favicon / 网站图标 SEO
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/favicon-in-search
+
+rules:
+  - id: google.favicon.missing
+    source: google-search-central
+    severity: low
+    confidence_default: 0.99
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.alt_check, inputs: [head_meta]}
+    bydfi_business_impact: "Favicon 让 BYDFi 在 SERP 显示品牌图标，提升 CTR"
+    tags: [favicon, branding]
+
+  - id: google.favicon.wrong-size
+    source: google-search-central
+    severity: low
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.format_check, inputs: [favicon_url]}
+    bydfi_business_impact: "Google 偏好 48x48 或其倍数，最小 8x8"
+    tags: [favicon, image]
+
+  - id: google.favicon.not-square
+    source: google-search-central
+    severity: info
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [google]}
+    detector: {type: hard_rule, fn: detectors.image.responsive_check, inputs: [favicon_url]}
+    bydfi_business_impact: "非正方形会被裁剪"
+    tags: [favicon]
