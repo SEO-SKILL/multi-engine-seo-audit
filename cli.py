@@ -66,24 +66,79 @@ def audit(
 
 
 @app.command()
-def gate(md_file: str = typer.Argument(...)) -> None:
-    """发布前卡审"""
-    typer.echo(f"Gate command: {md_file} (stub — Codex W2)")
+def gate(
+    md_file: str = typer.Argument(..., help="待卡审 MD 文件路径"),
+    locale: str = typer.Option(None, "--locale", "-l"),
+    block_threshold: str = typer.Option("high", "--block-threshold"),
+) -> None:
+    """发布前卡审（Git pre-commit hook 可用）"""
+    from agents.gate import gate_md_file
+    result = asyncio.run(gate_md_file(md_file, locale=locale, block_threshold=block_threshold))
+
+    if "error" in result:
+        console.print(f"[red]Gate error: {result['error']}[/red]")
+        raise typer.Exit(code=2)
+
+    t = Table(title=f"Gate Check: {md_file}")
+    t.add_column("项")
+    t.add_column("结果")
+    t.add_row("Pass?", "[green]✅ YES[/green]" if result["pass"] else "[red]❌ NO[/red]")
+    t.add_row("Verdict", result["verdict"])
+    t.add_row("Score", f"{result['score']:.1f}/100")
+    t.add_row("Blockers", str(len(result["blockers"])))
+    t.add_row("Highs", str(len(result["highs"])))
+    t.add_row("Mediums", str(len(result["mediums"])))
+    console.print(t)
+
+    if result["blockers"]:
+        console.print("\n[red bold]🔴 BLOCKERS:[/red bold]")
+        for f in result["blockers"]:
+            console.print(f"  - {f['id']}: {f['rec'][:80]}")
+    if result["highs"]:
+        console.print("\n[yellow bold]🟠 HIGH:[/yellow bold]")
+        for f in result["highs"]:
+            console.print(f"  - {f['id']}: {f['rec'][:80]}")
+
+    if not result["pass"]:
+        console.print(f"\n[red bold]Gate FAILED. Fix above before commit.[/red bold]")
+        raise typer.Exit(code=1)
+    console.print(f"\n[green bold]✅ Gate PASSED. Safe to publish.[/green bold]")
 
 
 @app.command()
 def compare(
-    self_url: str = typer.Argument(...),
-    competitor_urls: list[str] = typer.Argument(...),
+    self_url: str = typer.Argument(..., help="自家 URL"),
+    competitor_urls: list[str] = typer.Argument(..., help="竞品 URLs（可多个）"),
 ) -> None:
-    """竞品对比"""
-    typer.echo(f"Compare command (stub — Codex W3)")
+    """竞品对比（输出 HTML 仪表盘）"""
+    from agents.compare import compare_pages
+    result = asyncio.run(compare_pages(self_url, competitor_urls))
+    console.print(f"\n📊 Dashboard: [cyan]{result['output_path']}[/cyan]\n")
+    t = Table(title="Compare Summary")
+    t.add_column("Label"); t.add_column("Score"); t.add_column("Verdict")
+    for r in result["results"]:
+        if "error" in r:
+            t.add_row(r["label"], "—", f"[red]Error[/red]")
+        else:
+            t.add_row(r["label"], f"{r['score']:.0f}", r["verdict"])
+    console.print(t)
 
 
 @app.command()
-def watch(site: str = typer.Argument(...)) -> None:
-    """全站快照"""
-    typer.echo(f"Watch command (stub — Codex W4)")
+def watch(site: str = typer.Argument(..., help="待监控站点（base URL）")) -> None:
+    """全站快照 — 跑 batch_audit + diff 上次"""
+    import subprocess
+    skill_root = Path(__file__).parent
+    console.print(f"[bold]Running batch audit for {site}...[/bold]\n")
+    result = subprocess.run(
+        ["uv", "run", "python", "scripts/batch_audit.py"],
+        cwd=skill_root, capture_output=True, text=True,
+    )
+    console.print(result.stdout[-2000:])
+    if result.returncode != 0:
+        console.print(f"[red]Watch failed: {result.stderr[-500:]}[/red]")
+        raise typer.Exit(code=1)
+    console.print("\n[green]✅ Watch snapshot completed.[/green]")
 
 
 @app.command()
