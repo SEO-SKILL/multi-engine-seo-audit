@@ -1,0 +1,273 @@
+{
+  "generated_at": "2026-06-11T02:20:02.192413",
+  "baseline": {
+    "monthly_organic_traffic": 250000,
+    "monthly_organic_value_usd": 35000,
+    "avg_conversion_to_signup": 0.02,
+    "ltv_per_signup_usd": 180
+  },
+  "audit_summary": {
+    "pages_audited": 7,
+    "avg_score": 76.1
+  },
+  "dimensions": {
+    "eeat": {
+      "current_avg_score": 0.04,
+      "page_count": 7,
+      "weight": "very_high",
+      "current_score": 0.042857142857142864,
+      "max_uplift_pct": 35,
+      "gap": 0.9571428571428572,
+      "estimated_uplift_pct": 33.5
+    },
+    "schema": {
+      "current_avg_score": 0.9,
+      "page_count": 7,
+      "weight": "medium",
+      "current_score": 0.8985714285714286,
+      "max_uplift_pct": 15,
+      "gap": 0.10142857142857142,
+      "estimated_uplift_pct": 1.5
+    },
+    "crawlability": {
+      "current_avg_score": 1.0,
+      "page_count": 7,
+      "weight": "high",
+      "current_score": 1.0,
+      "max_uplift_pct": 25,
+      "gap": 0.0,
+      "estimated_uplift_pct": 0.0
+    },
+    "performance": {
+      "current_avg_score": 0.64,
+      "page_count": 7,
+      "weight": "low",
+      "current_score": 0.6392857142857142,
+      "max_uplift_pct": 8,
+      "gap": 0.36071428571428577,
+      "estimated_uplift_pct": 2.9
+    },
+    "internal_linking": {
+      "current_avg_score": 0.81,
+      "page_count": 7,
+      "weight": "medium",
+      "current_score": 0.8142857142857143,
+      "max_uplift_pct": 12,
+      "gap": 0.18571428571428572,
+      "estimated_uplift_pct": 2.2
+    },
+    "geo": {
+      "current_avg_score": 0.33,
+      "page_count": 7,
+      "weight": "high",
+      "current_score": 0.32857142857142857,
+      "max_uplift_pct": 18,
+      "gap": 0.6714285714285715,
+      "estimated_uplift_pct": 12.1
+    },
+    "multilingual": {
+      "current_avg_score": 0.89,
+      "page_count": 7,
+      "weight": "high",
+      "current_score": 0.8885714285714286,
+      "max_uplift_pct": 22,
+      "gap": 0.11142857142857143,
+      "estimated_uplift_pct": 2.5
+    },
+    "image": {
+      "current_avg_score": 0.67,
+      "page_count": 7,
+      "weight": "medium",
+      "current_score": 0.6714285714285715,
+      "max_uplift_pct": 10,
+      "gap": 0.3285714285714285,
+      "estimated_uplift_pct": 3.3
+    }
+  },
+  "projections": {
+    "conservative_overlap_factor": 0.6,
+    "total_uplift_pct": 34.8,
+    "monthly_traffic_lift_estimate": 87000,
+    "monthly_revenue_lift_estimate_usd": 12180,
+    "annual_revenue_lift_estimate_usd": 146160
+  },
+  "priority_actions": [
+    {
+      "dimension": "eeat",
+      "current_score": 0.04,
+      "estimated_uplift_pct": 33.5,
+      "engineering_effort": "5 days",
+      "roi_score": 33.5
+    },
+    {
+      "dimension": "geo",
+      "current_score": 0.33,
+      "estimated_uplift_pct": 12.1,
+      "engineering_effort": "4 days",
+      "roi_score": 12.1
+    },
+    {
+      "dimension": "image",
+      "current_score": 0.67,
+      "estimated_uplift_pct": 3.3,
+      "engineering_effort": "2 days",
+      "roi_score": 3.3
+    },
+    {
+      "dimension": "performance",
+      "current_score": 0.64,
+      "estimated_uplift_pct": 2.9,
+      "engineering_effort": "5 days",
+      "roi_score": 2.9
+    },
+    {
+      "dimension": "internal_linking",
+      "current_score": 0.81,
+      "estimated_uplift_pct": 2.2,
+      "engineering_effort": "3 days",
+      "roi_score": 2.2
+    },
+    {
+      "dimension": "schema",
+      "current_score": 0.9,
+      "estimated_uplift_pct": 1.5,
+      "engineering_effort": "2 days",
+      "roi_score": 1.5
+    },
+    {
+      "dimension": "multilingual",
+      "current_score": 0.89,
+      "estimated_uplift_pct": 2.5,
+      "engineering_effort": "10 days",
+      "roi_score": 1.25
+    },
+    {
+      "dimension": "crawlability",
+      "current_score": 1.0,
+      "estimated_uplift_pct": 0.0,
+      "engineering_effort": "3 days",
+      "roi_score": 0.0
+    }
+  ],
+  "audit_rows": [
+    {
+      "label": "homepage",
+      "url": "https://bydfi.com",
+      "locale": null,
+      "current_score": 77.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.1,
+        "schema": 0.97,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.8,
+        "geo": 0.3,
+        "multilingual": 0.96,
+        "image": 0.75
+      }
+    },
+    {
+      "label": "futures",
+      "url": "https://bydfi.com/en/futures",
+      "locale": "en",
+      "current_score": 57.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.0,
+        "schema": 0.845,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.7,
+        "geo": 0.2,
+        "multilingual": 0.96,
+        "image": 0.7
+      }
+    },
+    {
+      "label": "learn",
+      "url": "https://bydfi.com/en/learn",
+      "locale": "en",
+      "current_score": 77.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.0,
+        "schema": 0.845,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.8,
+        "geo": 0.367,
+        "multilingual": 0.96,
+        "image": 0.7
+      }
+    },
+    {
+      "label": "price",
+      "url": "https://bydfi.com/en/price/btc",
+      "locale": "en",
+      "current_score": 77.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.0,
+        "schema": 0.845,
+        "crawlability": 1.0,
+        "performance": 0.575,
+        "internal_linking": 1.0,
+        "geo": 0.433,
+        "multilingual": 0.96,
+        "image": 0.55
+      }
+    },
+    {
+      "label": "support",
+      "url": "https://bydfi.com/en/support",
+      "locale": "en",
+      "current_score": 87.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.0,
+        "schema": 0.845,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.8,
+        "geo": 0.4,
+        "multilingual": 0.96,
+        "image": 0.5
+      }
+    },
+    {
+      "label": "homepage-ko",
+      "url": "https://bydfi.com/ko",
+      "locale": "ko",
+      "current_score": 77.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.1,
+        "schema": 0.97,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.8,
+        "geo": 0.3,
+        "multilingual": 0.71,
+        "image": 0.75
+      }
+    },
+    {
+      "label": "homepage-ja",
+      "url": "https://bydfi.com/ja",
+      "locale": "ja",
+      "current_score": 77.5,
+      "verdict": "上线",
+      "composite": {
+        "eeat": 0.1,
+        "schema": 0.97,
+        "crawlability": 1.0,
+        "performance": 0.65,
+        "internal_linking": 0.8,
+        "geo": 0.3,
+        "multilingual": 0.71,
+        "image": 0.75
+      }
+    }
+  ]
+}
