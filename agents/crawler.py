@@ -10,12 +10,21 @@ import time
 
 import httpx
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from agents._schema import (
     AgentInput,
     AgentOutput,
     AgentStatus,
     Metrics,
 )
+from _ratelimit import ConcurrencyLimiter, TokenBucket
+
+# F10 集成：全局限速 + 并发上限（按 config.yaml 中的 framework.rate_limit）
+_GLOBAL_RATE_BUCKET = TokenBucket(requests_per_second=2.0, burst=5)
+_GLOBAL_CONCURRENCY = ConcurrencyLimiter(max_concurrent=5)
 
 UA_PROFILES = {
     "googlebot_desktop": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
@@ -60,13 +69,16 @@ async def run(input_: AgentInput) -> AgentOutput:
 
 
 async def _fetch(client: httpx.AsyncClient, url: str, ua_name: str, ua_string: str) -> dict:
-    headers = {"User-Agent": ua_string, "Accept-Language": "en-US,en;q=0.9"}
-    response = await client.get(url, headers=headers)
-    return {
-        "ua": ua_name,
-        "status_code": response.status_code,
-        "headers": dict(response.headers),
-        "body": response.text,
-        "final_url": str(response.url),
-        "redirects": [str(r.url) for r in response.history],
-    }
+    # F10 真集成：限速 + 并发
+    await _GLOBAL_RATE_BUCKET.acquire()
+    async with _GLOBAL_CONCURRENCY:
+        headers = {"User-Agent": ua_string, "Accept-Language": "en-US,en;q=0.9"}
+        response = await client.get(url, headers=headers)
+        return {
+            "ua": ua_name,
+            "status_code": response.status_code,
+            "headers": dict(response.headers),
+            "body": response.text,
+            "final_url": str(response.url),
+            "redirects": [str(r.url) for r in response.history],
+        }

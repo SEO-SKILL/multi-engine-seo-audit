@@ -1,0 +1,53 @@
+{
+  "date": "2026-06-11T01:52:49.362759",
+  "sources": {
+    "google_search_central_blog": {
+      "url": "https://developers.google.com/search/blog",
+      "status": 200,
+      "content_hash": "19f572db1ddefa67cf3d0163e08533bbc3630347f9379b8b40b5a6a9d0b50ecd",
+      "changed": true,
+      "etag": null,
+      "last_modified": "Mon, 17 Mar 2025 19:25:12 GMT"
+    },
+    "google_status_dashboard": {
+      "url": "https://status.search.google.com",
+      "status": 200,
+      "content_hash": "1a5034c4f25998bf5bc129ed505db217df5e896f3aa07ea1d22a7cb8fc294a22",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "google_search_central_news": {
+      "url": "https://developers.google.com/search/blog/rss",
+      "status": 404,
+      "content_hash": "ca201bab81be840bdf44e46c856e37ece498bceeaf7273d11a5ce1772a8d4c1f",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "bing_webmaster_blog": {
+      "url": "https://blogs.bing.com/webmaster",
+      "status": 200,
+      "content_hash": "03fdd7c5f61f914900b97f795e4dc499a45b5ac266ffe13ea5f137f7dd177568",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "naver_search_advisor": {
+      "url": "https://searchadvisor.naver.com/guide",
+      "status": 200,
+      "content_hash": "66ca9be5d5b1a1706aafad19173835c95940c3d3c601e85181d5de566db9fc96",
+      "changed": true,
+      "etag": "\"c5f1-fmjgdoukJ3sbvM9hXGuw1NtzQ10\"",
+      "last_modified": null
+    },
+    "yandex_webmaster": {
+      "url": "https://yandex.com/blog/webmaster",
+      "status": 200,
+      "content_hash": "396729fef75753339f5da0dc8801babd658bea055f946dba6a6f971eb309e877",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    }
+  }
+}

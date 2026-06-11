@@ -1,0 +1,5 @@
+{"ts": "2026-06-11T01:52:26.991527", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-0", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T01:52:26.991817", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-1", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T01:52:26.991857", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-2", "verdict": "accurate", "notes": null}
+{"ts": "2026-06-11T01:52:26.991888", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-3", "verdict": "false_positive", "notes": null}
+{"ts": "2026-06-11T01:52:26.991912", "rule_id": "bydfi.l02.ticker-context-mismatch", "finding_trace_id": "trace-4", "verdict": "false_positive", "notes": null}
