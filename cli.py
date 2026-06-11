@@ -142,6 +142,36 @@ def watch(site: str = typer.Argument(..., help="待监控站点（base URL）"))
 
 
 @app.command()
+def init(
+    target_repo: str = typer.Argument(".", help="BYDFi 内容仓库路径"),
+) -> None:
+    """一键初始化 git pre-commit hook + .env 模板"""
+    import subprocess
+    repo = Path(target_repo).resolve()
+    if not (repo / ".git").exists():
+        console.print(f"[red]{repo} 不是 git 仓库[/red]")
+        raise typer.Exit(code=1)
+
+    skill_root = Path(__file__).parent
+    hook_script = skill_root / "scripts" / "install-pre-commit-hook.sh"
+    result = subprocess.run(["bash", str(hook_script)], cwd=repo, capture_output=True, text=True)
+    console.print(result.stdout)
+    if result.returncode != 0:
+        console.print(f"[red]{result.stderr}[/red]")
+        raise typer.Exit(code=1)
+
+    env_template = repo / ".env.seo-audit.template"
+    env_template.write_text("""# BYDFi SEO Audit Skill - 配置模板
+ANTHROPIC_API_KEY=
+GSC_SERVICE_ACCOUNT_JSON=
+CLOUDFLARE_API_TOKEN=
+BYDFI_SLACK_WEBHOOK=
+PERPLEXITY_API_KEY=
+""")
+    console.print(f"\n[green]✅ Pre-commit hook + .env template installed[/green]")
+
+
+@app.command()
 def doctor() -> None:
     """检查 skill 健康状态"""
     skill_root = Path(__file__).parent
