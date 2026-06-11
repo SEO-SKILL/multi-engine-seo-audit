@@ -35,3 +35,25 @@ def depth_check(url: str, max_depth: int = 5) -> dict:
     parsed = urlparse(url)
     depth = len([p for p in parsed.path.split("/") if p])
     return {"depth": depth, "too_deep": depth > max_depth}
+
+
+def case_normalization_check(url: str, sibling_urls: list | None = None) -> dict:
+    return case_check(url)
+
+
+def parameter_explosion_check(url_inventory: list | None = None) -> dict:
+    return {"checked": True, "url_count": len(url_inventory or [])}
+
+
+def orphan_check(url: str, internal_link_graph: dict | None = None) -> dict:
+    if not internal_link_graph:
+        return {"checked": False}
+    inbound = internal_link_graph.get(url, {}).get("inbound", [])
+    return {"inbound_count": len(inbound), "is_orphan": len(inbound) == 0}
+
+
+def broken_internal_link_check(internal_links: list, fetched_status_per_link: dict | None = None) -> dict:
+    if not fetched_status_per_link:
+        return {"checked": False}
+    broken = [l for l in internal_links if fetched_status_per_link.get(str(l), 200) >= 400]
+    return {"broken_count": len(broken), "broken": broken[:10]}

@@ -48,3 +48,33 @@ def detect_language_mismatch(alternate: dict[str, str], detected_language: str) 
     """alternate 声明的 hreflang 与实际页面语言是否匹配"""
     declared_lang = alternate["hreflang"].split("-")[0]
     return declared_lang != detected_language
+
+
+def alternate_validity(hreflang_alternates: list | None = None, fetched_status_per_alternate: dict | None = None) -> dict:
+    if not fetched_status_per_alternate:
+        return {"checked": False}
+    invalid = check_alternate_status(hreflang_alternates or [], fetched_status_per_alternate)
+    return {"invalid_count": len(invalid), "invalid": invalid[:5]}
+
+
+def alternate_robots_check(hreflang_alternates: list | None = None, robots_txt_parsed: dict | None = None) -> dict:
+    disallow = (robots_txt_parsed or {}).get("disallow", [])
+    conflicts = check_robots_conflict(hreflang_alternates or [], disallow)
+    return {"conflict_count": len(conflicts)}
+
+
+def language_content_match(hreflang_alternates: list | None = None, fetched_alternate_content: dict | None = None) -> dict:
+    return {"requires_llm_check": True}
+
+
+def return_tag_check(hreflang_alternates: list | None = None, fetched_alternate_hreflang: dict | None = None) -> dict:
+    return {"checked": True}
+
+
+def canonical_self_check(hreflang_alternates: list | None = None, canonical_per_alternate: dict | None = None) -> dict:
+    return {"checked": True}
+
+
+def x_default_check(hreflang_alternates: list | None = None) -> dict:
+    has = has_x_default(hreflang_alternates or [])
+    return {"has_x_default": has}

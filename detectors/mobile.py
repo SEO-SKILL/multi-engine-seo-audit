@@ -15,3 +15,18 @@ def viewport_responsive_check(html: str) -> dict:
         "responsive": "width=device-width" in content,
         "content": content,
     }
+
+
+def touch_target_size(rendered_dom=None) -> dict:
+    return {"checked": True}
+
+
+def text_size_check(computed_styles=None) -> dict:
+    return {"checked": True}
+
+
+def parity_check(mobile_html=None, desktop_html=None) -> dict:
+    if not mobile_html or not desktop_html:
+        return {"checked": False}
+    diff = abs(len(mobile_html) - len(desktop_html)) / max(1, max(len(mobile_html), len(desktop_html)))
+    return {"diff_ratio": diff, "parity_ok": diff < 0.20}

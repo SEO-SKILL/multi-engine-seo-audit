@@ -32,3 +32,9 @@ def code_snippet_check(html: str) -> dict:
     soup = BeautifulSoup(html, "lxml")
     code_blocks = soup.find_all(["code", "pre"])
     return {"code_block_count": len(code_blocks)}
+
+
+def schema_ai_friendly_check(jsonld_parsed: list | None = None) -> dict:
+    encouraged = ["HowTo", "WebApplication", "SoftwareApplication", "QAPage", "Article"]
+    present = [b.get("@type") for b in (jsonld_parsed or []) if isinstance(b, dict) and b.get("@type") in encouraged]
+    return {"present_types": present, "passed": len(present) > 0}

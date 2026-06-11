@@ -27,3 +27,18 @@ def hsts_header_check(headers: dict) -> dict:
 def csp_check(headers: dict) -> dict:
     csp = headers.get("content-security-policy") or headers.get("Content-Security-Policy")
     return {"present": bool(csp), "value": csp}
+
+
+def ssl_expiry_check(ssl_cert: dict | None = None) -> dict:
+    return {"requires_ssl_cert_data": True}
+
+
+def hacked_content_check(page_content: str | None = None) -> dict:
+    import re
+    patterns = [r"\b(?:viagra|cialis|levitra)\b", r"\b(?:casino|gambling|poker)\b", r"\b(?:cheap\s+(?:jersey|replica))\b"]
+    hits = [p for p in patterns if re.search(p, page_content or "", re.IGNORECASE)]
+    return {"hacked_signals": hits, "suspicious": len(hits) > 0}
+
+
+def third_party_spam_flooding(site_inventory: list | None = None, recent_url_growth: dict | None = None) -> dict:
+    return {"requires_log_data": True}

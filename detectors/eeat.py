@@ -55,3 +55,43 @@ def detect_risk_disclaimer(html: str, templates: list[str]) -> dict:
         "has_disclaimer": len(matches) > 0,
         "matches": matches,
     }
+
+
+def author_signal(jsonld=None, visible_text=None, dom_metadata=None) -> dict:
+    return detect_author_signals(visible_text or "")
+
+
+def publication_dates(jsonld=None, visible_text=None, headers=None) -> dict:
+    return detect_publication_dates(visible_text or "")
+
+
+def author_profile_page_exists(author_name=None, author_url=None, fetched_author_page=None) -> dict:
+    return {"requires_fetch": True, "url_given": bool(author_url)}
+
+
+def author_bio_page_check(author_url=None, fetched_author_page=None) -> dict:
+    return {"requires_fetch": True}
+
+
+def author_social_check(author_metadata=None) -> dict:
+    meta = author_metadata or {}
+    has_social = any(k in str(meta).lower() for k in ["twitter", "linkedin", "github"])
+    return {"has_social_link": has_social}
+
+
+def reviewer_check(page_content=None, jsonld=None) -> dict:
+    text = (page_content or "").lower()
+    has_reviewed = "reviewed by" in text or "审核" in (page_content or "")
+    has_schema = any(isinstance(b, dict) and b.get("reviewedBy") for b in (jsonld or []))
+    return {"has_reviewer": has_reviewed or has_schema}
+
+
+def ymyl_signal_check(visible_text=None, jsonld=None, author_metadata=None) -> dict:
+    author = detect_author_signals(visible_text or "") if visible_text else {"ymyl_strong_signal": False}
+    return {"author_score": author.get("author_signals_score", 0)}
+
+
+def org_credentials_check(page_content=None, jsonld_organization=None, footer=None) -> dict:
+    text = (page_content or "") + " " + (footer or "")
+    has = any(k in text.lower() for k in ["address", "phone", "registered", "license"])
+    return {"has_credentials": has}

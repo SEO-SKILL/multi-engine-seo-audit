@@ -33,6 +33,12 @@ def contract_address_link_check(html: str) -> dict:
     }
 
 
+def defi_data_citation_check(visible_text: str, citations: list | None = None) -> dict:
+    text = (visible_text or "").lower()
+    sources = [s for s in ["coingecko", "coinmarketcap", "defillama", "etherscan", "dune"] if s in text]
+    return {"defi_sources": sources, "passed": len(sources) >= 1}
+
+
 def ticker_link_check(html: str, known_tickers: list[str]) -> list[dict]:
     soup = BeautifulSoup(html, "lxml")
     issues = []

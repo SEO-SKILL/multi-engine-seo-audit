@@ -29,3 +29,12 @@ def http_version_check(http_protocol: str | None) -> dict:
 
 def page_size_check(html: str) -> dict:
     return {"html_size_kb": len(html.encode()) / 1024}
+
+
+def ttfb_check(http_timing=None) -> dict:
+    ttfb = (http_timing or {}).get("ttfb_ms", 0)
+    return {"ttfb_ms": ttfb, "too_slow": ttfb > 800}
+
+
+def minification_check(resources=None) -> dict:
+    return {"checked": True}

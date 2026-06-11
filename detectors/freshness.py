@@ -21,3 +21,9 @@ def last_reviewed_format_check(text: str) -> dict:
     iso_pattern = re.compile(r"\d{4}-\d{2}-\d{2}")
     has_iso = bool(iso_pattern.search(text))
     return {"has_iso_date": has_iso}
+
+
+def update_history_check(page_content: str | None = None) -> dict:
+    text = (page_content or "").lower()
+    has = any(k in text for k in ["update history", "changelog", "revision history", "更新历史"])
+    return {"has_update_history": has}

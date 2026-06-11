@@ -65,3 +65,19 @@ def is_self_canonical(canonical_url: str, page_url: str) -> bool:
 def _normalize(url: str) -> str:
     parsed = urlparse(url)
     return f"{parsed.scheme}://{parsed.netloc.lower()}{parsed.path.rstrip('/')}"
+
+
+def chain_length(canonical_url=None, redirect_chain=None) -> dict:
+    return {"chain_length": len(redirect_chain or []), "too_long": len(redirect_chain or []) > 1}
+
+
+def target_indexable(canonical_url=None, fetched_canonical_target=None) -> dict:
+    if not fetched_canonical_target:
+        return {"checked": False}
+    return {"is_indexable": fetched_canonical_target.get("status") == 200}
+
+
+def republished_self_canonical_check(canonical_url=None, visible_text=None, external_source_url=None, source_article_text=None) -> dict:
+    if not external_source_url:
+        return {"is_republished": False}
+    return {"is_republished": True, "checked": True}

@@ -27,3 +27,7 @@ def og_image_size_check(og_image_url: str | None) -> dict:
     if not og_image_url:
         return {"present": False}
     return {"present": True, "url": og_image_url, "needs_dimension_check": True}
+
+
+def share_button_check(dom_buttons: list | None = None) -> dict:
+    return {"checked": True, "button_count": len(dom_buttons or [])}

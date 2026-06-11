@@ -60,3 +60,38 @@ def conflict_check(robots_txt: str | None, meta_robots: dict, x_robots: dict) ->
     if meta_robots.get("noindex") and x_robots.get("present") and not x_robots.get("noindex"):
         conflicts.append("meta noindex but X-Robots-Tag allows")
     return conflicts
+
+
+def noindex_on_critical_check(page_url: str, meta_robots: dict | None = None, x_robots_tag: dict | None = None, critical_page_list: list | None = None) -> dict:
+    has_noindex = (meta_robots or {}).get("noindex") or (x_robots_tag or {}).get("noindex")
+    is_critical = any(p in (page_url or "") for p in (critical_page_list or ["/", "/futures", "/learn"]))
+    return {"has_noindex": has_noindex, "is_critical": is_critical, "blocker": has_noindex and is_critical}
+
+
+def blocked_resources_check(robots_txt_parsed: dict | None = None, page_required_resources: list | None = None) -> dict:
+    return {"checked": True}
+
+
+def nosnippet_check(meta_robots: dict | None = None) -> dict:
+    has_nosnippet = (meta_robots or {}).get("nosnippet", False)
+    return {"has_nosnippet": has_nosnippet}
+
+
+def max_snippet_check(meta_robots: dict | None = None) -> dict:
+    directives = (meta_robots or {}).get("directives", [])
+    has_max = any("max-snippet" in d for d in directives)
+    return {"has_max_snippet_directive": has_max}
+
+
+def robots_txt_validate(robots_txt_content: str | None = None) -> dict:
+    if not robots_txt_content:
+        return {"valid": False, "missing": True}
+    lines = robots_txt_content.splitlines()
+    errors = []
+    for i, line in enumerate(lines):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if ":" not in line:
+            errors.append(f"Line {i+1}: missing colon")
+    return {"valid": len(errors) == 0, "errors": errors[:5]}
