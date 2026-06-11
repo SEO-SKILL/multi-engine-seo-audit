@@ -169,6 +169,53 @@ def doctor() -> None:
     except Exception as e:
         console.print(f"[red]Rule loader error: {e}[/red]")
 
+    # Detector coverage
+    try:
+        import re, pathlib, yaml
+        referenced = set()
+        for f in pathlib.Path("rules").rglob("*.yaml"):
+            if "_system" in str(f): continue
+            try:
+                d = yaml.safe_load(f.read_text())
+                if isinstance(d, dict):
+                    for r in d.get("rules", []):
+                        fn = r.get("detector", {}).get("fn")
+                        if fn and fn.startswith("detectors."):
+                            referenced.add(fn)
+            except Exception: pass
+        implemented = set()
+        for f in pathlib.Path("detectors").glob("*.py"):
+            if f.name == "__init__.py": continue
+            for m in re.finditer(r"^(?:async\s+)?def (\w+)\(", f.read_text(), re.MULTILINE):
+                implemented.add(f"detectors.{f.stem}.{m.group(1)}")
+        coverage = len(referenced & implemented) / max(1, len(referenced))
+        console.print(f"[bold]Detector coverage:[/bold] [cyan]{int(coverage*100)}%[/cyan] ({len(referenced & implemented)}/{len(referenced)})")
+    except Exception:
+        pass
+
+    # F4 Secrets health
+    try:
+        from _secrets import report_health
+        sec = report_health(verbose=False)
+        s_table = Table(title="🔑 Secrets Health Check")
+        s_table.add_column("Total"); s_table.add_column("Configured"); s_table.add_column("Missing")
+        s_table.add_row(str(sec["total_secrets"]), str(sec["configured"]),
+                        f"[yellow]{len(sec['missing'])}[/yellow]")
+        console.print(s_table)
+        if sec["configured"] == 0:
+            console.print("[dim]提示：所有 secret 未配置，skill 跑 stub 模式。配置任一可解锁对应能力。[/dim]")
+    except Exception:
+        pass
+
+    # F11 Plugins
+    try:
+        from _plugins import load_all_plugins
+        reg = load_all_plugins()
+        if reg.custom_detectors or reg.custom_judges:
+            console.print(f"\n[bold]Plugins:[/bold] [green]{len(reg.custom_detectors)} detector + {len(reg.custom_judges)} judge[/green]")
+    except Exception:
+        pass
+
 
 if __name__ == "__main__":
     app()
