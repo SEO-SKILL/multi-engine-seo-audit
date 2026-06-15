@@ -4,6 +4,7 @@
 
 **面向加密交易所与金融 YMYL 站点的企业级深度 SEO 审计平台。** 22 个 Agent 并行驱动，覆盖 442 条规则，横跨 Google Spam Policy 2024、Naver C-Rank、Yandex MatrixNet、Yahoo!JAPAN——产出可证伪、有原始来源的优先级行动清单。一个二进制同时提供 **Web Dashboard** 和**桌面 Electron App**，技术 / 非技术同事都能直接用。
 
+[![CI](https://github.com/twitter-bot-tech/multi-engine-seo-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/twitter-bot-tech/multi-engine-seo-audit/actions/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Electron 32](https://img.shields.io/badge/Electron-32.x-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-FF6B00.svg)](LICENSE)

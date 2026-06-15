@@ -53,5 +53,3 @@ image-cache/
 # macOS
 .DS_Store
 
-# CI workflow（需要 OAuth workflow scope 才能 push，临时排除）
-.github/workflows/
