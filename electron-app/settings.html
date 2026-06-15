@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>设置 — BYDFi SEO Audit</title>
+<title>设置 — Platform SEO Audit</title>
 <style>
   :root {
     --orange: #FF6B00;
@@ -121,7 +121,7 @@
 
   <script>
     async function load() {
-      const cur = await window.bydfiAudit.readSettings();
+      const cur = await window.platformAudit.readSettings();
       ['ANTHROPIC_API_KEY','GOOGLE_AI_API_KEY','LARK_WEBHOOK'].forEach(k => {
         const el = document.getElementById(k);
         if (cur[k]) { el.placeholder = cur[k]; }
@@ -163,9 +163,9 @@
         showToast('未填写任何字段', 1500);
         return;
       }
-      await window.bydfiAudit.writeSettings(payload);
+      await window.platformAudit.writeSettings(payload);
       showToast('✓ 已保存，正在重启后端...');
-      await window.bydfiAudit.restartBackend();
+      await window.platformAudit.restartBackend();
       setTimeout(() => window.close(), 1800);
     }
 

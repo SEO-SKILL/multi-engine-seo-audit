@@ -20,12 +20,12 @@ FIX_GUIDES: dict[str, dict] = {
         "steps": [
             {"title": "Step 1: 在 <head> 加 canonical 标签",
              "code_before": "<head>\n  <title>BTC Calculator</title>\n</head>",
-             "code_after": "<head>\n  <title>BTC Calculator</title>\n  <link rel='canonical' href='https://bydfi.com/en/calculator'>\n</head>", "language": "html"},
+             "code_after": "<head>\n  <title>BTC Calculator</title>\n  <link rel='canonical' href='https://example.com/en/calculator'>\n</head>", "language": "html"},
             {"title": "Step 2: 必须 SSR 输出（不可仅 JS 注入）",
              "note": "Next.js: 用 <Head> 组件\nReact SPA: 用 react-helmet-async + prerender\n纯 SPA Googlebot 看不到"},
             {"title": "Step 3: 必须绝对 URL",
              "code_before": "<link rel='canonical' href='/futures'>",
-             "code_after": "<link rel='canonical' href='https://bydfi.com/en/futures'>", "language": "html"},
+             "code_after": "<link rel='canonical' href='https://example.com/en/futures'>", "language": "html"},
             {"title": "Step 4: 验证", "command": "curl -s URL | grep -i canonical"},
         ],
         "verify": "audit 后 canonical.missing 消失", "effort_minutes": 30,
@@ -39,16 +39,16 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "Google 对金融转载内容看 E-E-A-T。self-canonical 转载 = Google 判定低增量 = 触发人工处置（参考 MEXC 2026-Q1）。",
         "steps": [
             {"title": "Step 1（推荐）: cross-domain canonical 到原文",
-             "code_before": "<link rel='canonical' href='https://bydfi.com/news/X'>",
+             "code_before": "<link rel='canonical' href='https://example.com/news/X'>",
              "code_after": "<link rel='canonical' href='https://original-source.com/X'>", "language": "html"},
             {"title": "Step 2（备选）: 加 noindex",
              "code_after": "<meta name='robots' content='noindex'>", "language": "html"},
             {"title": "Step 3（最佳）: 补足原创增量 ≥ 50%",
-             "note": "补：BYDFi 编辑评审 / 风险提示 / 事实核验 / 原作者 bio / FAQ\n移除前先确认增量足够"},
+             "note": "补：Platform 编辑评审 / 风险提示 / 事实核验 / 原作者 bio / FAQ\n移除前先确认增量足够"},
         ],
         "verify": "重审后 republished-content-low-increment finding 消失", "effort_minutes": 120,
-        "related": ["bydfi.l01.republished-content-low-increment", "google.eeat.author-attribution-missing"],
-        "references": [{"label": "BYDFi MEXC 事故复盘", "url": "rules/bydfi/google-action-history.md"}],
+        "related": ["platform.l01.republished-content-low-increment", "google.eeat.author-attribution-missing"],
+        "references": [{"label": "Platform MEXC 事故复盘", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "防 Google 人工处置 / Brand SEO Score +20+",
     },
 
@@ -58,11 +58,11 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "YMYL 金融内容缺作者 = 来源不可追溯 = 永远不进 SERP 前 10。MEXC 事故起因之一就是移除原作者 Max Clark。",
         "steps": [
             {"title": "Step 1: <head> 加 meta author",
-             "code_after": "<meta name='author' content='BYDFi Research Team'>", "language": "html"},
+             "code_after": "<meta name='author' content='Platform Research Team'>", "language": "html"},
             {"title": "Step 2: 加 JSON-LD author + reviewedBy",
-             "code_after": '{\n  "@type": "Article",\n  "author": {"@type": "Person", "name": "BYDFi Research", "url": "/author/research"},\n  "reviewedBy": {"@type": "Person", "name": "Risk Team"},\n  "datePublished": "2026-01-15",\n  "dateModified": "2026-06-08"\n}', "language": "json"},
+             "code_after": '{\n  "@type": "Article",\n  "author": {"@type": "Person", "name": "Platform Research", "url": "/author/research"},\n  "reviewedBy": {"@type": "Person", "name": "Risk Team"},\n  "datePublished": "2026-01-15",\n  "dateModified": "2026-06-08"\n}', "language": "json"},
             {"title": "Step 3: 可见 byline",
-             "code_after": '<footer class="byline">\n  Author: <a href="/author/research" rel="author">BYDFi Research</a>\n  | <time datetime="2026-06-08">Updated June 8, 2026</time>\n</footer>', "language": "html"},
+             "code_after": '<footer class="byline">\n  Author: <a href="/author/research" rel="author">Platform Research</a>\n  | <time datetime="2026-06-08">Updated June 8, 2026</time>\n</footer>', "language": "html"},
             {"title": "Step 4: 建 /author/* profile 页", "note": "含 bio + 资质 + 历史文章"},
         ],
         "verify": "eeat composite 从 ~0 → 0.8+", "effort_minutes": 60,
@@ -89,13 +89,13 @@ FIX_GUIDES: dict[str, dict] = {
 
     "google.eeat.first-hand-experience-missing": {
         "issue": "内容缺第一手经验信号（无第一人称 / 无截图 / 无平台数据）",
-        "why": "Experience 是 E-E-A-T 第一个 E。Google 2024+ 强化。BYDFi /crypto-review 必须证明'我们真用过'。",
+        "why": "Experience 是 E-E-A-T 第一个 E。Google 2024+ 强化。Platform /crypto-review 必须证明'我们真用过'。",
         "steps": [
-            {"title": "Step 1: 加真实 BYDFi UI 截图", "note": "不用 mockup / 不用 stock photo"},
+            {"title": "Step 1: 加真实 Platform UI 截图", "note": "不用 mockup / 不用 stock photo"},
             {"title": "Step 2: 第一人称叙述",
              "code_before": "Users can configure leverage from 1x to 125x",
-             "code_after": "When testing BYDFi's leverage, I started at 5x and gradually increased to 20x. Here's the UI screenshot...", "language": "markdown"},
-            {"title": "Step 3: 引用 BYDFi 平台特定数据", "note": "如：'BYDFi BTC 维护保证金率 0.5%'（不是泛指）"},
+             "code_after": "When testing Platform's leverage, I started at 5x and gradually increased to 20x. Here's the UI screenshot...", "language": "markdown"},
+            {"title": "Step 3: 引用 Platform 平台特定数据", "note": "如：'Platform BTC 维护保证金率 0.5%'（不是泛指）"},
         ],
         "verify": "first-hand-experience-missing finding 消失", "effort_minutes": 90,
         "related": ["google.eeat.thin-content-vs-serp"],
@@ -107,9 +107,9 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "Google Helpful Content 算法要求'比同 SERP 更有实质增量'。薄内容 = 永远难排名。",
         "steps": [
             {"title": "Step 1: 跑同 SERP 竞品对比",
-             "command": "uv run python cli.py compare https://bydfi.com/page https://competitor1.com/similar https://competitor2.com/similar"},
+             "command": "uv run python cli.py compare https://example.com/page https://competitor1.com/similar https://competitor2.com/similar"},
             {"title": "Step 2: 找出竞品没有的角度",
-             "note": "BYDFi 视角 / 真实数据 / 风险分析 / 案例 / 工具入口"},
+             "note": "Platform 视角 / 真实数据 / 风险分析 / 案例 / 工具入口"},
             {"title": "Step 3: 补足独特价值层", "note": "每个 H2 必须有竞品没有的内容"},
         ],
         "verify": "thin-content finding 消失", "effort_minutes": 180,
@@ -130,7 +130,7 @@ FIX_GUIDES: dict[str, dict] = {
         ],
         "verify": "schema composite ssr_not_csr_only 应为 1.0", "effort_minutes": 90,
         "related": ["google.schema.field-not-grounded-in-visible-content"],
-        "references": [{"label": "MEXC 事故复盘", "url": "rules/bydfi/google-action-history.md"}],
+        "references": [{"label": "MEXC 事故复盘", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "防 manual action / schema composite +0.25",
     },
 
@@ -187,7 +187,7 @@ FIX_GUIDES: dict[str, dict] = {
         ],
         "verify": "hreflang-alternate-blocked-by-robots finding 消失", "effort_minutes": 30,
         "related": ["google.hreflang.alternate-returns-404", "google.hreflang.language-mismatch"],
-        "references": [{"label": "MEXC 事故 L03", "url": "rules/bydfi/google-action-history.md"}],
+        "references": [{"label": "MEXC 事故 L03", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "9 语言版本恢复 hreflang 信号 / 跨语言流量 +10-15%",
     },
 
@@ -217,24 +217,24 @@ FIX_GUIDES: dict[str, dict] = {
         "expected_impact": "该 locale 真正进入本地搜索",
     },
 
-    # ========== BYDFi 合规 (3 条) ==========
-    "bydfi.compliance.banned-keywords-present": {
+    # ========== Platform 合规 (3 条) ==========
+    "example.compliance.banned-keywords-present": {
         "issue": "页面含违规话术（'guaranteed return' / 'risk-free' / '保证收益' 等）",
         "why": "BLOCKER 级 — 触发 US-SEC / EU-MiCA / JP-JFSA / HK-SFC 多国监管风险。立即移除。",
         "steps": [
             {"title": "Step 1: 全文搜索违规词",
              "command": "grep -rn -E '(guaranteed|risk-free|100% profit|保证收益|稳赚)' src/"},
             {"title": "Step 2: 立即替换为合规表述",
-             "code_before": "BYDFi offers guaranteed 100% return!",
-             "code_after": "BYDFi futures trading involves significant risk. Past performance does not guarantee future results.", "language": "markdown"},
-            {"title": "Step 3: 加风险提示模板", "note": "参考 rules/bydfi/fintech-compliance.yaml 模板"},
+             "code_before": "Platform offers guaranteed 100% return!",
+             "code_after": "Platform futures trading involves significant risk. Past performance does not guarantee future results.", "language": "markdown"},
+            {"title": "Step 3: 加风险提示模板", "note": "参考 rules/platform/fintech-compliance.yaml 模板"},
         ],
         "verify": "banned-keywords-present finding 消失", "effort_minutes": 30,
-        "related": ["bydfi.compliance.risk-disclaimer-required", "bydfi.compliance.region-restricted-content"],
+        "related": ["example.compliance.risk-disclaimer-required", "example.compliance.region-restricted-content"],
         "expected_impact": "防监管处罚 / 防 Google manual action",
     },
 
-    "bydfi.compliance.risk-disclaimer-required": {
+    "example.compliance.risk-disclaimer-required": {
         "issue": "YMYL 金融工具页缺风险提示",
         "why": "工具页（calculator / futures / copy-trading）必须有醒目风险提示 — Google YMYL 要求 + 多国监管要求。",
         "steps": [
@@ -246,8 +246,8 @@ FIX_GUIDES: dict[str, dict] = {
         "expected_impact": "防 YMYL 降权 / 合规风险",
     },
 
-    # ========== BYDFi MEXC 事故规则 (3 条) ==========
-    "bydfi.l02.ticker-context-mismatch": {
+    # ========== Platform MEXC 事故规则 (3 条) ==========
+    "platform.l02.ticker-context-mismatch": {
         "issue": "Ticker 在错配上下文中（MEXC 事故 L02 — PROS / Pharos 案例）",
         "why": "MEXC 事故核心：文章标题含 'Pros and Cons'，自动识别成 Pharos PROS 代币，触发 ticker widget / relatedLink。Google 判定主题污染。",
         "steps": [
@@ -255,18 +255,18 @@ FIX_GUIDES: dict[str, dict] = {
              "code_before": '<!-- 文章讲 "Pros and Cons" 但插了 PROS 代币行情 -->\n<div class="ticker-widget" data-symbol="PROS">\n  <span>PROS Price: $0.42</span>\n  <a href="/trade/PROS_USDT">Buy PROS Now</a>\n</div>',
              "code_after": "<!-- 直接删除 -->", "language": "html"},
             {"title": "Step 2: ticker 自动识别加白名单 + 上下文判断",
-             "note": "用 LLM 检查整段语义，不是单词匹配。BYDFi 已有 sensitive-tickers.yaml"},
+             "note": "用 LLM 检查整段语义，不是单词匹配。Platform 已有 sensitive-tickers.yaml"},
             {"title": "Step 3: schema relatedLink 同步清理", "language": "json",
              "code_before": '"relatedLink": ["/price/PROS", "/trade/PROS_USDT"]',
              "code_after": '// 删除 PROS 相关 link'},
         ],
         "verify": "ticker-context-mismatch 消失 + 跑 MEXC golden fixture", "effort_minutes": 60,
-        "related": ["bydfi.l02.related-link-schema-pollution", "google.schema.relatedlink-topic-mismatch"],
-        "references": [{"label": "MEXC 事故完整复盘", "url": "rules/bydfi/google-action-history.md"}],
+        "related": ["platform.l02.related-link-schema-pollution", "google.schema.relatedlink-topic-mismatch"],
+        "references": [{"label": "MEXC 事故完整复盘", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "防 MEXC 事故复发（最高战略价值）",
     },
 
-    "bydfi.l01.republished-content-low-increment": {
+    "platform.l01.republished-content-low-increment": {
         "issue": "转载内容原创增量 < 20%（MEXC 事故 L01）",
         "why": "MEXC 事故：转载 BlockchainReporter，self-canonical，移除作者 bio + FAQ + 目录 = 低增量 = manual action。",
         "steps": [
@@ -275,13 +275,13 @@ FIX_GUIDES: dict[str, dict] = {
             {"title": "Option B: 加 noindex",
              "code_after": "<meta name='robots' content='noindex,follow'>"},
             {"title": "Option C（最佳）: 补足 ≥ 50% 原创增量",
-             "note": "1. BYDFi 编辑评审段\n2. 风险边界 / 适用范围\n3. 事实核验\n4. 原作者 bio + 来源透明度\n5. FAQ / 目录\n6. 独立增量段（BYDFi 平台数据）"},
+             "note": "1. Platform 编辑评审段\n2. 风险边界 / 适用范围\n3. 事实核验\n4. 原作者 bio + 来源透明度\n5. FAQ / 目录\n6. 独立增量段（Platform 平台数据）"},
         ],
         "verify": "republished-content-low-increment 消失", "effort_minutes": 120,
         "expected_impact": "防 Google 人工处置（关键防御）",
     },
 
-    "bydfi.l05.tagging-topic-mismatch": {
+    "platform.l05.tagging-topic-mismatch": {
         "issue": "页面标签与正文主题不符（MEXC 事故 L05）",
         "why": "MEXC 事故：页面标签 SEC/Lending，但正文是 AI/Fintech/Creator。标签把页面塞错主题簇，削弱站点架构。",
         "steps": [
@@ -298,7 +298,7 @@ FIX_GUIDES: dict[str, dict] = {
     # ========== GEO / LLM (4 条) ==========
     "perplexity.geo.answerable-chunks": {
         "issue": "页面结构不利于 LLM 引用（H2 少 + 段落过长）",
-        "why": "Perplexity / ChatGPT Search / Claude 偏好'独立可答片段'。BYDFi 长段 + 缺 H2 → LLM 抓不到关键点。",
+        "why": "Perplexity / ChatGPT Search / Claude 偏好'独立可答片段'。Platform 长段 + 缺 H2 → LLM 抓不到关键点。",
         "steps": [
             {"title": "Step 1: 长段拆 3+ 个 H2",
              "code_before": "<p>BTC liquidation is when... [800 字]</p>",
@@ -316,9 +316,9 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "llms.txt 告诉 ChatGPT/Claude/Perplexity 站点结构和重点。不配 = LLM 抓取效率低。",
         "steps": [
             {"title": "创建 /llms.txt", "language": "markdown",
-             "code_after": "# BYDFi llms.txt\n\n> BYDFi: crypto futures exchange. 125x leverage, copy trading.\n\n## Key Resources\n- [Futures Rules](https://bydfi.com/futures-rules)\n- [Calculator](https://bydfi.com/tools)\n- [Learn](https://bydfi.com/learn)\n\n## Authority\n- Founded: 2019\n- Regulatory: [JFSA / MSB]"},
-            {"title": "部署到根目录", "command": "scp llms.txt server:/var/www/bydfi.com/"},
-            {"title": "验证", "command": "curl https://bydfi.com/llms.txt"},
+             "code_after": "# Platform llms.txt\n\n> Platform: crypto futures exchange. 125x leverage, copy trading.\n\n## Key Resources\n- [Futures Rules](https://example.com/futures-rules)\n- [Calculator](https://example.com/tools)\n- [Learn](https://example.com/learn)\n\n## Authority\n- Founded: 2019\n- Regulatory: [JFSA / MSB]"},
+            {"title": "部署到根目录", "command": "scp llms.txt server:/var/www/example.com/"},
+            {"title": "验证", "command": "curl https://example.com/llms.txt"},
         ],
         "verify": "llms-txt-missing 消失", "effort_minutes": 30,
         "references": [{"label": "llms.txt 标准", "url": "https://llmstxt.org"}],
@@ -327,7 +327,7 @@ FIX_GUIDES: dict[str, dict] = {
 
     "perplexity.geo.fact-verifiability": {
         "issue": "事实缺来源引用，LLM 不引用",
-        "why": "LLM 偏好可验证事实。BYDFi 金融数据必须引用 CoinGecko / Etherscan / DefiLlama 等权威源。",
+        "why": "LLM 偏好可验证事实。Platform 金融数据必须引用 CoinGecko / Etherscan / DefiLlama 等权威源。",
         "steps": [
             {"title": "Step 1: 关键数字加引用",
              "code_before": "BTC 24h volume is $320B",
@@ -340,7 +340,7 @@ FIX_GUIDES: dict[str, dict] = {
 
     "bing.ai.gptbot-allowed": {
         "issue": "robots.txt 没明确允许 GPTBot / ChatGPT-User / OAI-SearchBot",
-        "why": "禁 GPTBot = ChatGPT Search 看不到 BYDFi（5 亿月活）。但 GPTBot 训练 vs 搜索 bot 应区分对待。",
+        "why": "禁 GPTBot = ChatGPT Search 看不到 Platform（5 亿月活）。但 GPTBot 训练 vs 搜索 bot 应区分对待。",
         "steps": [
             {"title": "Step 1: 决策 - 训练 vs 搜索分别对待", "language": "text",
              "code_after": "# robots.txt\n\n# 允许搜索 bot (保留 ChatGPT Search 可见性)\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: ChatGPT-User\nAllow: /\n\n# 训练 bot - Kelly 拍板\nUser-agent: GPTBot\nDisallow: /  # 不让 OpenAI 训练\n# 或 Allow: / (允许训练 = 内容贡献 + 长期品牌曝光)"},
@@ -408,13 +408,13 @@ FIX_GUIDES: dict[str, dict] = {
     # ========== 内链 (2 条) ==========
     "shared.internal-link.anchor-text-keyword-stuffing": {
         "issue": "某锚文本占比 > 30%（关键词堆砌嫌疑）",
-        "why": "Google 对过度精确匹配锚文本判定为链接操纵。BYDFi /futures 就是这问题：实测 58/100。",
+        "why": "Google 对过度精确匹配锚文本判定为链接操纵。Platform /futures 就是这问题：实测 58/100。",
         "steps": [
             {"title": "Step 1: 找过度集中的锚文本", "language": "bash",
              "command": 'curl -s URL | python3 -c "from bs4 import BeautifulSoup; from collections import Counter; import sys; s=BeautifulSoup(sys.stdin.read(),\\"lxml\\"); print(Counter(a.text.strip().lower() for a in s.find_all(\\"a\\")).most_common(10))"'},
             {"title": "Step 2: 多样化",
              "code_before": '<a href="/futures/btc">BTC futures</a>\n<a href="/futures/eth">BTC futures</a>  ← 错\n<a href="/futures/sol">BTC futures</a>  ← 错',
-             "code_after": '<a href="/futures/btc">BTC perpetual</a>\n<a href="/futures/eth">ETH futures contract</a>\n<a href="/futures/sol">Trade SOL on BYDFi</a>', "language": "html"},
+             "code_after": '<a href="/futures/btc">BTC perpetual</a>\n<a href="/futures/eth">ETH futures contract</a>\n<a href="/futures/sol">Trade SOL on Platform</a>', "language": "html"},
             {"title": "Step 3: 比例 30%/40%/30%（品牌锚/关键词锚/通用锚）"},
         ],
         "verify": "anchor-stuffing 消失", "effort_minutes": 45,
@@ -424,9 +424,9 @@ FIX_GUIDES: dict[str, dict] = {
     # ========== 性能 (2 条) ==========
     "google.cwv.lcp-poor": {
         "issue": "LCP > 2.5s（Core Web Vitals 不达标）",
-        "why": "LCP 影响 Google 排名 + 用户跳出率。BYDFi 工具页应 < 1.5s。",
+        "why": "LCP 影响 Google 排名 + 用户跳出率。Platform 工具页应 < 1.5s。",
         "steps": [
-            {"title": "Step 1: 用 PageSpeed Insights 测当前 LCP", "command": "https://pagespeed.web.dev/?url=BYDFI_URL"},
+            {"title": "Step 1: 用 PageSpeed Insights 测当前 LCP", "command": "https://pagespeed.web.dev/?url=PLATFORM_URL"},
             {"title": "Step 2: 优化首屏图片", "note": "preload hero image / 用 WebP/AVIF / lazy load 非首屏图"},
             {"title": "Step 3: 删除 render-blocking JS", "note": "async / defer 非关键脚本"},
             {"title": "Step 4: 启用 Brotli + HTTP/2"},
@@ -441,8 +441,8 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "Google 明确说不索引 CSS 背景图。关键图片用 <img> 才能进 Google Images。",
         "steps": [
             {"title": "Step 1: 替换 CSS background 为 <img>",
-             "code_before": '<div style="background-image: url(hero.jpg)" class="hero">\n  <h1>BYDFi</h1>\n</div>',
-             "code_after": '<div class="hero">\n  <img src="hero.jpg" alt="BYDFi crypto exchange hero" loading="lazy">\n  <h1>BYDFi</h1>\n</div>', "language": "html"},
+             "code_before": '<div style="background-image: url(hero.jpg)" class="hero">\n  <h1>Platform</h1>\n</div>',
+             "code_after": '<div class="hero">\n  <img src="hero.jpg" alt="Platform crypto exchange hero" loading="lazy">\n  <h1>Platform</h1>\n</div>', "language": "html"},
             {"title": "Step 2: 装饰图保留 CSS（无 SEO 价值的）", "note": "非内容性图片可保留 CSS"},
         ],
         "verify": "image composite img_element_used = 1.0", "effort_minutes": 60,
@@ -480,7 +480,7 @@ FIX_GUIDES: dict[str, dict] = {
         "why": "浪费 Googlebot crawl budget + 信号差。",
         "steps": [
             {"title": "Step 1: 扫 sitemap 所有 URL 状态",
-             "command": "uv run python3 -c 'from detectors.sitemap import *; import asyncio; print(asyncio.run(exists_check(\"https://bydfi.com\")))'"},
+             "command": "uv run python3 -c 'from detectors.sitemap import *; import asyncio; print(asyncio.run(exists_check(\"https://example.com\")))'"},
             {"title": "Step 2: 移除 404 URL，重新生成 sitemap"},
             {"title": "Step 3: GSC 重新提交 sitemap"},
         ],
@@ -503,7 +503,7 @@ def _auto_generate(finding: dict) -> dict:
     """无专门指南时，从规则元数据 + patch 模板自动生成"""
     rule_id = finding.get("id", "")
     severity = finding.get("severity", "low")
-    bydfi_impact = finding.get("bydfi_impact", "")
+    impact = finding.get("impact", "")
     recommendation = finding.get("recommendation", "见规则定义")
     source_url = finding.get("source_doc_url")
     source = finding.get("source", "")
@@ -561,7 +561,7 @@ def _auto_generate(finding: dict) -> dict:
     return {
         "rule_id": rule_id,
         "issue": recommendation,
-        "why": bydfi_impact or f"按 {source} 官方规则要求修复。{impact_text}",
+        "why": platform_impact or f"按 {source} 官方规则要求修复。{impact_text}",
         "steps": steps,
         "verify": f"重新 audit 后 {rule_id} finding 消失",
         "effort_minutes": effort,
@@ -586,8 +586,8 @@ def _find_related_rules(rule_id: str) -> list[str]:
         "google.schema": ["jsonld-csr-only", "field-not-grounded-in-visible-content"],
         "google.hreflang": ["alternate-returns-404", "alternate-blocked-by-robots", "language-mismatch"],
         "shared.eeat": ["author-bio-page-missing", "reviewer-check"],
-        "bydfi.l01": ["republished-content-low-increment"],
-        "bydfi.l02": ["ticker-context-mismatch", "related-link-schema-pollution"],
+        "platform.l01": ["republished-content-low-increment"],
+        "platform.l02": ["ticker-context-mismatch", "related-link-schema-pollution"],
         "perplexity.geo": ["answerable-chunks", "llms-txt-missing", "fact-verifiability"],
     }
     siblings = common_siblings.get(prefix, [])

@@ -3,7 +3,7 @@
 # 2024 起 INP 替换 FID 成为核心 Web Vitals
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://web.dev/articles/vitals
   pulled_at: 2026-06-12
@@ -19,9 +19,9 @@ rules:
       type: hard_rule
       fn: detectors.web_vitals.lcp_estimate
       inputs: [raw_html, http_headers]
-    bydfi_business_impact: |
+    business_impact: |
       LCP > 2.5s 直接影响 Google 排名（page experience signal）。
-      BYDFi 主页关键资源（hero image / 大字 title）必须在 2.5s 内渲染完成。
+      Platform 主页关键资源（hero image / 大字 title）必须在 2.5s 内渲染完成。
     tags: [web-vitals, lcp, performance]
 
   - id: google.web-vitals.cls-layout-shift
@@ -34,9 +34,9 @@ rules:
       type: hard_rule
       fn: detectors.web_vitals.cls_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       CLS > 0.1 = 用户体验差（图片/广告插入导致布局跳动）。
-      BYDFi 必须给所有 img 标签声明 width/height 避免 CLS。
+      Platform 必须给所有 img 标签声明 width/height 避免 CLS。
     tags: [web-vitals, cls, performance]
 
   - id: google.web-vitals.inp-interactivity
@@ -49,9 +49,9 @@ rules:
       type: hard_rule
       fn: detectors.web_vitals.inp_estimate
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       INP（2024 替代 FID）> 200ms = 用户交互卡顿。
-      BYDFi 交易 / 价格图表 / 滑块等交互组件必须保持 INP < 200ms。
+      Platform 交易 / 价格图表 / 滑块等交互组件必须保持 INP < 200ms。
     tags: [web-vitals, inp, performance]
 
   - id: google.web-vitals.ttfb-server-slow
@@ -64,7 +64,7 @@ rules:
       type: hard_rule
       fn: detectors.web_vitals.ttfb_check
       inputs: [http_headers]
-    bydfi_business_impact: |
-      TTFB > 800ms = 服务器响应慢。BYDFi CDN 必须配置 edge cache，
+    business_impact: |
+      TTFB > 800ms = 服务器响应慢。Platform CDN 必须配置 edge cache，
       大陆/海外 / 韩国 / 俄罗斯 各地区 TTFB 都要达标。
     tags: [web-vitals, ttfb, performance]

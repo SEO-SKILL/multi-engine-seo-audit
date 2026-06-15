@@ -5,9 +5,9 @@ import re
 
 
 def scaled_content_awareness_check(visible_text: str | None = None, **_) -> dict:
-    """① AI 规模化低价值——任何页面都给出 awareness 提示（除非已包含 BYDFi 真分析信号）"""
+    """① AI 规模化低价值——任何页面都给出 awareness 提示（除非已包含 Platform 真分析信号）"""
     text = visible_text or ""
-    has_byline = any(k in text for k in ["analyzed by", "by BYDFi", "我们分析", "we tested", "we measured"])
+    has_byline = any(k in text for k in ["analyzed by", "by Platform", "我们分析", "we tested", "we measured"])
     return {"has_first_party_analysis": has_byline, "suspect_no_analysis_signal": not has_byline}
 
 
@@ -31,7 +31,7 @@ def faq_deprecation_notice_check(raw_html: str | None = None, **_) -> dict:
 
 
 def snippet_strategy_check(raw_html: str | None = None, visible_text: str | None = None, **_) -> dict:
-    """⑥ Featured Snippet 策略 — 检查页面 snippet 优化质量，给 BYDFi 持续 awareness 提示"""
+    """⑥ Featured Snippet 策略 — 检查页面 snippet 优化质量，给 Platform 持续 awareness 提示"""
     html = (raw_html or "").lower()
     has_question_heading = bool(re.search(r"<h[2-4][^>]*>\s*(?:what|how|why|when|where|是什么|如何|为什么)", html, re.IGNORECASE))
     has_list = "<ul" in html or "<ol" in html
@@ -54,5 +54,5 @@ def core_update_monitoring_check(page_url: str | None = None, **_) -> dict:
 
 
 def featured_snippet_strategy_awareness_check(raw_html: str | None = None, **_) -> dict:
-    """⑥ Featured Snippet 策略提示——总是触发 awareness，让 BYDFi 关注 0 位流量"""
+    """⑥ Featured Snippet 策略提示——总是触发 awareness，让 Platform 关注 0 位流量"""
     return {"featured_snippet_strategy_required": True, "suspect_snippet_strategy_missing": True}

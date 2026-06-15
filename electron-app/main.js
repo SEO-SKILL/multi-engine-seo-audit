@@ -1,4 +1,4 @@
-// BYDFi SEO Audit — Electron 主进程
+// Platform SEO Audit — Electron 主进程
 // 职责：spawn Flask 后端 → 等 health → 开窗 → 退出时 kill
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu } = require('electron');
@@ -45,7 +45,7 @@ function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1440, height: 900,
     minWidth: 1100, minHeight: 700,
-    title: 'BYDFi SEO Audit',
+    title: 'Platform SEO Audit',
     icon: path.join(__dirname, 'build', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -188,9 +188,9 @@ ipcMain.handle('app:open-deliverables', () => {
 function buildMenu() {
   const template = [
     {
-      label: 'BYDFi SEO Audit',
+      label: 'Platform SEO Audit',
       submenu: [
-        { label: '关于 BYDFi SEO Audit', role: 'about' },
+        { label: '关于 Platform SEO Audit', role: 'about' },
         { type: 'separator' },
         { label: '设置 API Keys...', accelerator: 'CmdOrCtrl+,', click: () => ipcMain.emit('open-settings-direct') },
         { label: '打开 Deliverables 文件夹', click: () => shell.openPath(path.join(skillRoot(), 'deliverables')) },
@@ -237,7 +237,7 @@ app.whenReady().then(async () => {
   if (missing.length > 0) {
     dialog.showErrorBox(
       '环境检查失败',
-      `BYDFi SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n安装方法：\n  brew install python uv`
+      `Platform SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n安装方法：\n  brew install python uv`
     );
     app.quit();
     return;

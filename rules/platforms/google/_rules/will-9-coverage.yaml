@@ -3,7 +3,7 @@
 # 创建：2026-06-15
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   # === ① AI 规模化低价值（兜底信息级 — 让用户看到该主题提示）===
@@ -13,7 +13,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.will_coverage.scaled_content_awareness_check, inputs: [visible_text]}
-    bydfi_business_impact: "Google 2024 spam policy 重点：AI 规模化低价值内容会被人工处置。BYDFi 用 LLM 量产时必须编辑加工"
+    business_impact: "Google 2024 spam policy 重点：AI 规模化低价值内容会被人工处置。Platform 用 LLM 量产时必须编辑加工"
     tags: [will-9, scaled-content, awareness]
 
   # === ② YMYL/EEAT 兜底 ===
@@ -23,7 +23,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.will_coverage.ymyl_awareness_check, inputs: [visible_text, raw_html]}
-    bydfi_business_impact: "BYDFi 是金融 YMYL 类站点，所有页面应有 Organization / about / 风险披露信号"
+    business_impact: "Platform 是金融 YMYL 类站点，所有页面应有 Organization / about / 风险披露信号"
     tags: [will-9, ymyl, eeat]
 
   # === ⑤ FAQ 富结果弃用提示 ===
@@ -33,7 +33,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.will_coverage.faq_deprecation_notice_check, inputs: [raw_html]}
-    bydfi_business_impact: "Google 2026-05 弃用 FAQ 富结果。BYDFi 应在 /support 用 FAQPage 但不期待富结果展示"
+    business_impact: "Google 2026-05 弃用 FAQ 富结果。Platform 应在 /support 用 FAQPage 但不期待富结果展示"
     tags: [will-9, faq, schema-deprecation]
 
   # === ⑥ 摘要深层链接提示 ===
@@ -43,7 +43,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.will_coverage.featured_snippet_strategy_awareness_check, inputs: [raw_html]}
-    bydfi_business_impact: "Featured Snippet / Deep Link 是 BYDFi SEO 获取 0 位流量的关键策略"
+    business_impact: "Featured Snippet / Deep Link 是 Platform SEO 获取 0 位流量的关键策略"
     tags: [will-9, featured-snippet, snippet]
 
   # === ⑧ 核心更新时机 ===
@@ -53,5 +53,5 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.will_coverage.core_update_monitoring_check, inputs: [page_url]}
-    bydfi_business_impact: "BYDFi 应持续监控 Google Core Update 时机，准备 GSC 流量监控 + 应急 SOP"
+    business_impact: "Platform 应持续监控 Google Core Update 时机，准备 GSC 流量监控 + 应急 SOP"
     tags: [will-9, core-update]

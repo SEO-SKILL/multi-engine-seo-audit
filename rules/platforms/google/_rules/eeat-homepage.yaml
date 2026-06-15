@@ -1,7 +1,7 @@
 # Google EEAT — Homepage/article 适用兜底规则
 # 补 Will 知识库 #2 YMYL / E-E-A-T 缺失
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.eeat.homepage-author-or-org-missing
@@ -13,7 +13,7 @@ rules:
       type: hard_rule
       fn: detectors.eeat.organization_signal_check
       inputs: [raw_html, jsonld_parsed]
-    bydfi_business_impact: |
+    business_impact: |
       首页 / 落地页虽不强制作者，但需 Organization JSON-LD + about/contact 链接。
       Will 知识库 #2 YMYL/EEAT 缺失。
     tags: [eeat, organization, ymyl]

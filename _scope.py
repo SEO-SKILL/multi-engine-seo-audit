@@ -73,7 +73,7 @@ def collect_skipped_rules(rules_map: dict, page_type: str | None = None,
             "scope": scope,
             "scope_label": SCOPE_LABELS[scope],
             "source_url": rule.get("source_url") or rule.get("source"),
-            "bydfi_impact": (rule.get("bydfi_business_impact") or "").strip()[:200],
+            "impact": (rule.get("business_impact") or "").strip()[:200],
         })
     out.sort(key=lambda r: ({"blocker":0,"high":1,"medium":2}.get(r["severity"],3),))
     return out

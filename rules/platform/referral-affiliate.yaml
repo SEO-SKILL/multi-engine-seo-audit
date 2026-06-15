@@ -42,7 +42,7 @@ rules:
       inputs: [page_url, raw_html, visible_text]
     platform_business_impact: |
       推广中心页（/partnership /invite-friends /referral-program）若只是 referral code + CTA 按钮
-      但缺少独立教程 / 收益示例 / 数据 → 直接对应 Google 事故原因 ①「内容贫乏的联属网站页面」。
+      但缺少独立教程 / 收益示例 / 数据 → 直接对应 Google manual action 模式「内容贫乏的联属网站页面」。
     tags: [platform, referral, thin-content, platform-incident-2026-05]
 
   - id: platform.referral.code-density-spam

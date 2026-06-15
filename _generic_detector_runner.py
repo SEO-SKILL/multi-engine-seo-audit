@@ -88,7 +88,7 @@ def _build_kwargs(inputs: list[str], ctx: dict) -> dict:
 
 
 # 平台白名单：不区分 locale，所有审计都应跑
-_PLATFORM_AGNOSTIC = {"shared", "bydfi", "all", ""}
+_PLATFORM_AGNOSTIC = {"shared", "platform", "all", ""}
 
 # locale → 主平台 + Google 兜底
 _LOCALE_PLATFORMS = {
@@ -137,7 +137,7 @@ def _applies_to_passes(rule: dict, active_platforms: set[str], locale: str) -> b
 
 
 def _build_recommendation(rule: dict, result: dict) -> str:
-    """生成精确 recommendation：优先用规则定义的 patch_hint / 显式 recommendation，再 fallback bydfi_impact"""
+    """生成精确 recommendation：优先用规则定义的 patch_hint / 显式 recommendation，再 fallback platform_impact"""
     # 1. 显式 recommendation 字段
     if rule.get("recommendation"):
         return str(rule["recommendation"])[:300]
@@ -153,8 +153,8 @@ def _build_recommendation(rule: dict, result: dict) -> str:
         return f"⚠️ Spam policy 违反 — 整改后申请复审"
     if "ymyl" in tags or "compliance" in tags:
         return f"⚠️ YMYL/合规底线 — 必须修复"
-    # 4. bydfi_impact 首段
-    bi = (rule.get("bydfi_business_impact") or "").strip()
+    # 4. platform_impact 首段
+    bi = (rule.get("business_impact") or "").strip()
     if bi:
         first_line = bi.split("\n")[0].strip()
         return first_line[:300] if first_line else f"修复 {rule.get('id','规则')}"

@@ -1,12 +1,12 @@
-# BYDFi SEO Audit · 桌面 App（Electron）
+# Platform SEO Audit · 桌面 App（Electron）
 
-把 SEO audit skill 包装成本地桌面应用，给 BYDFi 内部同事（SEO / 内容运营 / 法务 / 工程）一键使用。
+把 SEO audit skill 包装成本地桌面应用，给 Platform 内部同事（SEO / 内容运营 / 法务 / 工程）一键使用。
 
 ## 🎯 给同事用：直接装 .dmg
 
 ```
-1. 双击 BYDFi-SEO-Audit-1.0.0.dmg
-2. 拖拽 BYDFi SEO Audit.app 到 Applications
+1. 双击 Platform-SEO-Audit-1.0.0.dmg
+2. 拖拽 Platform SEO Audit.app 到 Applications
 3. 首次启动会弹「无法验证开发者」 → 右键打开 → 仍要打开
 4. App 自动启动 → 设置菜单填入 API key → 开始审计
 ```
@@ -52,7 +52,7 @@ npm run build:win
 
 ```
 ┌──────────────────────────────────────────────┐
-│  Electron App (BYDFi SEO Audit)              │
+│  Electron App (Platform SEO Audit)              │
 │  ┌────────────────────────────────────────┐  │
 │  │ Main Process (main.js)                 │  │
 │  │ - 启动时 spawn Flask backend           │  │
@@ -92,7 +92,7 @@ electron-app/
 ├── splash.html          ← 启动等待页（橙色 logo 动画）
 ├── settings.html        ← API key 配置 UI
 ├── build/
-│   └── icon.png         ← App icon（可换 BYDFi 真 logo）
+│   └── icon.png         ← App icon（可换 Platform 真 logo）
 └── README.md            ← 本文档
 ```
 

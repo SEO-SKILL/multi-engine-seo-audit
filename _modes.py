@@ -7,16 +7,16 @@ from __future__ import annotations
 # 守门员规则前缀（违反 = Google manual action 风险）
 GATEKEEPER_RULE_PREFIXES = {
     # MEXC 事故 7 类（防复发）
-    "bydfi.l01", "bydfi.l02", "bydfi.l05",
-    # BYDFi 合规硬要求
-    "bydfi.compliance.banned-keywords",
-    "bydfi.compliance.risk-disclaimer-required",
-    "bydfi.compliance.region-restricted-content",
-    "bydfi.compliance.us-sec",
-    "bydfi.compliance.eu-mica",
-    "bydfi.compliance.jp-jfsa",
-    "bydfi.compliance.sg-mas",
-    "bydfi.compliance.hk-sfc",
+    "platform.l01", "platform.l02", "platform.l05",
+    # Platform 合规硬要求
+    "example.compliance.banned-keywords",
+    "example.compliance.risk-disclaimer-required",
+    "example.compliance.region-restricted-content",
+    "example.compliance.us-sec",
+    "example.compliance.eu-mica",
+    "example.compliance.jp-jfsa",
+    "example.compliance.sg-mas",
+    "example.compliance.hk-sfc",
     # Google 官方 manual action 同类
     "google.manual-action",
     "google.cloaking",
@@ -76,7 +76,7 @@ def classify_rule(rule_id: str, severity: str = "low", tags: list[str] | None = 
 
     # 含 mexc/blocker/manual-action 标签
     keeper_tags = {"mexc-critical", "mexc-incident", "mexc-related", "manual-action-risk",
-                   "bydfi-critical", "blocker", "regulatory", "manual-action"}
+                   "platform-critical", "blocker", "regulatory", "manual-action"}
     if any(t in keeper_tags for t in tags):
         if _page_type_blocks_gatekeeper():
             return "optimizer"

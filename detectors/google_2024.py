@@ -6,8 +6,8 @@ from urllib.parse import urlparse
 
 
 # === 2024 Site Reputation Abuse ===
-# BYDFi 自家已知子路径（first-party content，非寄生）
-_BYDFI_FIRST_PARTY_PATHS = (
+# Platform 自家已知子路径（first-party content，非寄生）
+_PLATFORM_FIRST_PARTY_PATHS = (
     "/cointalk", "/learn", "/blog", "/news", "/support", "/help",
     "/about", "/careers", "/legal", "/terms", "/privacy",
     "/futures", "/spot", "/copy", "/price", "/markets", "/tools",
@@ -18,7 +18,7 @@ def site_reputation_abuse_check(page_url: str | None = None, visible_text: str |
                                 raw_html: str | None = None, **_) -> dict:
     """寄生 SEO 检测：高权重域名下挂载与主品牌无关的第三方/低质内容
     收敛策略（P1）：
-    1. first-party 路径白名单：BYDFi 自家社区/学院/支持路径不算寄生
+    1. first-party 路径白名单：Platform 自家社区/学院/支持路径不算寄生
     2. 移除 casino/gambling/betting 关键词（加密合规讨论天然重叠 → 大面积误报）
     3. coupon/deal 收紧为完整短语（避免 "best deal" 等中性表述误判）
     4. 阈值改为基于真寄生信号，路径白名单可一票否决
@@ -30,7 +30,7 @@ def site_reputation_abuse_check(page_url: str | None = None, visible_text: str |
     irrelevant_subdir = False
     if page_url:
         path = urlparse(page_url).path.lower()
-        is_first_party_known_path = any(path.startswith(p) for p in _BYDFI_FIRST_PARTY_PATHS)
+        is_first_party_known_path = any(path.startswith(p) for p in _PLATFORM_FIRST_PARTY_PATHS)
         irrelevant_subdir = any(k in path for k in ["/coupons/", "/deals/", "/promo/", "/partner/", "/sponsored/", "/affiliates/"])
 
     # 寄生 SEO 信号（收敛后：仅保留真寄生模式，去除加密天然重叠词）
@@ -54,7 +54,7 @@ def site_reputation_abuse_check(page_url: str | None = None, visible_text: str |
     }
     risk_score = sum(1 for v in signals.values() if v)
 
-    # First-party 路径一票否决：BYDFi 自家路径下的内容不视为寄生
+    # First-party 路径一票否决：Platform 自家路径下的内容不视为寄生
     if is_first_party_known_path and not irrelevant_subdir:
         suspect = False
     else:

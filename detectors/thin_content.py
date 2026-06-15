@@ -1,4 +1,4 @@
-"""Thin content detection — 对齐 BYDFi 2026-05 Google 人工处置事故"""
+"""Thin content detection — 对齐 manual action 模式（参考行业事故案例）
 from __future__ import annotations
 
 import re
@@ -13,7 +13,7 @@ AFFILIATE_LINK_PATTERNS = [
     r"/r/[\w-]+\?",
     r"go\.[\w.]+\?",
     r"shrsl\.|ck\.com/|click\.linksynergy",
-    # BYDFi / 交易所自家 referral 系统（精准对齐业务）
+    # Platform / 交易所自家 referral 系统（精准对齐业务）
     r"[?&](?:invite|invite_code|invitecode|code|inviteCode|referrer|invitation)=",
     r"/register\?[^\s\"']*(?:code|invite)",
     r"/sign-?up\?[^\s\"']*(?:code|invite|ref)",
@@ -56,7 +56,7 @@ def affiliate_low_value_check(raw_html: str | None = None, visible_text: str | N
 # === ② 复制 / 抄袭 / 低质转载（启发式 + LLM judge）===
 def plagiarism_check(visible_text: str | None = None, title: str | None = None,
                      page_url: str | None = None, **_) -> dict:
-    """启发式：检测转载/抄袭信号 + 缺乏原创分析（适配 BYDFi 列表页 / 聚合页 / 子页面）"""
+    """启发式：检测转载/抄袭信号 + 缺乏原创分析（适配 Platform 列表页 / 聚合页 / 子页面）"""
     text = visible_text or ""
     if not text:
         return {"insufficient_content": True}
@@ -81,7 +81,7 @@ def plagiarism_check(visible_text: str | None = None, title: str | None = None,
     no_original_signals = {
         "no_first_person": not any(k in text for k in ["我们认为", "我们分析", "我们测试", "我们的观点",
                                                          "we analyzed", "we tested", "in our view",
-                                                         "BYDFi believes", "we believe", "our take",
+                                                         "Platform believes", "we believe", "our take",
                                                          "经我们", "据我们"]),
         "no_data_charts": not any(k in text_l for k in ["chart", "图表", "数据显示", "分析数据",
                                                           "according to our data", "our data shows"]),
@@ -116,12 +116,12 @@ def low_value_page_check(raw_html: str | None = None, visible_text: str | None =
     sentences = re.split(r"[.!?。！？\n]", text)
     sentences = [s.strip() for s in sentences if len(s.strip()) > 5]
     # 独立观点信号（剔除品牌自引用，只算真分析动词 + 第一人称表达）
-    # Bug 修：之前把 "BYDFi" 文本计入 original_signals，导致自家页面永远不算 thin
+    # Bug 修：之前把 "Platform" 文本计入 original_signals，导致自家页面永远不算 thin
     analysis_verbs = [
         # 中文真分析
         "我们认为", "我们分析", "我们发现", "我们测试", "我们的观点", "我们的看法",
         "经分析", "经测算", "实际测试", "在我们看来", "据我们", "我们建议",
-        # 英文真分析（不含 BYDFi/we 单独词）
+        # 英文真分析（不含 Platform/we 单独词）
         "we believe", "we analyzed", "we tested", "we found", "we measured",
         "our analysis shows", "our research", "our take is", "in our view",
         "based on our", "after testing", "we recommend", "we observed",

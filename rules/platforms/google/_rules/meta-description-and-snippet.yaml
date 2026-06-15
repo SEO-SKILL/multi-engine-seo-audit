@@ -1,7 +1,7 @@
 # Google Meta Description / Featured Snippet / Manual Action 申诉
 # Will 知识库 7 个未对齐问题补完
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/appearance/snippet
   pulled_at: 2026-06-15
@@ -16,10 +16,10 @@ rules:
       type: hard_rule
       fn: detectors.meta_desc.missing_or_short_check
       inputs: [head_meta]
-    bydfi_business_impact: |
-      Meta description 缺失或 < 50 字符 = Google 自动生成可能不符合 BYDFi 品牌调性。
+    business_impact: |
+      Meta description 缺失或 < 50 字符 = Google 自动生成可能不符合 Platform 品牌调性。
       Will 知识库点名 #4 "标题与元描述"。
-    tags: [meta-description, snippet, bydfi-incident-2026-05]
+    tags: [meta-description, snippet, manual-action-pattern]
 
   - id: google.meta-description.too-long-or-too-short
     source: google-search-central
@@ -30,7 +30,7 @@ rules:
       type: hard_rule
       fn: detectors.meta_desc.length_check
       inputs: [head_meta]
-    bydfi_business_impact: |
+    business_impact: |
       Meta description 推荐 120-160 字符。过短被截断，过长被忽略。
     tags: [meta-description, snippet]
 
@@ -43,9 +43,9 @@ rules:
       type: hard_rule
       fn: detectors.meta_desc.featured_snippet_check
       inputs: [raw_html, visible_text]
-    bydfi_business_impact: |
+    business_impact: |
       Featured Snippet 偏爱「问句标题 + 50-60 字直接回答 + 列表/表格」结构。
-      BYDFi /learn 想拿 0 位结果，必须输出此结构。Will 知识库 #6。
+      Platform /learn 想拿 0 位结果，必须输出此结构。Will 知识库 #6。
     tags: [featured-snippet, geo, ai-overviews]
 
   - id: google.manual-action.reconsideration-readiness
@@ -58,7 +58,7 @@ rules:
       type: hard_rule
       fn: detectors.meta_desc.reconsideration_check
       inputs: [raw_html, page_url]
-    bydfi_business_impact: |
+    business_impact: |
       Manual Action 申诉需要：清理违规 + 详细说明 + 改进证据。
-      BYDFi 应预先准备 reconsideration request 模板。Will 知识库 #9 申诉与审核恢复。
+      Platform 应预先准备 reconsideration request 模板。Will 知识库 #9 申诉与审核恢复。
     tags: [manual-action, reconsideration, appeal]

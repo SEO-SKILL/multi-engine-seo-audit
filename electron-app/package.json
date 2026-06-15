@@ -1,13 +1,13 @@
 {
-  "name": "bydfi-seo-audit",
-  "productName": "BYDFi SEO Audit",
+  "name": "platform-seo-audit",
+  "productName": "Platform SEO Audit",
   "version": "1.0.0",
-  "description": "BYDFi 内部 SEO 深度审计工具（442+ 规则 · 4 大搜索引擎 · 9 locale 路由）",
+  "description": "Platform 内部 SEO 深度审计工具（442+ 规则 · 4 大搜索引擎 · 9 locale 路由）",
   "main": "main.js",
   "private": true,
   "author": {
-    "name": "BYDFi SEO Team",
-    "email": "kelly@bydfi.com"
+    "name": "Platform SEO Team",
+    "email": "kelly@example.com"
   },
   "scripts": {
     "start": "electron .",
@@ -22,8 +22,8 @@
     "electron-builder": "^25.0.0"
   },
   "build": {
-    "appId": "com.bydfi.seo-audit",
-    "productName": "BYDFi SEO Audit",
+    "appId": "com.platform.seo-audit",
+    "productName": "Platform SEO Audit",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -74,7 +74,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "BYDFi SEO Audit ${version}",
+      "title": "Platform SEO Audit ${version}",
       "icon": "build/icon.png",
       "contents": [
         {

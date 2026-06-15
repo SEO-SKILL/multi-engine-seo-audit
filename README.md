@@ -32,7 +32,7 @@
 ────────────────────────  ───────  ──────────  ──────────────────────
 applies_to 过滤前           14.3     8/8        naver 规则误触发到 en/ja/ru 页
 P0 收敛后                   37.2     2/8        只剩真问题
-P1 收敛后                   38.9     1/8        只剩 KO 韩文页真问题
+P1 收敛后                   38.9     1/8        只剩 1 个真问题（locale 内容质量缺陷）
 ```
 
 **精度提升 +184%**。8 页中 6 页通过守门员审核，唯一剩下的 blocker 是真问题（KO 首页缺真韩文内容）。
@@ -174,7 +174,7 @@ report-agent（综合评分 · 行动清单 · markdown 导出）
 
 - [x] **v1.0** · 442 规则 · 8 维综合评分 · Web Dashboard
 - [x] **v1.1** · locale 智能路由 · Naver / Yandex / Yahoo!JP 原生规则
-- [x] **v2.0** · 守门员 vs 优化双模式 · Electron 桌面化 · 防 2026-05 事故复发
+- [x] **v2.0** · 守门员 vs 优化双模式 · Electron 桌面化 · 防 manual action 模式复发
 - [ ] **v2.1** · 内嵌 Python runtime（同事免装 uv）
 - [ ] **v2.2** · macOS 代码签名 + 公证（去 Gatekeeper 警告）
 - [ ] **v2.3** · 自动更新（electron-updater）
@@ -184,7 +184,7 @@ report-agent（综合评分 · 行动清单 · markdown 导出）
 
 仅限内部团队 — 通过 GitHub 提 Issue / PR。
 
-- 新规则放 `rules/{platform}/_rules/*.yaml`（必须含 `applies_to` + `bydfi_business_impact` + `tags`）
+- 新规则放 `rules/{platform}/_rules/*.yaml`（必须含 `applies_to` + `business_impact` + `tags`）
 - 新 detector 放 `detectors/*.py`，需配 fixture + `tests/` 下的测试用例
 - Merge 前跑 `uv run pytest tests/` 全绿
 - LLM judge prompt 放 `prompts/*.md` — 用现有 fixture 跑 snapshot 测试

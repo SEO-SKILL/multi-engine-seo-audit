@@ -3,7 +3,7 @@
 # 创建：2026-06-12
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ko
 source_doc:
   url: https://searchadvisor.naver.com/guide/seo-naver-rank
@@ -20,7 +20,7 @@ rules:
       type: hybrid
       fn: detectors.naver.content_coherence_check
       inputs: [visible_text]
-    bydfi_business_impact: |
+    business_impact: |
       Naver 2023 推出 AiRSearch（AI Research）替代部分 C-Rank 功能。
       AiRSearch 算法用 BERT 类模型评估韩文内容连贯性 + 主题深度。
       机翻 / 拼凑韩文页直接降权。
@@ -36,9 +36,9 @@ rules:
       type: hard_rule
       fn: detectors.naver.smart_block_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       Naver Smart Block 在 SERP 顶部展示结构化内容（FAQ / How-to / 列表）。
-      BYDFi /support /learn 韩文页应该输出 FAQPage / HowTo schema 进入 Smart Block。
+      Platform /support /learn 韩文页应该输出 FAQPage / HowTo schema 进入 Smart Block。
     tags: [naver, smart-block, schema]
 
   # === Knowledge iN (지식인) Q&A 集成 ===
@@ -51,9 +51,9 @@ rules:
       type: hard_rule
       fn: detectors.naver.knowledge_in_check
       inputs: [raw_html, visible_text]
-    bydfi_business_impact: |
+    business_impact: |
       Naver Knowledge iN (지식인) 是韩国最大 Q&A 平台。
-      在 BYDFi 页提到 지식인 链接 / 引用提升本地化信号。
+      在 Platform 页提到 지식인 链接 / 引用提升本地化信号。
     tags: [naver, knowledge-in, qa]
 
   # === Naver Mobile-First（韩国移动用户 80%+）===
@@ -66,9 +66,9 @@ rules:
       type: hard_rule
       fn: detectors.naver.mobile_friendly_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       韩国移动搜索 80%+ 来自 Naver App。
-      BYDFi 韩文页缺 viewport meta 直接被移动 SERP 严重降权。
+      Platform 韩文页缺 viewport meta 直接被移动 SERP 严重降权。
     tags: [naver, mobile, viewport]
 
   # === Naver HTTPS 强制 ===
@@ -81,9 +81,9 @@ rules:
       type: hard_rule
       fn: detectors.naver.https_check
       inputs: [page_url]
-    bydfi_business_impact: |
+    business_impact: |
       Naver 2018+ HTTPS 是排名因素，金融 YMYL 页面尤其严格。
-      BYDFi 任何 http:// 韩文页面用户跳出率严重升高。
+      Platform 任何 http:// 韩文页面用户跳出率严重升高。
     tags: [naver, https, security]
 
   # === Naver Webmaster Tools 验证 ===
@@ -96,7 +96,7 @@ rules:
       type: hard_rule
       fn: detectors.naver.webmaster_verification_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       未在 Naver Search Advisor 验证 = 拿不到收录数据 + 索引提交受限。
-      BYDFi 应在 searchadvisor.naver.com 验证韩文站点。
+      Platform 应在 searchadvisor.naver.com 验证韩文站点。
     tags: [naver, webmaster, verification]

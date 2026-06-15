@@ -334,7 +334,7 @@ def _check_platform_promo_page(raw_html: str, page_url: str, trace_id: str) -> l
             source=FindingSource.HARD_RULE, platform=Platform.PLATFORM, severity=Severity.HIGH,
             confidence=0.78,
             evidence=Evidence(text_snippet=f"referral_links={r.get('referral_link_count')} cta={r.get('cta_count')} tutorial={r.get('has_tutorial')} earnings={r.get('has_earnings_example')} chars={r.get('body_char_count')}"),
-            recommendation="推广页只有 CTA + referral 链接，缺独立教程 / 收益示例 / FAQ — 对应 Google 事故原因 ①",
+            recommendation="推广页只有 CTA + referral 链接，缺独立教程 / 收益示例 / FAQ — 对应 Google manual action 模式",
         ))
 
     # 2. code density spam
@@ -380,7 +380,7 @@ def _check_thin_content_platform_incident(raw_html: str, page_url: str, trace_id
             source=FindingSource.HARD_RULE, platform=Platform.GOOGLE, severity=Severity.BLOCKER,
             confidence=0.78,
             evidence=Evidence(text_snippet=f"affiliate_links={r.get('affiliate_link_count')} promo_hits={r.get('promo_keyword_hits')} chars={r.get('body_char_count')}"),
-            recommendation="联属链接 / 推荐链接堆砌但内容字数过少 — 加独立分析 / 评测 / 数据。Platform 2026-05 事故同款。",
+            recommendation="联属链接 / 推荐链接堆砌但内容字数过少 — 加独立分析 / 评测 / 数据。Platform manual action 案例同款。",
         ))
 
     # ② 抄袭转载（启发式）— 降为 high，启发式信号易在论坛聚合页误触发，保留预警但不阻塞
@@ -391,7 +391,7 @@ def _check_thin_content_platform_incident(raw_html: str, page_url: str, trace_id
             source=FindingSource.HARD_RULE, platform=Platform.GOOGLE, severity=Severity.HIGH,
             confidence=0.68,
             evidence=Evidence(text_snippet=f"republish={r.get('republish_signals')} no_original={r.get('no_original_signals')}"),
-            recommendation="疑似低价值转载（有引用源但无第一手分析）— 加入独立观点 + Platform 数据。Platform 2026-05 事故同款。",
+            recommendation="疑似低价值转载（有引用源但无第一手分析）— 加入独立观点 + Platform 数据。Platform manual action 案例同款。",
         ))
 
     # ⑤ 单页附加价值低

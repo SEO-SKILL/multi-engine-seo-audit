@@ -9,7 +9,7 @@
 ## 🎯 你要做的事
 
 按 Will 的要求：
-1. 用我们的 skill 跑 BYDFi 线上页面
+1. 用我们的 skill 跑 Platform 线上页面
 2. 看分析结果
 3. 准备 Google 问题的修改方案
 4. 导出 Lark 云文档继续协作
@@ -23,14 +23,14 @@
 部署完成后，访问：
 
 ```
-https://bydfi-seo-audit.fly.dev
+https://platform-seo-audit.fly.dev
 ```
 
 （在 Kelly 部署前可访问本地：http://localhost:8080）
 
-### Step 2: 一键跑 BYDFi 核心 8 页
+### Step 2: 一键跑 Platform 核心 8 页
 
-点击页面上紫色按钮：**🚀 跑 BYDFi 8 个核心页**
+点击页面上紫色按钮：**🚀 跑 Platform 8 个核心页**
 
 30-60 秒后你会看到一张表格：
 
@@ -69,7 +69,7 @@ https://bydfi-seo-audit.fly.dev
 导出的文档结构：
 
 ```
-# BYDFi SEO 深度分析与整改方案
+# Platform SEO 深度分析与整改方案
 
 ## 📊 总体结论
 - Brand SEO Score
@@ -82,7 +82,7 @@ https://bydfi-seo-audit.fly.dev
 ### Phase 1: 修复 XXX
 - Severity / ROI / 工时
 - 修复建议
-- 对 BYDFi 影响
+- 对 Platform 影响
 
 ## 🔍 完整 Findings 详情
 ### 每个 finding 含：
@@ -112,7 +112,7 @@ https://bydfi-seo-audit.fly.dev
 
 ---
 
-## 🔥 当前 BYDFi 最大问题（基于真实 audit）
+## 🔥 当前 Platform 最大问题（基于真实 audit）
 
 | 维度 | 当前分 | 应到 | 工时 | 价值 |
 |---|---|---|---|---|
@@ -129,7 +129,7 @@ https://bydfi-seo-audit.fly.dev
 
 | 想看 | 看哪份 |
 |---|---|
-| **整改方案（基于真实数据）** | `BYDFI_REMEDIATION_PLAN.md` |
+| **整改方案（基于真实数据）** | `PLATFORM_REMEDIATION_PLAN.md` |
 | **增长机会量化（CTO 看）** | `snapshots/growth-opportunity-*.md` |
 | **覆盖了哪些 Google 主题** | `GOOGLE_RANKING_COVERAGE.md` |
 | **我们 vs Will 知识库** | `COMPARISON_WITH_WILL.md` |
@@ -151,7 +151,7 @@ https://bydfi-seo-audit.fly.dev
 
 或跑命令：
 ```bash
-uv run python cli.py feedback "bydfi.l02.ticker-context-mismatch" false_positive --notes "误报原因"
+uv run python cli.py feedback "platform.l02.ticker-context-mismatch" false_positive --notes "误报原因"
 ```
 
 我们的规则库会自动校准 confidence。
@@ -174,7 +174,7 @@ uv run python cli.py feedback "bydfi.l02.ticker-context-mismatch" false_positive
 | 你（Manon）做 | 我们 Skill 做 |
 |---|---|
 | 跑 audit → 看 finding | 自动检测 371 条规则 |
-| 验证 finding 是不是真问题 | 提供 evidence + bydfi 影响 |
+| 验证 finding 是不是真问题 | 提供 evidence + platform 影响 |
 | 把"整改方案"录入 Lark | 一键导出 Lark 兼容 Markdown |
 | 跟工程团队对接修复 | 提供 patch 模板 + 代码示例 |
 | 复盘修复效果 | 重新 audit 自动出对比 |

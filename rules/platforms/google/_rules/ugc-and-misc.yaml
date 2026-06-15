@@ -2,7 +2,7 @@
 # 一次性补完剩余 5 个小主题
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/essentials/spam-policies#user-generated-spam
   pulled_at: 2026-06-12
@@ -19,9 +19,9 @@ rules:
       type: hard_rule
       fn: detectors.spam_quality.ugc_spam_check
       inputs: [raw_html, visible_text]
-    bydfi_business_impact: |
+    business_impact: |
       评论区 / 论坛区如果有未审核的 spam 链接（赌博 / 色情 / 推广），整页连带降权。
-      BYDFi 若有 UGC，必须 rel=nofollow / ugc 标记 + 人工审核。
+      Platform 若有 UGC，必须 rel=nofollow / ugc 标记 + 人工审核。
     tags: [ugc-spam, comments]
 
   # === Lazy Loading 验证 ===
@@ -35,10 +35,10 @@ rules:
       type: hard_rule
       fn: detectors.spam_quality.lazy_loading_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       首屏关键图片不能 loading="lazy"（影响 LCP）。
       首屏外的图片应该 loading="lazy"（节省带宽）。
-      BYDFi 主页 hero 图片若用 lazy，LCP 严重退化。
+      Platform 主页 hero 图片若用 lazy，LCP 严重退化。
     tags: [lazy-loading, performance]
 
   # === Soft 404 处理 ===
@@ -52,9 +52,9 @@ rules:
       type: hard_rule
       fn: detectors.spam_quality.soft_404_check
       inputs: [raw_html, visible_text, status_code]
-    bydfi_business_impact: |
+    business_impact: |
       返回 200 但内容显示"页面未找到 / 暂无数据 / 即将上线"= Soft 404。
-      Google 浪费爬虫预算 + 索引为低质页。BYDFi 应返回真正的 404 状态码。
+      Google 浪费爬虫预算 + 索引为低质页。Platform 应返回真正的 404 状态码。
     tags: [soft-404, index-coverage]
 
   # === Pagination ===
@@ -67,9 +67,9 @@ rules:
       type: hard_rule
       fn: detectors.spam_quality.pagination_check
       inputs: [raw_html, page_url]
-    bydfi_business_impact: |
+    business_impact: |
       虽然 Google 2019 弃用 rel=next/prev 信号，但分页列表仍需要 canonical 指向自己（不是 page 1），
-      或使用 view-all 页面统一索引。BYDFi /learn /blog 分页应处理。
+      或使用 view-all 页面统一索引。Platform /learn /blog 分页应处理。
     tags: [pagination]
 
   # === Q&A schema 单独（区别于 FAQPage）===
@@ -83,7 +83,7 @@ rules:
       type: hard_rule
       fn: detectors.spam_quality.qapage_schema_check
       inputs: [raw_html]
-    bydfi_business_impact: |
+    business_impact: |
       QAPage schema 与 FAQPage 不同：QAPage 是单一问题 + 多答案场景（论坛 / Q&A 平台）。
-      BYDFi /questions 类页面应用 QAPage 而非 FAQPage。
+      Platform /questions 类页面应用 QAPage 而非 FAQPage。
     tags: [schema, qapage]
