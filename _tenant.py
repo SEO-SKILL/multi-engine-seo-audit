@@ -16,7 +16,7 @@ CONFIG_PATH = SKILL_ROOT / "config.yaml"
 class TenantContext:
     def __init__(self, project: str | None = None) -> None:
         self._config = yaml.safe_load(CONFIG_PATH.read_text())
-        self.project = project or self._config.get("default_project", "bydfi")
+        self.project = project or self._config.get("default_project", "platform")
         if self.project not in self._config.get("projects", {}):
             raise ValueError(f"Unknown project: {self.project}")
         self.project_config = self._config["projects"][self.project]

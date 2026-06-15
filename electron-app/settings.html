@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>设置 — BYDFi SEO Audit</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-dk: #E55D00;
+    --ink: #1A1A1A;
+    --mute: #888;
+    --border: #E5E5E5;
+    --bg: #FAFAFA;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "SF Pro Display", "Microsoft Yahei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 28px;
+    font-size: 14px;
+  }
+  h1 { font-size: 18px; margin-bottom: 6px; }
+  .lead { font-size: 12px; color: var(--mute); margin-bottom: 22px; line-height: 1.5; }
+  .field { margin-bottom: 18px; }
+  label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+  .hint { font-size: 11px; color: var(--mute); margin-bottom: 6px; line-height: 1.5; }
+  input[type=password], input[type=text] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    background: white;
+    transition: .15s;
+  }
+  input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,0,.15); }
+  .row { display: flex; gap: 8px; }
+  .row input { flex: 1; }
+  .toggle-btn { padding: 9px 12px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+  button.primary, button.secondary {
+    padding: 9px 18px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: .15s;
+  }
+  button.primary { background: var(--orange); color: white; }
+  button.primary:hover { background: var(--orange-dk); }
+  button.secondary { background: white; color: var(--ink); border: 1px solid var(--ink); }
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: #1A1A1A; color: white; padding: 10px 18px; border-radius: 6px;
+    font-size: 12px; opacity: 0; transition: opacity .2s;
+  }
+  .toast.show { opacity: 1; }
+  .status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .status-badge.configured { background: #E8F5E9; color: #2E7D32; }
+  .status-badge.missing { background: #FFF3E0; color: #E65100; }
+</style>
+</head>
+<body>
+  <h1>🔑 API Keys 配置</h1>
+  <div class="lead">
+    LLM judge 用于深度语义分析（plagiarism / authenticity / EEAT），首次配置后即可使用。<br>
+    <strong>所有 key 仅保存在本地 .env 文件，不上传任何服务器。</strong>
+  </div>
+
+  <div class="field">
+    <label>
+      ANTHROPIC_API_KEY
+      <span class="status-badge" id="anthropic-status">检测中…</span>
+    </label>
+    <div class="hint">主 LLM judge · 申请：<a href="#" onclick="event.preventDefault()" style="color:var(--orange)">console.anthropic.com</a></div>
+    <div class="row">
+      <input type="password" id="ANTHROPIC_API_KEY" placeholder="sk-ant-..." />
+      <button type="button" class="toggle-btn" onclick="toggleVisibility('ANTHROPIC_API_KEY')">👁</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>
+      GOOGLE_AI_API_KEY
+      <span class="status-badge" id="google-status">检测中…</span>
+    </label>
+    <div class="hint">Anthropic 配额满时的 Gemini fallback · 申请：aistudio.google.com/apikey</div>
+    <div class="row">
+      <input type="password" id="GOOGLE_AI_API_KEY" placeholder="AIza..." />
+      <button type="button" class="toggle-btn" onclick="toggleVisibility('GOOGLE_AI_API_KEY')">👁</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>
+      LARK_WEBHOOK <span style="color:var(--mute); font-weight: 400; font-size: 11px;">（可选）</span>
+      <span class="status-badge" id="lark-status">检测中…</span>
+    </label>
+    <div class="hint">飞书告警 webhook · 用于规则同步 / 高危发现自动推送</div>
+    <div class="row">
+      <input type="text" id="LARK_WEBHOOK" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="secondary" onclick="window.close()">取消</button>
+    <button class="primary" onclick="save()">保存并重启后端</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    async function load() {
+      const cur = await window.bydfiAudit.readSettings();
+      ['ANTHROPIC_API_KEY','GOOGLE_AI_API_KEY','LARK_WEBHOOK'].forEach(k => {
+        const el = document.getElementById(k);
+        if (cur[k]) { el.placeholder = cur[k]; }
+      });
+      const setBadge = (key, statusId) => {
+        const badge = document.getElementById(statusId);
+        if (cur[key]) {
+          badge.className = 'status-badge configured';
+          badge.textContent = '已配置';
+        } else {
+          badge.className = 'status-badge missing';
+          badge.textContent = '未配置';
+        }
+      };
+      setBadge('ANTHROPIC_API_KEY', 'anthropic-status');
+      setBadge('GOOGLE_AI_API_KEY', 'google-status');
+      setBadge('LARK_WEBHOOK', 'lark-status');
+    }
+
+    function toggleVisibility(id) {
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    function showToast(msg, duration=2000) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    async function save() {
+      const payload = {};
+      ['ANTHROPIC_API_KEY','GOOGLE_AI_API_KEY','LARK_WEBHOOK'].forEach(k => {
+        const v = document.getElementById(k).value.trim();
+        if (v) payload[k] = v;
+      });
+      if (Object.keys(payload).length === 0) {
+        showToast('未填写任何字段', 1500);
+        return;
+      }
+      await window.bydfiAudit.writeSettings(payload);
+      showToast('✓ 已保存，正在重启后端...');
+      await window.bydfiAudit.restartBackend();
+      setTimeout(() => window.close(), 1800);
+    }
+
+    load();
+  </script>
+</body>
+</html>

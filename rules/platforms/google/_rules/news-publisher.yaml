@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.news.publisher-center-not-registered
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: external_api, fn: integrations.gsc.publisher_center_check, inputs: [domain]}
-    bydfi_business_impact: "Google News + Publisher Center 注册是 News 富结果前提"
+    platform_business_impact: "Google News + Publisher Center 注册是 News 富结果前提"
     tags: [news, google-news]
 
   - id: google.news.newsarticle-schema-incomplete
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.newsarticle_completeness, inputs: [jsonld]}
-    bydfi_business_impact: "NewsArticle 必备：headline / author / datePublished / publisher / image"
+    platform_business_impact: "NewsArticle 必备：headline / author / datePublished / publisher / image"
     tags: [news, schema]
 
   - id: google.news.bylines-clickable
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.news.byline_clickable, inputs: [dom_links]}
-    bydfi_business_impact: "Top stories 偏好 clickable byline"
+    platform_business_impact: "Top stories 偏好 clickable byline"
     tags: [news, author]
 
   - id: google.news.lastreviewed-stale
@@ -35,7 +35,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.news.review_freshness_check, inputs: [jsonld]}
-    bydfi_business_impact: "金融新闻 > 30 天未更新流量衰减明显"
+    platform_business_impact: "金融新闻 > 30 天未更新流量衰减明显"
     tags: [news, freshness]
 
   - id: google.news.preferred-source-eligibility
@@ -44,5 +44,5 @@ rules:
     confidence_default: 0.75
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: llm_judge, prompt_template: prompts/preferred_source_eligibility.md, model: haiku}
-    bydfi_business_impact: "首选来源（Preferred Sources）扩展到所有语言（参考 Will 5/28 更新日志）"
+    platform_business_impact: "首选来源（Preferred Sources）扩展到所有语言（参考 Will 5/28 更新日志）"
     tags: [news, preferred-source]

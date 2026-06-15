@@ -1,0 +1,48 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.futures.leverage-disclosure
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.95
+    applies_to: {page_types: [futures], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.leverage_disclosure_check, inputs: [page_content]}
+    platform_business_impact: "合约页必须显示最大杠杆 + 杠杆风险提示"
+    tags: [platform, futures, leverage, compliance]
+
+  - id: platform.futures.fee-table-incomplete
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [futures], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.fee_table_check, inputs: [page_content]}
+    platform_business_impact: "费用表应含 taker/maker/资金费率/出入金"
+    tags: [platform, futures, fees]
+
+  - id: platform.futures.maintenance-margin-tier
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [futures], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.margin_tier_check, inputs: [page_content]}
+    platform_business_impact: "应公开各 tier 的维护保证金率（透明度）"
+    tags: [platform, futures, margin]
+
+  - id: platform.futures.contract-spec-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [futures], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.contract_spec_check, inputs: [page_content]}
+    platform_business_impact: "合约规格（最小变动价位 / 最小数量 / tick size）应公开"
+    tags: [platform, futures, contract-spec]
+
+  - id: platform.futures.funding-rate-history
+    source: platform-compliance
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [futures], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.funding_rate_check, inputs: [page_content]}
+    platform_business_impact: "永续合约页应提供资金费率历史"
+    tags: [platform, futures, funding-rate]

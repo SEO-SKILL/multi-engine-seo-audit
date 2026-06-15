@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.log.googlebot-crawl-frequency-low
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [google], commands: [watch]}
     detector: {type: external_api, fn: integrations.cloudflare.googlebot_freq_check, inputs: [url, log_range]}
-    bydfi_business_impact: "Googlebot 抓取频率低 = 内容鲜度信号弱"
+    platform_business_impact: "Googlebot 抓取频率低 = 内容鲜度信号弱"
     tags: [log-file, crawl-frequency]
 
   - id: google.log.error-rate-high
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [google], commands: [watch]}
     detector: {type: external_api, fn: integrations.cloudflare.error_rate_check, inputs: [log_range]}
-    bydfi_business_impact: "Googlebot 5xx 错误率 > 5% = 影响索引"
+    platform_business_impact: "Googlebot 5xx 错误率 > 5% = 影响索引"
     tags: [log-file, error-rate]
 
   - id: google.log.crawl-anomaly-spike
@@ -26,5 +26,5 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [all], platforms: [google], commands: [watch]}
     detector: {type: external_api, fn: integrations.cloudflare.spike_detection, inputs: [log_range]}
-    bydfi_business_impact: "Googlebot 突然激增/锐减 = 算法变化或我方策略变化"
+    platform_business_impact: "Googlebot 突然激增/锐减 = 算法变化或我方策略变化"
     tags: [log-file, anomaly]

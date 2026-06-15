@@ -1,0 +1,32 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: example.compare.best-of-language
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.88
+    applies_to: {page_types: [compare], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/best_of_language_judge.md, model: haiku}
+    platform_business_impact: "'Best crypto exchange' 类话术受多国金融监管审查"
+    tags: [platform, compare, regulatory]
+    human_review_required: true
+
+  - id: example.compare.competitor-fact-accuracy
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.80
+    applies_to: {page_types: [compare], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/competitor_fact_judge.md, model: sonnet}
+    platform_business_impact: "竞品对比的事实必须准确（错误事实可能被起诉）"
+    tags: [platform, compare, legal]
+    human_review_required: true
+
+  - id: example.compare.last-verified-date
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.95
+    applies_to: {page_types: [compare], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.last_verified_check, inputs: [page_content]}
+    platform_business_impact: "对比数据必须有'最后验证日期'（竞品费率/规则常变）"
+    tags: [platform, compare, freshness]

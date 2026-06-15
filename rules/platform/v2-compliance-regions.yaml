@@ -1,0 +1,50 @@
+file_version: "1.0"
+file_purpose: "V2 跨国合规自动同步规则（US-SEC / EU-MiCA / SG-MAS / JP-JFSA / HK-SFC）"
+maintainer: kelly@example.com
+
+rules:
+  - id: example.compliance.us-sec-unregistered-security-mention
+    source: platform-compliance
+    severity: blocker
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [platform, google], locales: [en]}
+    detector: {type: llm_judge, prompt_template: prompts/us_sec_compliance_judge.md, model: sonnet}
+    platform_business_impact: "面向美国市场内容不能暗示'未注册证券'类违规"
+    tags: [compliance, us-sec, regulatory, v2]
+    human_review_required: true
+
+  - id: example.compliance.eu-mica-stablecoin-statements
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [platform], locales: [en, pt, es]}
+    detector: {type: llm_judge, prompt_template: prompts/eu_mica_judge.md, model: sonnet}
+    platform_business_impact: "MiCA 法规：稳定币说明必须明示发行方+合规状态"
+    tags: [compliance, eu-mica, regulatory, v2]
+
+  - id: example.compliance.jp-jfsa-registration-status
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [platform], locales: [ja]}
+    detector: {type: hard_rule, fn: detectors.compliance.jfsa_status_check, inputs: [page_content]}
+    platform_business_impact: "日本金融厅备案状态必须明示"
+    tags: [compliance, jp-jfsa, regulatory, v2]
+
+  - id: example.compliance.sg-mas-restricted-activity
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [platform], locales: [en, zh-CN]}
+    detector: {type: llm_judge, prompt_template: prompts/sg_mas_judge.md, model: haiku}
+    platform_business_impact: "新加坡 MAS 限制活动必须正确分类"
+    tags: [compliance, sg-mas, regulatory, v2]
+
+  - id: example.compliance.hk-sfc-licensed-activity
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [platform], locales: [en, zh-CN]}
+    detector: {type: llm_judge, prompt_template: prompts/hk_sfc_judge.md, model: haiku}
+    platform_business_impact: "香港 SFC VATP 牌照活动必须正确披露"
+    tags: [compliance, hk-sfc, regulatory, v2]

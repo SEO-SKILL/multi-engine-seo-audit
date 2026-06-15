@@ -1,0 +1,57 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.tools.calculator-formula-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [tools, calculator], platforms: [platform, google]}
+    detector: {type: hard_rule, fn: detectors.platform.calculator_formula_check, inputs: [page_content]}
+    platform_business_impact: "强平/PnL 计算器必须公开计算公式"
+    tags: [platform, tools, transparency]
+
+  - id: platform.tools.maintenance-margin-rate-missing
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [tools, calculator], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.margin_rate_check, inputs: [page_content]}
+    platform_business_impact: "强平计算器必须说明维护保证金率取值"
+    tags: [platform, tools, futures]
+
+  - id: platform.tools.csr-only-calculator-shell
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.93
+    applies_to: {page_types: [tools, calculator], platforms: [google, platform]}
+    detector: {type: hard_rule, fn: detectors.platform.calc_ssr_check, inputs: [raw_html]}
+    platform_business_impact: "工具首屏不能是 JS 空壳，必须 SSR 输出工具结构"
+    tags: [platform, tools, ssr]
+
+  - id: platform.tools.faq-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [tools, calculator], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.tools_faq_check, inputs: [page_content]}
+    platform_business_impact: "工具页应有 FAQ 段落（PRD §9 结构）"
+    tags: [platform, tools, content-structure]
+
+  - id: platform.tools.related-tools-missing
+    source: platform-compliance
+    severity: low
+    confidence_default: 0.88
+    applies_to: {page_types: [tools], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.related_tools_check, inputs: [internal_links]}
+    platform_business_impact: "工具页应内链相关工具（强平 ↔ PnL ↔ 资金费率）"
+    tags: [platform, tools, internal-linking]
+
+  - id: platform.tools.trading-cta-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to: {page_types: [tools, calculator], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.trade_cta_check, inputs: [page_ctas]}
+    platform_business_impact: "工具页应有交易 CTA（导向合约对应交易对）"
+    tags: [platform, tools, conversion]

@@ -15,7 +15,7 @@
 
 1. 是否有原创信息（vs SERP 其他结果）
 2. 完整描述（覆盖子主题）
-3. 独特洞察（BYDFi 视角 / 数据）
+3. 独特洞察（Platform 视角 / 数据）
 4. 清晰标题层级
 5. 比同 SERP 其他结果更有实质价值？
 
@@ -32,7 +32,7 @@
     "unique_insight_score": 0.20,
     "vs_serp_comparison": "弱于前 3 名"
   },
-  "recommendation": "添加 BYDFi 平台数据 / 实操经验 / 独特视角",
+  "recommendation": "添加 Platform 平台数据 / 实操经验 / 独特视角",
   "reasoning": "内容深度低于同 SERP 竞品 → 难以排名"
 }
 ```

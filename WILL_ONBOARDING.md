@@ -1,7 +1,7 @@
 # Will 团队接入指南
 
 > 创建：2026-06-11
-> 受众：Will + BYDFi SEO 团队
+> 受众：Will + Platform SEO 团队
 > 目的：让 Will 团队 1 小时上手用 skill 替代手工对照清单
 
 ---
@@ -21,7 +21,7 @@ uv run python cli.py doctor
 # 应看到：371 rules / 100% detector coverage / 12 secrets pending
 
 # 4. 跑第一次 audit
-uv run python cli.py audit https://bydfi.com
+uv run python cli.py audit https://example.com
 # 30 秒出结果，含 Final Verdict + Brand SEO Score + 8 composite scores
 ```
 
@@ -71,12 +71,12 @@ uv run python cli.py audit https://bydfi.com
 
 ## 五、典型使用场景
 
-### 场景 1：写完一篇 BYDFi /learn 文章
+### 场景 1：写完一篇 Platform /learn 文章
 ```bash
 # 发布前卡审
 uv run python cli.py gate /path/to/article.md --locale en
 # Output: ✅ Gate PASSED. Safe to publish.
-# 或: ❌ BLOCKERS: bydfi.compliance.banned-keywords-present
+# 或: ❌ BLOCKERS: example.compliance.banned-keywords-present
 ```
 
 ### 场景 2：每周 Google 流量下跌排查
@@ -88,7 +88,7 @@ uv run python scripts/batch_audit.py
 
 ### 场景 3：判断要不要按 MEXC 事故口径处置某页
 ```bash
-uv run python cli.py audit https://bydfi.com/news/some-news
+uv run python cli.py audit https://example.com/news/some-news
 # 看 Final Verdict
 # 看 8 个 composite scores
 # 看 Findings 按 severity 排序
@@ -97,7 +97,7 @@ uv run python cli.py audit https://bydfi.com/news/some-news
 ### 场景 4：竞品对比
 ```bash
 uv run python cli.py compare \
-  https://bydfi.com/futures \
+  https://example.com/futures \
   https://www.binance.com/en/futures \
   https://www.bybit.com/en/trade
 # 输出 HTML 仪表盘 + 终端 Score 对比
@@ -125,7 +125,7 @@ export ANTHROPIC_API_KEY="sk-ant-api03-..."
 export GSC_SERVICE_ACCOUNT_JSON='{"type":"service_account",...}'
 
 # 可选：让 Slack 收警报
-export BYDFI_SLACK_WEBHOOK="https://hooks.slack.com/services/..."
+export PLATFORM_SLACK_WEBHOOK="https://hooks.slack.com/services/..."
 ```
 
 跑 `uv run python cli.py doctor` 看哪些配好了。
@@ -138,7 +138,7 @@ export BYDFI_SLACK_WEBHOOK="https://hooks.slack.com/services/..."
 ```bash
 uv run python3 -c "
 from agents.feedback import record_feedback
-record_feedback('bydfi.compliance.banned-keywords-present', 'audit-xxx', 'false_positive', '这是教育内容，'guaranteed' 是引用监管原文不是承诺')
+record_feedback('example.compliance.banned-keywords-present', 'audit-xxx', 'false_positive', '这是教育内容，'guaranteed' 是引用监管原文不是承诺')
 "
 ```
 
@@ -160,7 +160,7 @@ uv run python3 -c "from agents.feedback import quarterly_review; import json; pr
 
 1. **每周抽 5 个 finding 标"准 / 误报"**（10 分钟 → 帮我们校准规则）
 2. **每月跑一次 rule_sync 看变化**（自动同步 Google 官方更新）
-3. **新发现的事故案例写到 `rules/bydfi/google-action-history.md`**（沉淀给后人）
+3. **新发现的事故案例写到 `rules/platform/google-action-history.md`**（沉淀给后人）
 
 ---
 
@@ -171,7 +171,7 @@ uv run python3 -c "from agents.feedback import quarterly_review; import json; pr
 | 整体设计 | `PRD.md` |
 | V1+V2 对比 | `V1_MILESTONE_REPORT.md` / `V2_MILESTONE_REPORT.md` |
 | 与你团队对比 | `COMPARISON_WITH_WILL.md` |
-| BYDFi 修复方案 | `BYDFI_REMEDIATION_PLAN.md` |
+| Platform 修复方案 | `PLATFORM_REMEDIATION_PLAN.md` |
 | Manual Actions SOP | `rules/platforms/google/_knowledge/manual-actions-reconsideration.md` |
 | 网站迁移 SOP | `rules/platforms/google/_knowledge/site-migration-sop.md` |
 | 高管汇报版 | `EXECUTIVE_SUMMARY.md` |
@@ -181,10 +181,10 @@ uv run python3 -c "from agents.feedback import quarterly_review; import json; pr
 
 ## 十、有问题找谁
 
-- Kelly（owner，kelly@bydfi.com）
-- 内部 issue：在 BYDFi 仓库 git 化后开 issue
+- Kelly（owner，kelly@example.com）
+- 内部 issue：在 Platform 仓库 git 化后开 issue
 - 紧急（manual action 风险）：Slack `#seo-emergency`
 
 ---
 
-*Skill 已在 `~/.claude/skills/seo-audit/` 落地，9 个 git commits 在本地，等你 onboarding 完成后推到 BYDFi 远程仓库。*
+*Skill 已在 `~/.claude/skills/seo-audit/` 落地，9 个 git commits 在本地，等你 onboarding 完成后推到 Platform 远程仓库。*

@@ -1,0 +1,167 @@
+# Platform 专属：转载原创增量 + 分类标签准确性
+# 直接对标 MEXC 事故剩余 2 类问题（L01 转载 + L05 标签错配）
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "转载内容原创增量检测 + 分类标签语义匹配"
+maintainer: kelly@example.com
+last_reviewed_at: 2026-06-10
+source_incident: Platform 2026-Q1 MEXC 页面事故复盘 L01 + L05
+
+rules:
+
+  - id: platform.l01.republished-content-low-increment
+    source: platform-incident
+    source_url: 内部 MEXC 事故复盘文档
+    source_published_at: 2026-Q1
+    pulled_at: 2026-06-10
+    severity: blocker
+    confidence_default: 0.83
+    applies_to:
+      page_types: [news, blog, learn]
+      platforms: [google, bing, platform]
+      locales: [all]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.content.republished_originality_check
+      inputs: [visible_text, canonical_url, external_source_url, source_article_text]
+      args:
+        # 转载识别信号
+        republished_signals:
+          - external source link 存在
+          - main_content_similarity_with_source >= 0.70
+          - source_published_at < page_published_at
+        # 原创增量计算
+        increment_calculation:
+          - 我方新增段落比例
+          - 我方编辑评审痕迹
+          - 风险边界 / 事实核验段落
+          - 原作者 bio + 来源透明度
+          - FAQ / 目录 / 衍生内容
+        # 判定阈值
+        verdict_thresholds:
+          increment_below_20_percent: blocker
+          increment_20_to_50_percent: high
+          increment_above_50_percent: pass
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/republished_originality_judge.md
+      model: sonnet
+      max_tokens: 800
+    patch_hint:
+      template: patches/republished_remediation.md.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+      options:
+        - "noindex + 保留站内权重"
+        - "cross-domain canonical 到原文"
+        - "补足原创增量（编辑评审 / 风险边界 / 事实核验 / 原作者 bio / FAQ）"
+    fixtures:
+      positive: fixtures/mexc-incident.html
+      negative: fixtures/good-original-article.html
+      edge_cases:
+        - fixtures/lightly-rewritten-article.html
+        - fixtures/sufficient-increment-article.html
+    platform_business_impact: |
+      MEXC 事故 L01 核心问题：
+      - 主体几乎是 BlockchainReporter 原文转载
+      - 仅保留来源链接
+      - 移除了原文的作者 Max Clark、作者 bio、FAQ、目录、部分外链
+      - 但仍 self-canonical
+
+      Google 对金融/科技/收益相关内容更看重 E-E-A-T、来源、责任归属和独特价值。
+      单纯转载且 self-canonical 容易被判为低增量内容 → 触发人工处置。
+
+      影响所有 /news/* /blog/* 频道，特别是转载自第三方加密媒体的内容。
+
+      修复方案（三选一）：
+      1. noindex（保留站内权重但不参与 Google 排名）
+      2. cross-domain canonical 到原文（让原文获得 SEO 价值）
+      3. 补足原创增量 ≥ 50%（编辑评审 + 风险边界 + 事实核验 + 独立段落）
+    tags: [platform-critical, content-originality, mexc-incident, republished, ymyl]
+    human_review_required: true
+
+  - id: platform.l05.tagging-topic-mismatch
+    source: platform-incident
+    source_url: 内部 MEXC 事故复盘文档
+    source_published_at: 2026-Q1
+    pulled_at: 2026-06-10
+    severity: medium
+    confidence_default: 0.80
+    applies_to:
+      page_types: [news, blog, learn, support, questions]
+      platforms: [google, bing, naver, platform]
+      locales: [all]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.tagging.topic_match_check
+      inputs: [visible_text, tags_assigned, page_topic_classification, source_article_tags]
+      args:
+        # 标签准确性信号
+        match_signals:
+          - tags vs LLM-classified topics 重合度
+          - tags vs 原文 tags（如果是转载）
+          - tags vs 站内同主题 cluster 中位数
+        verdict_thresholds:
+          tag_topic_match_below_40_percent: medium
+          tag_topic_match_below_20_percent: high
+        whitelist_tags_per_channel:
+          news: [AI, Fintech, Tech Review, Guest Posting, DeFi, NFT, Regulation, Market Analysis]
+          learn: [Futures, Spot, Margin, Bot, Copy Trading, Risk Management]
+          support: [KYC, Deposit, Withdrawal, Trading, Account]
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/tagging_topic_judge.md
+      model: haiku
+      max_tokens: 400
+    patch_hint:
+      template: patches/fix_tagging.diff.j2
+      priority: P1
+      auto_apply: yes_with_diff_preview
+    fixtures:
+      positive: fixtures/mexc-incident.html
+      negative: fixtures/well-tagged-article.html
+    platform_business_impact: |
+      MEXC 事故 L05 核心问题：
+      - 页面标签是 "SEC、Lending"
+      - 原文标签是 "AI"
+      - 正文主题是 Techsslaash / fintech / creator platform / SEO guest posts
+
+      错误标签把页面放进错误的主题簇，削弱站内架构相关性。
+      Google 通过标签页 + 内部推荐学习站点架构，标签错配会让站点主题模糊。
+
+      修复方案：
+      - 标签自动生成必须基于 LLM 正文语义分类，不能基于 ticker 自动匹配
+      - 维护频道级标签白名单
+      - 编辑工作流加 tag review 卡口
+    tags: [platform-critical, tagging, mexc-incident, taxonomy]
+
+  - id: platform.l05.tag-page-quality
+    source: platform-incident
+    severity: medium
+    confidence_default: 0.85
+    applies_to:
+      page_types: [tag, category]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.tagging.tag_page_quality_check
+      inputs: [tag_page_url, indexed_articles, content_consistency]
+      args:
+        min_articles_for_indexable_tag: 5
+        max_off_topic_ratio_per_tag: 0.20
+        require_tag_description: true
+    patch_hint:
+      template: patches/tag_page_remediation.md.j2
+      priority: P2
+    platform_business_impact: |
+      标签页本身也要满足质量门槛：
+      - 少于 5 篇文章的标签页应该 noindex
+      - 标签页里的文章主题一致性 ≥ 80%
+      - 标签页必须有标签描述（不能只是文章列表）
+    tags: [tagging, taxonomy, indexability]

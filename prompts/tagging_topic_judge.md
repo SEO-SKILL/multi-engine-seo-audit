@@ -21,7 +21,7 @@
 
 ```json
 {
-  "rule_id": "bydfi.l05.tagging-topic-mismatch",
+  "rule_id": "platform.l05.tagging-topic-mismatch",
   "severity": "high",
   "confidence": 0.85,
   "evidence": {

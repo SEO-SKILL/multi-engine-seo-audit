@@ -1,11 +1,11 @@
-# BYDFi SEO Audit Skill — 全局配置
+# Platform SEO Audit Skill — 全局配置
 # 创建：2026-06-10
 
-default_project: bydfi
+default_project: platform
 
 projects:
-  bydfi:
-    primary_domain: bydfi.com
+  platform:
+    primary_domain: example.com
     locales:
       - en
       - zh-CN
@@ -41,16 +41,16 @@ projects:
       es: [google, bing, llm-engines]
       vi: [google, bing, llm-engines]
       tr: [google, bing, llm-engines]
-      zh-CN: [google, bing, llm-engines]
-      ja: [google, bing, llm-engines]   # Yahoo Japan 用 Google 索引
+      zh-CN: [google, bing, llm-engines]   # 海外华人走 Google（已去掉 Baidu）
+      ja: [google, bing, yahoo-japan, llm-engines]   # Yahoo!JAPAN 13% 用户 + Google 76%
       ko: [naver, google, bing, llm-engines]    # Naver 60%+
       ru: [yandex, google, bing, llm-engines]   # Yandex 65%+
 
     # 外部 API
     integrations:
-      gsc_property: sc-domain:bydfi.com
-      cloudflare_zone: bydfi.com
-      slack_webhook_env: BYDFI_SLACK_WEBHOOK
+      gsc_property: sc-domain:example.com
+      cloudflare_zone: example.com
+      slack_webhook_env: PLATFORM_SLACK_WEBHOOK
       ahrefs_csv_dir: ~/.claude/skills/seo-audit/data/ahrefs/
 
     # 风险关键词黑名单

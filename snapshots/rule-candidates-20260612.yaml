@@ -1,0 +1,20 @@
+candidates:
+- applies_to_pages:
+  - all
+  confidence: 0.72
+  description: 네이버 검색이 콘텐츠를 발견하고 색인할 수 있도록 웹사이트에 필요한 기본 요소들을 구현해야 함
+  evidence_snippet: 웹마스터 가이드 라인은, 네이버 검색이 콘텐츠를 발견하고 색인할수 있도록 웹사이트에 필요한 기본 요소들을 다룹니다.
+  id_suggestion: naver.crawl.discoverability-indexing
+  is_new_signal: false
+  severity_suggestion: high
+  title: 네이버 검색 발견 및 색인 기본 요소
+- applies_to_pages:
+  - all
+  confidence: 0.65
+  description: 모든 웹사이트는 다르므로 일반적인 가이드라인 외에 웹사이트의 상황에 따라 확인해야 할 사항들이 다를 수 있음
+  evidence_snippet: 모든 웹사이트는 다릅니다. 일반적인 가이드라인 외에 웹사이트의 상황에 따라 확인해봐야하는 사항들은 다를수 있습니다.
+  id_suggestion: naver.general.site-specific-optimization
+  is_new_signal: false
+  severity_suggestion: info
+  title: 사이트별 맞춤 최적화 필요성
+date: '2026-06-12T07:01:51.985838'

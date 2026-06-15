@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ja
 v2_priority: true
 
@@ -10,16 +10,16 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [yahoo-japan], locales: [ja]}
     detector: {type: llm_judge, prompt_template: prompts/japanese_finance_judge.md, model: sonnet}
-    bydfi_business_impact: "日本金融语境（JPY / 日本金融厅 / 日本税务 20.315%）"
+    platform_business_impact: "日本金融语境（JPY / 日本金融厅 / 日本税务 20.315%）"
     tags: [yahoo-japan, japanese, finance]
 
   - id: yahoo-jp.content.jfsa-registration-disclosure
-    source: bydfi-compliance
+    source: platform-compliance
     severity: high
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [yahoo-japan], locales: [ja]}
     detector: {type: hard_rule, fn: detectors.jp.jfsa_disclosure_check, inputs: [page_content]}
-    bydfi_business_impact: "日本金融厅备案状态必须明示"
+    platform_business_impact: "日本金融厅备案状态必须明示"
     tags: [yahoo-japan, jfsa, compliance, regulatory]
 
   - id: yahoo-jp.content.payjp-bankjp-mention
@@ -28,5 +28,5 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [how-to-buy], platforms: [yahoo-japan], locales: [ja]}
     detector: {type: hard_rule, fn: detectors.jp.payment_method_check, inputs: [page_content]}
-    bydfi_business_impact: "日本用户期望看到 PayPay / 银行汇款等本地支付方式"
+    platform_business_impact: "日本用户期望看到 PayPay / 银行汇款等本地支付方式"
     tags: [yahoo-japan, payment, japanese]

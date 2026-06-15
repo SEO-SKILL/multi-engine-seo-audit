@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.internal-search.indexed-result-pages
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [search], platforms: [shared, google]}
     detector: {type: hard_rule, fn: detectors.search.indexability_check, inputs: [url_pattern, meta_robots]}
-    bydfi_business_impact: "站内搜索结果页应 noindex（避免薄内容污染索引）"
+    platform_business_impact: "站内搜索结果页应 noindex（避免薄内容污染索引）"
     tags: [internal-search, indexability]
 
   - id: shared.internal-search.no-search-action-schema
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [homepage], platforms: [shared, google]}
     detector: {type: hard_rule, fn: detectors.schema.sitelinks_searchbox_check, inputs: [jsonld]}
-    bydfi_business_impact: "SearchAction schema 让 Google SERP 显示搜索框"
+    platform_business_impact: "SearchAction schema 让 Google SERP 显示搜索框"
     tags: [internal-search, schema]
 
   - id: shared.internal-search.faceted-navigation-explosion
@@ -26,5 +26,5 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [shared, google]}
     detector: {type: hard_rule, fn: detectors.search.faceted_navigation_check, inputs: [url_inventory]}
-    bydfi_business_impact: "faceted 过滤生成大量 URL 必须管控（canonical / noindex）"
+    platform_business_impact: "faceted 过滤生成大量 URL 必须管控（canonical / noindex）"
     tags: [internal-search, faceted-navigation]

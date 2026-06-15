@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.video.schema-missing
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [news, learn, blog], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.video.schema_check, inputs: [videos, jsonld]}
-    bydfi_business_impact: "VideoObject schema 是视频富结果前提"
+    platform_business_impact: "VideoObject schema 是视频富结果前提"
     tags: [video, schema]
 
   - id: google.video.thumbnail-missing
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.video.thumbnail_check, inputs: [videos, jsonld]}
-    bydfi_business_impact: "视频 thumbnailUrl 必备"
+    platform_business_impact: "视频 thumbnailUrl 必备"
     tags: [video, schema]
 
   - id: google.video.transcript-missing
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.78
     applies_to: {page_types: [learn], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.video.transcript_check, inputs: [page_content]}
-    bydfi_business_impact: "教学视频应配文字稿（SEO + 无障碍）"
+    platform_business_impact: "教学视频应配文字稿（SEO + 无障碍）"
     tags: [video, transcript, accessibility]
 
   - id: google.video.duration-missing
@@ -35,7 +35,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.video.duration_check, inputs: [jsonld]}
-    bydfi_business_impact: "VideoObject.duration 必备"
+    platform_business_impact: "VideoObject.duration 必备"
     tags: [video, schema]
 
   - id: google.video.live-stream-schema
@@ -44,5 +44,5 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [news], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.video.live_check, inputs: [jsonld]}
-    bydfi_business_impact: "直播应有 LiveBroadcast schema"
+    platform_business_impact: "直播应有 LiveBroadcast schema"
     tags: [video, live]

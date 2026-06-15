@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ru
 
 rules:
@@ -9,7 +9,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [domain], platforms: [yandex], locales: [ru]}
     detector: {type: hard_rule, fn: detectors.yandex.tld_check, inputs: [domain]}
-    bydfi_business_impact: "Yandex 偏好 .ru 域名，但 .com 也可（需配合其他信号）"
+    platform_business_impact: "Yandex 偏好 .ru 域名，但 .com 也可（需配合其他信号）"
     tags: [yandex, regional, tld]
 
   - id: yandex.regional.no-russian-contact
@@ -18,7 +18,7 @@ rules:
     confidence_default: 0.82
     applies_to: {page_types: [homepage, about], platforms: [yandex], locales: [ru]}
     detector: {type: hard_rule, fn: detectors.yandex.russian_contact_check, inputs: [page_content]}
-    bydfi_business_impact: "应有俄罗斯联系方式 / 客服俄语支持"
+    platform_business_impact: "应有俄罗斯联系方式 / 客服俄语支持"
     tags: [yandex, regional, contact]
 
   - id: yandex.regional.geo-meta-missing
@@ -27,7 +27,7 @@ rules:
     confidence_default: 0.88
     applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
     detector: {type: hard_rule, fn: detectors.yandex.geo_meta_check, inputs: [head_meta]}
-    bydfi_business_impact: "meta geo.region 帮助 Yandex 识别地区"
+    platform_business_impact: "meta geo.region 帮助 Yandex 识别地区"
     tags: [yandex, regional, meta]
 
   - id: yandex.regional.russian-cdn-pop
@@ -36,5 +36,5 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
     detector: {type: hard_rule, fn: detectors.yandex.cdn_check, inputs: [http_headers, cdn_region]}
-    bydfi_business_impact: "通过俄罗斯 PoP 服务对 Yandex 排名有利"
+    platform_business_impact: "通过俄罗斯 PoP 服务对 Yandex 排名有利"
     tags: [yandex, regional, cdn]

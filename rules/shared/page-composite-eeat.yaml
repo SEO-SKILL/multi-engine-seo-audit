@@ -3,7 +3,7 @@
 # 不是单点缺 author，而是 E-E-A-T 整体信号是否完整
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   author_name_jsonld:     0.15
@@ -23,7 +23,7 @@ rules:
     confidence_default: 0.85
     applies_to:
       page_types: [learn, news, support, questions, crypto-review]
-      platforms: [google, shared, bydfi]
+      platforms: [google, shared, platform]
       commands: [audit, gate]
     detector:
       type: hybrid
@@ -35,7 +35,7 @@ rules:
     patch_hint:
       template: patches/eeat_composite_remediation.md.j2
       priority: P0
-    bydfi_business_impact: |
+    platform_business_impact: |
       YMYL 金融页 E-E-A-T 综合分 < 0.70 = Google 不会让排到前 10。
       关键缺失：作者 profile + reviewer + 引用源。
     tags: [eeat, composite, ymyl]
@@ -53,6 +53,6 @@ rules:
       inputs: [raw_html, content_type]
       args:
         report_weakest: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       E-E-A-T 总分及格但最弱环节明显 → 优先修该环节边际收益最高。
     tags: [eeat, composite, weakest-link]

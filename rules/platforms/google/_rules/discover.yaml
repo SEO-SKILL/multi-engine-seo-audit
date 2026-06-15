@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/appearance/google-discover
 
@@ -22,9 +22,9 @@ rules:
           - 明确发布日期
           - 移动友好
           - 有作者权威性
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google Discover 对加密类内容流量贡献大（移动端推荐流）。
-      BYDFi 新闻 / 行业分析应针对 Discover 优化。
+      Platform 新闻 / 行业分析应针对 Discover 优化。
     tags: [discover, news, mobile-traffic]
 
   - id: google.discover.image-too-small
@@ -44,6 +44,6 @@ rules:
     patch_hint:
       template: patches/discover_image_upgrade.diff.j2
       priority: P2
-    bydfi_business_impact: |
+    platform_business_impact: |
       Discover 要求图片宽度 >= 1200px。
     tags: [discover, image]

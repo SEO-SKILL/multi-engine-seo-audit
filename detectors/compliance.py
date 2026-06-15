@@ -6,6 +6,19 @@ import re
 from bs4 import BeautifulSoup
 
 
+# 反诈教育语境守卫词（前后 200 字符内出现任一即视为"反面教材"放行）
+_ANTI_SCAM_GUARDS = [
+    # English
+    "red flag", "red flags", "scam", "scams", "fraud", "fraudulent", "fake",
+    "warning", "beware", "avoid", "do not", "don't", "never trust", "not legitimate",
+    "no legitimate", "illegal", "suspicious", "dangerous", "too good to be true",
+    "phishing", "ponzi", "rug pull", "rugpull", "do not believe",
+    # 中文
+    "警惕", "不要相信", "骗局", "诈骗", "警告", "警示", "避免", "风险提示",
+    "谨防", "切勿", "请勿", "谨慎", "陷阱", "骗子", "假的", "虚假",
+]
+
+
 def keyword_blacklist_check(html: str, banned_keywords: list[str]) -> list[dict]:
     soup = BeautifulSoup(html, "lxml")
     visible_text = soup.get_text()
@@ -13,11 +26,20 @@ def keyword_blacklist_check(html: str, banned_keywords: list[str]) -> list[dict]
     for kw in banned_keywords:
         pattern = r"\b" + re.escape(kw) + r"\b"
         matches = list(re.finditer(pattern, visible_text, re.IGNORECASE))
-        if matches:
+        if not matches:
+            continue
+        # 反诈教育语境放行：每个 match 前后 200 字含 guard 词则视为反面教材，不计入命中
+        real_matches = []
+        for m in matches:
+            ctx = visible_text[max(0, m.start() - 200): m.end() + 200].lower()
+            if any(g in ctx for g in _ANTI_SCAM_GUARDS):
+                continue  # 反诈教育上下文，跳过
+            real_matches.append(m)
+        if real_matches:
             hits.append({
                 "keyword": kw,
-                "count": len(matches),
-                "first_match_context": visible_text[max(0, matches[0].start() - 40): matches[0].end() + 40],
+                "count": len(real_matches),
+                "first_match_context": visible_text[max(0, real_matches[0].start() - 40): real_matches[0].end() + 40],
             })
     return hits
 

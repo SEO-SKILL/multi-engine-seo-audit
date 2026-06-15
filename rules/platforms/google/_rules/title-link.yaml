@@ -1,6 +1,6 @@
 # 标题链接（SERP Title）独立专项
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/appearance/title-link
 
@@ -11,7 +11,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.bing.title_quality, inputs: [title]}
-    bydfi_business_impact: "<title> 缺失 = Google 自动生成可能不符合 BYDFi 品牌"
+    platform_business_impact: "<title> 缺失 = Google 自动生成可能不符合 Platform 品牌"
     tags: [title, basics]
 
   - id: google.title.duplicate-across-pages
@@ -20,7 +20,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.duplicate.intra_site_check, inputs: [page_corpus]}
-    bydfi_business_impact: "全站 title 重复 → Google 选定不可控"
+    platform_business_impact: "全站 title 重复 → Google 选定不可控"
     tags: [title, duplicate]
 
   - id: google.title.too-long-truncated
@@ -30,7 +30,7 @@ rules:
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.bing.title_quality, inputs: [title]}
     args: {max_length_pixels: 600}
-    bydfi_business_impact: "Title > 60 字符在 SERP 被截断"
+    platform_business_impact: "Title > 60 字符在 SERP 被截断"
     tags: [title, ux]
 
   - id: google.title.brand-name-position
@@ -39,7 +39,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.bing.title_quality, inputs: [title]}
-    bydfi_business_impact: "BYDFi 品牌词建议 title 结尾"
+    platform_business_impact: "Platform 品牌词建议 title 结尾"
     tags: [title, brand]
 
   - id: google.title.h1-mismatch-severe
@@ -48,5 +48,5 @@ rules:
     confidence_default: 0.78
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.a11y.h1_count_check, inputs: [title, headings]}
-    bydfi_business_impact: "title 与 H1 主题完全不一致 → Google 重写 SERP title"
+    platform_business_impact: "title 与 H1 主题完全不一致 → Google 重写 SERP title"
     tags: [title, h1]

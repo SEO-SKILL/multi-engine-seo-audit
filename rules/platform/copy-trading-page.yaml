@@ -1,0 +1,40 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.copy.trader-roi-display
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [copy-trading], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.roi_display_check, inputs: [page_content]}
+    platform_business_impact: "跟单榜单 ROI 必须含时间范围 + 风险提示，不能只显示高收益"
+    tags: [platform, copy-trading, compliance, regulatory]
+    human_review_required: true
+
+  - id: platform.copy.past-performance-disclaimer
+    source: platform-compliance
+    severity: blocker
+    confidence_default: 0.95
+    applies_to: {page_types: [copy-trading], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.past_performance_disclaimer_check, inputs: [page_content]}
+    platform_business_impact: "'过往收益不代表未来表现' 在多国合规法规中是硬要求"
+    tags: [platform, copy-trading, regulatory]
+
+  - id: platform.copy.max-drawdown-required
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.90
+    applies_to: {page_types: [copy-trading], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.max_drawdown_check, inputs: [page_content]}
+    platform_business_impact: "交易员页面必须显示最大回撤 + 胜率（透明度）"
+    tags: [platform, copy-trading, transparency]
+
+  - id: platform.copy.copy-fee-disclosure
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.92
+    applies_to: {page_types: [copy-trading], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.copy_fee_check, inputs: [page_content]}
+    platform_business_impact: "跟单费用结构必须透明"
+    tags: [platform, copy-trading, fees]

@@ -1,0 +1,147 @@
+# Platform 专属：Ticker 上下文消歧义规则
+# 直接对标事故：MEXC 页面 "Pros and Cons" 被识别成 Pharos PROS 代币
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "防止 ticker 自动识别造成主题错配，触发 Google 误导风险"
+maintainer: kelly@example.com
+last_reviewed_at: 2026-06-10
+source_incident: Platform 2026-Q1 MEXC 页面事故复盘
+
+# Ticker 消歧义黑白名单
+ticker_disambiguation:
+
+  # 高风险 ticker（在普通词汇中也常用）
+  high_risk:
+    - symbol: PROS
+      conflict_with: "Pros and Cons（通用词）"
+      project: Pharos
+      contract_address: "0x..."  # 待补充实际合约地址
+      rule: require_context_match
+      banned_contexts:
+        - title contains "Pros and Cons"
+        - title contains "advantages"
+        - h1 contains "Pros and Cons"
+        - body section about "evaluation/review/comparison" without 加密语境
+
+    - symbol: SEC
+      conflict_with: "US Securities and Exchange Commission（监管机构）"
+      project: 多个项目曾用此 ticker
+      rule: require_context_match
+      banned_contexts:
+        - body about regulatory news
+        - body mentions "Securities and Exchange Commission"
+
+    - symbol: GAS
+      conflict_with: "Ethereum gas fee（通用术语）"
+      project: GAS coin
+      rule: require_context_match
+      banned_contexts:
+        - body about "transaction fee / gas fee" without specifying GAS coin
+
+    - symbol: APE
+      conflict_with: "通用词 / Bored Ape NFT / ApeCoin"
+      project: 多个项目
+      rule: require_disambiguation_marker
+      required_disambiguation:
+        - prefix_dollar_sign
+        - apecoin_full_name_on_first_mention
+
+    - symbol: BTC
+      conflict_with: "Bitcoin（通用）+ 其他小币种"
+      project: Bitcoin
+      rule: safe_default
+      note: Bitcoin 上下文一般明确，但仍要避免 BTC 被关联到 wrap 资产
+
+  # 必须显式标注的 ticker（无歧义但需 link 化）
+  link_required:
+    - LINK
+    - APE
+    - DOGE
+    - SHIB
+    - PEPE
+
+# 规则定义
+rules:
+
+  - id: platform.l02.ticker-context-mismatch
+    source: platform-incident
+    source_url: 内部事故复盘文档
+    source_published_at: 2026-Q1
+    pulled_at: 2026-06-10
+    severity: blocker
+    confidence_default: 0.95
+    applies_to:
+      page_types: [all]
+      platforms: [google, bing, llm-engines, platform]
+      locales: [all]
+      commands: [audit, gate, watch]
+    detector:
+      type: hybrid
+      fn: detectors.ticker.context_match
+      inputs: [visible_text, title, h1, ticker_candidates, page_topic_classification]
+      args:
+        blacklist_file: this_file
+        min_context_window: 3_sentences
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.85
+      prompt_template: prompts/ticker_disambiguation.md
+      model: haiku
+      max_tokens: 500
+    patch_hint:
+      template: patches/remove_ticker_widget.diff.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    fixtures:
+      positive: fixtures/mexc-incident.html
+      negative: fixtures/good-pharos-article.html
+    platform_business_impact: |
+      防止 MEXC 事故复发。任何文章页 / 评测页 / 通用内容页里出现 PROS / SEC / GAS / APE
+      等 ticker 时，必须经过上下文消歧义；不允许自动 ticker widget / relatedLink / 行情卡
+      在错误上下文中渲染。
+
+      影响频道：/news/*, /cointalk/*, /questions/*, /learn/*, /support/*
+    tags: [platform-critical, ticker, mexc-incident, web3-specific]
+    human_review_required: true
+
+  - id: platform.web3.ticker-must-be-linked
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.90
+    applies_to:
+      page_types: [news, blog, learn, support, questions, faq]
+      platforms: [google, platform]
+      locales: [all]
+      commands: [audit, gate]
+    detector:
+      type: hard_rule
+      fn: detectors.ticker.is_linked
+      inputs: [visible_text, html_dom]
+      args:
+        require_link_types: [internal_token_page, external_etherscan]
+    patch_hint:
+      template: patches/link_ticker_to_token_page.diff.j2
+      priority: P2
+      auto_apply: yes_with_diff_preview
+    platform_business_impact: |
+      Ticker 出现在文章中应该 link 到 Platform 的币种资产页，避免用户离站。
+    tags: [web3-specific, internal-linking]
+
+  - id: platform.l02.related-link-schema-pollution
+    source: platform-incident
+    severity: high
+    confidence_default: 0.92
+    applies_to:
+      page_types: [news, blog]
+      platforms: [google, bing]
+    detector:
+      type: hard_rule
+      fn: detectors.schema.related_link_topic_match
+      inputs: [jsonld, page_topic_classification]
+    platform_business_impact: |
+      事故复盘：MEXC 页面的 schema relatedLink 指向 PROS 价格页，但页面主题是 Techsslaash 评测。
+      schema relatedLink 必须与页面主题语义一致。
+    tags: [platform-critical, schema, mexc-incident]
+    human_review_required: true

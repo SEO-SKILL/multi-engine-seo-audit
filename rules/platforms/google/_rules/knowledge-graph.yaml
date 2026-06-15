@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.kg.organization-incomplete
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [homepage, about], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.organization_check, inputs: [jsonld]}
-    bydfi_business_impact: "Organization schema 应有 name/url/logo/sameAs/foundingDate"
+    platform_business_impact: "Organization schema 应有 name/url/logo/sameAs/foundingDate"
     tags: [knowledge-graph, organization, schema]
 
   - id: google.kg.sameas-missing
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [homepage], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.sameas_check, inputs: [jsonld]}
-    bydfi_business_impact: "sameAs 应链接 Twitter/LinkedIn/Crunchbase/Wikipedia"
+    platform_business_impact: "sameAs 应链接 Twitter/LinkedIn/Crunchbase/Wikipedia"
     tags: [knowledge-graph, sameas]
 
   - id: google.kg.entity-no-wikipedia
@@ -26,5 +26,5 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [homepage], platforms: [google]}
     detector: {type: external_api, fn: integrations.wikipedia.entity_check, inputs: [brand]}
-    bydfi_business_impact: "Wikipedia 页提升知识图谱可信度"
+    platform_business_impact: "Wikipedia 页提升知识图谱可信度"
     tags: [knowledge-graph, wikipedia]

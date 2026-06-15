@@ -1,11 +1,11 @@
 # Google Site Migration / Hosting 迁移规则
 # 创建：2026-06-10
 # 来源：https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes
-# 战略价值：BYDFi 未来 CDN 切换 / 主机迁移防 SEO 流量崩盘
+# 战略价值：Platform 未来 CDN 切换 / 主机迁移防 SEO 流量崩盘
 
 file_version: "1.0"
 file_purpose: "网站托管/CDN 迁移期 SEO 检查规则"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes
   pulled_at: 2026-06-10
@@ -27,8 +27,8 @@ rules:
       args:
         red_flag_staging_pattern: "beta.|staging.|preview.|test."
         require_noindex: true
-    bydfi_business_impact: |
-      新基础架构上线前临时主机（beta.bydfi.com）必须有 noindex。
+    platform_business_impact: |
+      新基础架构上线前临时主机（beta.example.com）必须有 noindex。
       意外索引 staging 内容 = 双倍重复内容 + 用户进入测试环境。
     tags: [migration, staging, noindex, critical]
     human_review_required: true
@@ -45,7 +45,7 @@ rules:
       type: hard_rule
       fn: detectors.migration.staging_robots_leftover_check
       inputs: [robots_txt, deployment_metadata]
-    bydfi_business_impact: |
+    platform_business_impact: |
       迁移完成后忘了移除 staging 时的 'Disallow: /' robots.txt。
       这会让生产站全站消失。是迁移最常见事故。
     tags: [migration, robots, critical]
@@ -65,7 +65,7 @@ rules:
       inputs: [domain]
       args:
         recommended_max_ttl_before_migration: 3600
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google 文档：迁移前 1 周应降低 DNS TTL（推荐几小时）。
       不降 → ISP 缓存让部分用户访问旧服务器数天。
     tags: [migration, dns, ttl]
@@ -88,7 +88,7 @@ rules:
           - meta tag in <head>
           - DNS TXT record
           - Google Analytics
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google 文档：HTML 文件验证 / meta 验证 / DNS TXT 在新副本中必须保留。
       丢失 = GSC 看不到迁移后数据。
     tags: [migration, gsc, verification]
@@ -105,7 +105,7 @@ rules:
       type: external_api
       fn: integrations.gsc.url_inspection_check
       inputs: [domain]
-    bydfi_business_impact: |
+    platform_business_impact: |
       迁移前必须用 GSC URL 检查工具确认 Googlebot 能访问新基础架构。
       防火墙/CDN/DoS 配置错误可能阻断 Googlebot。
     tags: [migration, googlebot, access]
@@ -125,7 +125,7 @@ rules:
       args:
         red_flag_drop_pct: 50
         red_flag_5xx_spike: 0.10
-    bydfi_business_impact: |
+    platform_business_impact: |
       迁移后 Googlebot 抓取速度有短暂下降是正常的。
       但持续下降 + 5xx 突增 = 新基础架构有问题。
     tags: [migration, crawl-stats, watch]
@@ -144,7 +144,7 @@ rules:
       inputs: [old_server_logs, new_server_logs]
       args:
         red_flag_traffic_split_persisting_days: 7
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google 文档：迁移后新旧服务器流量应快速倾斜（旧 → 0）。
       持续双服务 = DNS 缓存问题或部分用户被 ISP 缓存到旧 IP。
     tags: [migration, dual-serving]
@@ -161,7 +161,7 @@ rules:
       type: external_api
       fn: integrations.gsc.cdn_verification_check
       inputs: [domain, image_sitemaps]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google 文档：用 CDN 托管图片应在 GSC 验证 CDN 域名所有权。
       否则收不到抓取错误通知。
     tags: [migration, cdn, gsc]

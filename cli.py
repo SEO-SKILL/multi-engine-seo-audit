@@ -1,9 +1,25 @@
-"""BYDFi SEO Audit CLI 入口"""
+"""Platform SEO Audit CLI 入口"""
 from __future__ import annotations
 
 import asyncio
 import json
+import os
 from pathlib import Path
+
+
+def _load_dotenv() -> None:
+    env_path = Path(__file__).parent / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, _, v = line.partition("=")
+        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+_load_dotenv()
 
 import typer
 from rich.console import Console
@@ -11,7 +27,7 @@ from rich.table import Table
 
 from orchestrator import Orchestrator
 
-app = typer.Typer(name="seo-audit", help="BYDFi SEO 风控+增长决策中台")
+app = typer.Typer(name="seo-audit", help="Platform SEO 风控+增长决策中台")
 console = Console()
 
 
@@ -143,7 +159,7 @@ def watch(site: str = typer.Argument(..., help="待监控站点（base URL）"))
 
 @app.command()
 def feedback(
-    rule_id: str = typer.Argument(..., help="规则 ID（如 bydfi.l02.ticker-context-mismatch）"),
+    rule_id: str = typer.Argument(..., help="规则 ID（如 platform.l02.ticker-context-mismatch）"),
     verdict: str = typer.Argument(..., help="accurate / false_positive / missed / supplement"),
     trace_id: str = typer.Option("manual", "--trace"),
     notes: str = typer.Option(None, "--notes"),
@@ -183,7 +199,7 @@ def rules(
 
 @app.command()
 def init(
-    target_repo: str = typer.Argument(".", help="BYDFi 内容仓库路径"),
+    target_repo: str = typer.Argument(".", help="Platform 内容仓库路径"),
 ) -> None:
     """一键初始化 git pre-commit hook + .env 模板"""
     import subprocess
@@ -201,11 +217,11 @@ def init(
         raise typer.Exit(code=1)
 
     env_template = repo / ".env.seo-audit.template"
-    env_template.write_text("""# BYDFi SEO Audit Skill - 配置模板
+    env_template.write_text("""# Platform SEO Audit Skill - 配置模板
 ANTHROPIC_API_KEY=
 GSC_SERVICE_ACCOUNT_JSON=
 CLOUDFLARE_API_TOKEN=
-BYDFI_SLACK_WEBHOOK=
+LARK_WEBHOOK=
 PERPLEXITY_API_KEY=
 """)
     console.print(f"\n[green]✅ Pre-commit hook + .env template installed[/green]")
@@ -218,7 +234,7 @@ def doctor() -> None:
     checks = {
         "config.yaml": (skill_root / "config.yaml").exists(),
         "rules/_system/": (skill_root / "rules" / "_system").exists(),
-        "rules/bydfi/": (skill_root / "rules" / "bydfi").exists(),
+        "rules/platform/": (skill_root / "rules" / "platform").exists(),
         "fixtures/": (skill_root / "fixtures").exists(),
         "tasks/todo.md": (skill_root / "tasks" / "todo.md").exists(),
         "agents/_schema.py": (skill_root / "agents" / "_schema.py").exists(),
@@ -285,6 +301,46 @@ def doctor() -> None:
             console.print(f"\n[bold]Plugins:[/bold] [green]{len(reg.custom_detectors)} detector + {len(reg.custom_judges)} judge[/green]")
     except Exception:
         pass
+
+
+@app.command()
+def sync(full: bool = typer.Option(True, "--full/--quick", help="full=拉+LLM提取+diff+落盘 / quick=仅拉")) -> None:
+    """每日拉取 8 大官方源 + LLM 提取规则候选 + diff + 落盘待审核"""
+    import asyncio
+    from datetime import datetime
+    if full:
+        from agents.rule_sync import run_sync
+        res = asyncio.run(run_sync())
+        pull = res.get("pull", {})
+        candidates = res.get("extracted_candidates", [])
+        diff = res.get("diff", {})
+        commit = res.get("commit", {})
+        changed = sum(1 for s in pull.get("sources", {}).values() if s.get("changed"))
+        total = len(pull.get("sources", {}))
+        console.print(f"[bold]Rule Sync FULL — {pull.get('date')}[/bold]")
+        console.print(f"  抓取: [cyan]{total}[/cyan] 源 · 变更: [yellow]{changed}[/yellow] 个")
+        console.print(f"  LLM 提取候选: [magenta]{len(candidates)}[/magenta] 条")
+        console.print(f"  diff: {diff.get('change_classification','?')} (新 {diff.get('new_count')}/已有 {diff.get('existing_rules')})")
+        # 候选规则落盘到 snapshots/rule-candidates-{date}.yaml 待人工审核
+        if candidates:
+            import yaml as ym
+            snap_dir = Path("snapshots"); snap_dir.mkdir(exist_ok=True)
+            snap_path = snap_dir / f"rule-candidates-{datetime.utcnow().strftime('%Y%m%d')}.yaml"
+            snap_path.write_text(ym.safe_dump({"date": pull.get("date"), "candidates": candidates}, allow_unicode=True))
+            console.print(f"  📝 候选已落盘: [green]{snap_path}[/green]（人工审核后合并到 rules/）")
+        for name, s in pull.get("sources", {}).items():
+            flag = "[red]●[/red]" if s.get("changed") else "[green]○[/green]"
+            console.print(f"  {flag} {name}: status={s.get('status','?')}")
+    else:
+        from agents.rule_sync import daily_pull
+        res = asyncio.run(daily_pull())
+        changed = sum(1 for s in res.get("sources", {}).values() if s.get("changed"))
+        total = len(res.get("sources", {}))
+        console.print(f"[bold]Rule Sync QUICK — {res.get('date')}[/bold]")
+        console.print(f"  抓取: [cyan]{total}[/cyan] 源 · 变更: [yellow]{changed}[/yellow] 个")
+        for name, s in res.get("sources", {}).items():
+            flag = "[red]●[/red]" if s.get("changed") else "[green]○[/green]"
+            console.print(f"  {flag} {name}: status={s.get('status','?')}")
 
 
 if __name__ == "__main__":

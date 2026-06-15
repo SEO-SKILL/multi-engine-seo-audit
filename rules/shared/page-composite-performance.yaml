@@ -1,6 +1,6 @@
 # 性能页面级最佳组合（B）
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   ttfb_under_800ms:        0.20
@@ -25,6 +25,6 @@ rules:
       inputs: [raw_html, http_timing, http_headers]
       args:
         threshold_low: 0.60
-    bydfi_business_impact: |
+    platform_business_impact: |
       性能综合分 < 0.60 = LCP/INP/CLS 多项同时差 → Google 排名直接受影响。
     tags: [performance, composite, cwv]

@@ -1,5 +1,5 @@
 """
-BYDFi SEO 增长机会量化报告生成器
+Platform SEO 增长机会量化报告生成器
 基于 batch_audit + composite scores → 算出"修这些能涨多少流量"
 """
 from __future__ import annotations
@@ -15,8 +15,8 @@ sys.path.insert(0, str(SKILL_ROOT))
 
 from orchestrator import Orchestrator  # noqa: E402
 
-# 流量基线假设（按 BYDFi 公开 Ahrefs 数据估算 — 实际换成真实 GSC）
-BYDFI_BASELINE = {
+# 流量基线假设（按 Platform 公开 Ahrefs 数据估算 — 实际换成真实 GSC）
+PLATFORM_BASELINE = {
     "monthly_organic_traffic": 250_000,
     "monthly_organic_value_usd": 35_000,
     "avg_conversion_to_signup": 0.02,
@@ -89,13 +89,13 @@ def generate_report(audit_rows: list[dict]) -> dict:
 
     # 估算总流量增长（保守 — 取各维度独立累加 × 0.6 重叠系数）
     total_uplift_pct = sum(d["estimated_uplift_pct"] for d in dimensions.values()) * 0.6
-    monthly_traffic_lift = int(BYDFI_BASELINE["monthly_organic_traffic"] * total_uplift_pct / 100)
-    monthly_value_lift = int(BYDFI_BASELINE["monthly_organic_value_usd"] * total_uplift_pct / 100)
+    monthly_traffic_lift = int(PLATFORM_BASELINE["monthly_organic_traffic"] * total_uplift_pct / 100)
+    monthly_value_lift = int(PLATFORM_BASELINE["monthly_organic_value_usd"] * total_uplift_pct / 100)
     annual_value_lift = monthly_value_lift * 12
 
     return {
         "generated_at": datetime.utcnow().isoformat(),
-        "baseline": BYDFI_BASELINE,
+        "baseline": PLATFORM_BASELINE,
         "audit_summary": {
             "pages_audited": len(audit_rows),
             "avg_score": round(sum(r.get("current_score", 0) for r in audit_rows) / max(1, len(audit_rows)), 1),
@@ -139,7 +139,7 @@ def _rank_priorities(dimensions: dict) -> list[dict]:
 
 
 def render_md(report: dict) -> str:
-    out = ["# BYDFi SEO 增长机会量化报告\n",
+    out = ["# Platform SEO 增长机会量化报告\n",
            f"> 生成时间：{report['generated_at']}",
            f"> 基线流量：{report['baseline']['monthly_organic_traffic']:,} / 月",
            f"> 基线价值：${report['baseline']['monthly_organic_value_usd']:,} / 月\n",
@@ -180,19 +180,19 @@ def render_md(report: dict) -> str:
             out.append(f"| {r['label']} | {r['url']} | — | Error |")
         else:
             out.append(f"| {r['label']} | {r['url']} | {r.get('current_score', 0):.0f} | {r.get('verdict', '?')} |")
-    out.append("\n---\n*本报告由 BYDFi SEO Audit Skill 自动生成。具体修复方案见 `BYDFI_REMEDIATION_PLAN.md`。*")
+    out.append("\n---\n*本报告由 Platform SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*")
     return "\n".join(out)
 
 
 async def main():
     urls = [
-        ("homepage", "https://bydfi.com", None),
-        ("futures", "https://bydfi.com/en/futures", "en"),
-        ("learn", "https://bydfi.com/en/learn", "en"),
-        ("price", "https://bydfi.com/en/price/btc", "en"),
-        ("support", "https://bydfi.com/en/support", "en"),
-        ("homepage-ko", "https://bydfi.com/ko", "ko"),
-        ("homepage-ja", "https://bydfi.com/ja", "ja"),
+        ("homepage", "https://example.com", None),
+        ("futures", "https://example.com/en/futures", "en"),
+        ("learn", "https://example.com/en/learn", "en"),
+        ("price", "https://example.com/en/price/btc", "en"),
+        ("support", "https://example.com/en/support", "en"),
+        ("homepage-ko", "https://example.com/ko", "ko"),
+        ("homepage-ja", "https://example.com/ja", "ja"),
     ]
     print("📊 跑 7 个核心页面 audit...")
     rows = await gather_audit_data(urls)
@@ -209,7 +209,7 @@ async def main():
     print(f"   {json_path.relative_to(SKILL_ROOT)}")
 
     proj = report["projections"]
-    print(f"\n🎯 关键数据 (BYDFi CTO 汇报口径):")
+    print(f"\n🎯 关键数据 (Platform CTO 汇报口径):")
     print(f"   • 总流量提升潜力: +{proj['total_uplift_pct']}%")
     print(f"   • 月度营收增量: +${proj['monthly_revenue_lift_estimate_usd']:,}")
     print(f"   • 年度营收增量: +${proj['annual_revenue_lift_estimate_usd']:,}")

@@ -1,0 +1,50 @@
+# Google Doorway Pages 检测
+# Doorway = 大量类似页面通过模板批量生成，关键词差异化但内容雷同，引导到同一目的地
+# Google Spam Policy 明确禁止
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/essentials/spam-policies#doorways
+  pulled_at: 2026-06-12
+
+rules:
+  - id: google.doorway.thin-template-pages
+    source: google-search-central
+    severity: high
+    confidence_default: 0.72
+    applies_to: {page_types: [price, product, learn, tools], platforms: [google]}
+    detector:
+      type: hybrid
+      fn: detectors.spam_quality.doorway_template_check
+      inputs: [raw_html, visible_text, page_corpus]
+    bydfi_business_impact: |
+      BYDFi /price/{btc,eth,...} /futures/{btc,...} 类页面如果只有模板差异（仅替换 ticker），
+      被识别为 doorway。必须每个页面有独立的市场分析 / 历史数据 / 评论。
+    tags: [doorway, spam-policy, scaled-content]
+
+  - id: google.doorway.keyword-stuffed-landing
+    source: google-search-central
+    severity: high
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hard_rule
+      fn: detectors.spam_quality.keyword_stuffed_landing_check
+      inputs: [visible_text, title]
+    bydfi_business_impact: "落地页关键词密度异常高（同关键词出现 ≥ 15 次）→ doorway 信号"
+    tags: [doorway, keyword-stuffing]
+
+  - id: google.doorway.geo-spam-pages
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.65
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hybrid
+      fn: detectors.spam_quality.geo_spam_check
+      inputs: [page_url, visible_text]
+    bydfi_business_impact: |
+      /bitcoin-exchange-{city} 类模板批量生成（每个城市一页但内容雷同）→ 地理 doorway。
+      BYDFi 若 SEO 团队批量生成此类页面，必须确保每页有真实独特内容。
+    tags: [doorway, geo-spam]

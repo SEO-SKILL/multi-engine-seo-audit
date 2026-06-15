@@ -69,16 +69,33 @@ async def run(input_: AgentInput) -> AgentOutput:
 
 
 async def _fetch(client: httpx.AsyncClient, url: str, ua_name: str, ua_string: str) -> dict:
-    # F10 真集成：限速 + 并发
+    # F10 真集成：限速 + 并发 + WAF retry with backoff
     await _GLOBAL_RATE_BUCKET.acquire()
     async with _GLOBAL_CONCURRENCY:
         headers = {"User-Agent": ua_string, "Accept-Language": "en-US,en;q=0.9"}
-        response = await client.get(url, headers=headers)
+        # WAF 限流重试：429 / 503 / Cloudflare challenge → 指数退避 3 次
+        last_response = None
+        for attempt in range(3):
+            response = await client.get(url, headers=headers)
+            last_response = response
+            # WAF 限流信号：429 / 503 / Cloudflare challenge page
+            is_rate_limited = (
+                response.status_code in (429, 503)
+                or (response.status_code == 200 and "challenge-platform" in response.text[:5000])
+                or (response.status_code == 200 and "cf-mitigated" in response.headers)
+            )
+            if not is_rate_limited:
+                break
+            # 指数退避：1s, 3s, 7s
+            backoff = 1 + (2 ** attempt)
+            await asyncio.sleep(backoff)
         return {
             "ua": ua_name,
-            "status_code": response.status_code,
-            "headers": dict(response.headers),
-            "body": response.text,
-            "final_url": str(response.url),
-            "redirects": [str(r.url) for r in response.history],
+            "status_code": last_response.status_code,
+            "headers": dict(last_response.headers),
+            "body": last_response.text,
+            "final_url": str(last_response.url),
+            "redirects": [str(r.url) for r in last_response.history],
+            "_retry_count": attempt,
+            "_was_rate_limited": attempt > 0,
         }

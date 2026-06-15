@@ -1,6 +1,6 @@
 # 内链结构页面级组合（B）
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   has_breadcrumb_visible:  0.20
@@ -24,7 +24,7 @@ rules:
       inputs: [raw_html, site_link_graph]
       args:
         threshold_low: 0.55
-    bydfi_business_impact: |
+    platform_business_impact: |
       内链综合分低 = 站内主题信号弱 + crawl 不通畅。
-      BYDFi 工具页矩阵尤其要看 cluster_links_present。
+      Platform 工具页矩阵尤其要看 cluster_links_present。
     tags: [internal-linking, composite, ia]

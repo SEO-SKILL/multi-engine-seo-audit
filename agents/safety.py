@@ -67,9 +67,9 @@ def _check_banned_keywords(raw_html: str, trace_id: str) -> list[Finding]:
     findings: list[Finding] = []
     for hit in hits:
         findings.append(Finding(
-            id="bydfi.compliance.banned-keywords-present",
+            id="example.compliance.banned-keywords-present",
             source=FindingSource.HARD_RULE,
-            platform=Platform.BYDFI,
+            platform=Platform.PLATFORM,
             severity=Severity.BLOCKER,
             confidence=0.99,
             evidence=Evidence(text_snippet=hit["first_match_context"]),
@@ -88,9 +88,9 @@ def _check_pros_ticker_misuse(raw_html: str, trace_id: str) -> list[Finding]:
     findings: list[Finding] = []
     if result["is_misidentification_likely"]:
         findings.append(Finding(
-            id="bydfi.l02.ticker-context-mismatch",
+            id="platform.l02.ticker-context-mismatch",
             source=FindingSource.HARD_RULE,
-            platform=Platform.BYDFI,
+            platform=Platform.PLATFORM,
             severity=Severity.BLOCKER,
             confidence=0.90,
             evidence=Evidence(text_snippet=f"PROS 在 title/h1 含通用词 {result['matched_blacklist_contexts']}"),

@@ -1,12 +1,12 @@
-# 垃圾内容政策与规模化内容（BYDFi 深度版）
+# 垃圾内容政策与规模化内容（Platform 深度版）
 
 > 对标 Will 知识库 `03-垃圾内容政策与规模化内容.md`。**我们这版增量**：
 >
 > 1. **加密 / Web3 行业风险案例库**（Will 没有）
 > 2. **AI 生成内容的 Google 处置历史时间线**
-> 3. **BYDFi 程序化 SEO 红线**（具体到 URL 模式 + 触发举报的实操示例）
+> 3. **Platform 程序化 SEO 红线**（具体到 URL 模式 + 触发举报的实操示例）
 >
-> 创建：2026-06-10 / 维护：kelly@bydfi.com
+> 创建：2026-06-10 / 维护：kelly@example.com
 
 ---
 
@@ -32,9 +32,9 @@
 |---|---|---|
 | 某交易所用 AI 生成 5000+ "What is X coin" 页面 | 2024-Q2 | 全站去索引 |
 | 某 DeFi 项目模板化生成 200+ "How to stake on X chain" | 2024-Q4 | 主域 PageRank 大跌 |
-| MEXC 转载页（BYDFi 事故同源）| 2026-Q1 | 单页人工处置 |
+| MEXC 转载页（Platform 事故同源）| 2026-Q1 | 单页人工处置 |
 
-**BYDFi 红线**：
+**Platform 红线**：
 
 - 不能用 AI 模板生成币种页（除非每页有独立的研究 / 数据 / 风险视角）
 - 不能用 AI 翻译填充 9 语言版本（必须真本地化）
@@ -50,22 +50,22 @@
 - 抓 CoinGecko 数据填充 /price/ 页（必须加增量解读）
 - 抓 Etherscan 信息填充合约页
 
-**BYDFi 红线**：
+**Platform 红线**：
 
 - `/news/*` 任何转载必须满足以下任一：
   1. cross-domain canonical 到原文
   2. noindex
   3. 原创增量 ≥ 50%（编辑评审 + 风险边界 + 独立段落）
-- `/price/*` 抓 CoinGecko 数据 OK，但必须加 BYDFi 增量（K 线分析 / 用户讨论 / 工具入口）
+- `/price/*` 抓 CoinGecko 数据 OK，但必须加 Platform 增量（K 线分析 / 用户讨论 / 工具入口）
 
 ### 2.3 拼贴（content aggregation）
 
 **Will 提到**：不同页面的内容拼贴在一起但没有附加价值。
 
-**BYDFi 红线**：
+**Platform 红线**：
 
 - `/learn` 不能是"Google 搜 'crypto futures' 把前 5 篇拼起来"
-- 必须有 BYDFi 视角 / 平台具体数据 / 实操截图
+- 必须有 Platform 视角 / 平台具体数据 / 实操截图
 
 ### 2.4 多站隐藏规模化痕迹
 
@@ -73,19 +73,19 @@
 
 **加密行业陷阱**：
 
-- BYDFi 做了 BYDFi.com + BYDFi.io + 多个微站
+- Platform 做了 example.com + Platform.io + 多个微站
 - 内容互相重复或机械化分发
 
-**BYDFi 红线**：
+**Platform 红线**：
 
-- 任何 BYDFi 子站 / 微站 / 二级域必须有独立价值定位
+- 任何 Platform 子站 / 微站 / 二级域必须有独立价值定位
 - 不能是同一批内容换域名分发
 
 ### 2.5 关键词堆砌空内容
 
 **Will 提到**：大量几乎没有实际意义、但塞满关键词的页面。
 
-**BYDFi 红线**：
+**Platform 红线**：
 
 - 不能为了覆盖 "BTC/ETH/SOL/XRP/..." 数百个币种关键词，做模板化的空壳币种页
 - 每个币种页必须有真实数据 + 用户决策价值
@@ -104,7 +104,7 @@
 | 2026-05-15 | 垃圾政策适用于生成式 AI 回答（AI Overview / SGE）|
 | 2026-04-23 | 垃圾信息举报可触发 manual action |
 
-**对 BYDFi 的启示**：
+**对 Platform 的启示**：
 
 - AI 生成必须人工审核 + 编辑润色
 - AI 生成的 schema / 标题 / 描述 / alt 也要校验
@@ -113,7 +113,7 @@
 
 ---
 
-## 四、BYDFi 程序化 SEO 红线（具体到 URL 模式）
+## 四、Platform 程序化 SEO 红线（具体到 URL 模式）
 
 ### 4.1 允许的程序化模式
 
@@ -125,7 +125,7 @@
 
 ### 4.2 高风险程序化模式（必须人工增量审核）
 
-⚠️ **比较页**：`/compare/bydfi-vs-{competitor}` — 必须有事实核验 + 不能 Best 类话术
+⚠️ **比较页**：`/compare/platform-vs-{competitor}` — 必须有事实核验 + 不能 Best 类话术
 
 ⚠️ **区域页**：`/region/{country}` — 必须有真实可用性 + 合规说明
 
@@ -145,7 +145,7 @@
 
 ## 五、垃圾信息举报实战防御
 
-2026-04-23 后举报可触发 manual action。BYDFi 需要：
+2026-04-23 后举报可触发 manual action。Platform 需要：
 
 ### 5.1 防御自身被举报
 
@@ -163,7 +163,7 @@
 
 - 关注 Twitter @googlesearchc + @searchliaison
 - 监控 r/SEO 上的 manual action 报告
-- 定期复盘行业事故（详见 `rules/bydfi/google-action-history.md`）
+- 定期复盘行业事故（详见 `rules/platform/google-action-history.md`）
 
 ---
 
@@ -182,7 +182,7 @@
    ↓
 6. 检查是否为转载（外部 source link + 内容相似度 > 70%）
    ↓
-7. 是转载 + self-canonical → finding[severity=blocker, rule=bydfi.l01]
+7. 是转载 + self-canonical → finding[severity=blocker, rule=platform.l01]
    ↓
 8. 检查 AI 生成痕迹（重复模板 / 缺事实 / 无第一手经验）
    ↓
@@ -194,7 +194,7 @@
 ## 七、联动阅读
 
 - `_rules/structured-data-truthfulness.yaml`：schema 真实性（spam 防御一环）
-- `../../bydfi/republished-and-tagging.yaml`：转载原创增量规则
-- `../../bydfi/fintech-compliance.yaml`：金融合规黑名单
-- `../../bydfi/google-action-history.md`：行业 + 自家事故案例库
+- `../../platform/republished-and-tagging.yaml`：转载原创增量规则
+- `../../platform/fintech-compliance.yaml`：金融合规黑名单
+- `../../platform/google-action-history.md`：行业 + 自家事故案例库
 - `01-helpful-content-eat.md`：E-E-A-T 信号（与 spam 防御互补）

@@ -1,0 +1,64 @@
+# Google 内容贫乏 / 联属网站 / 抄袭转载 / 单页附加价值低
+# 精准对应 BYDFi 2026-05 Google 人工处置事故 5 大原因
+# 创建：2026-06-12
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/essentials/spam-policies#thin-affiliate
+  pulled_at: 2026-06-12
+
+rules:
+  # === ① 内容贫乏的联属网站页面（事故原因 1）===
+  - id: google.thin-content.affiliate-low-value
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/essentials/spam-policies#thin-affiliate
+    severity: blocker
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [google], commands: [audit, gate]}
+    detector:
+      type: hybrid
+      fn: detectors.thin_content.affiliate_low_value_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      BYDFi /cointalk /price 等如果只是堆砌联盟链接 / 推荐链接 / 转化按钮
+      但没有独立分析 / 原创评测 / 真实数据 → Google 视为"内容贫乏的联属网站页面"。
+      **这是 BYDFi 2026-05 Google 人工处置事故的核心原因 #1**。
+    tags: [thin-content, affiliate, manual-action-risk, bydfi-incident-2026-05]
+
+  # === ② 复制 / 抄袭 / 低质转载（事故原因 2）===
+  # 启发式 detector 仅看"无第一人称分析 + 引用源"，论坛聚合页天然命中
+  # 严重度降为 high：保留预警价值（提醒 BYDFi 加独立观点），但不阻塞上线
+  - id: google.duplicate-content.plagiarism-no-value-add
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/essentials/spam-policies#copied
+    severity: high
+    confidence_default: 0.72
+    applies_to: {page_types: [all], platforms: [google], commands: [audit, gate]}
+    detector:
+      type: llm_judge
+      fn: detectors.thin_content.plagiarism_check
+      prompt_template: prompts/republished_originality_judge.md
+      inputs: [visible_text, title, page_url]
+    bydfi_business_impact: |
+      转载新闻 / 复制竞品介绍 / 翻译外站内容但无附加价值 → Google 视为低质转载。
+      **BYDFi 事故原因 #2**。/cointalk 大量页面如果只是转 CoinDesk / The Block 新闻不加分析 → 直接降权。
+    # tag 收敛：移除 manual-action-risk（避免启发式预警被 gatekeeper 兜底）
+    # 启发式只看"无第一人称分析+引用源"，论坛聚合页天然命中，作为质量预警而非强制阻塞
+    tags: [duplicate-content, plagiarism, quality-warning, bydfi-incident-2026-05]
+
+  # === ⑤ 单页附加价值低（事故原因 5 · 单页级而非站点级）===
+  - id: google.thin-content.low-value-single-page
+    source: google-search-central
+    source_url: https://developers.google.com/search/docs/essentials/spam-policies#thin-content
+    severity: high
+    confidence_default: 0.75
+    applies_to: {page_types: [all], platforms: [google], commands: [audit, gate]}
+    detector:
+      type: hybrid
+      fn: detectors.thin_content.low_value_page_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      单页内容字数过少 / 信息密度低 / 无独立观点 / 仅有 boilerplate + CTA
+      = Google 视为"无附加价值"。**BYDFi 事故原因 #5**（单页颗粒度，区别于站点级 HCU）。
+    tags: [thin-content, low-value, bydfi-incident-2026-05]

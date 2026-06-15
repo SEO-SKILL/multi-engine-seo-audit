@@ -1,4 +1,4 @@
-app = "bydfi-seo-audit"
+app = "platform-seo-audit"
 primary_region = "sin"
 
 [build]

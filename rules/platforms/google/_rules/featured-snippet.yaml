@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.snippet.no-direct-answer
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.75
     applies_to: {page_types: [learn, support, faq], platforms: [google]}
     detector: {type: llm_judge, prompt_template: prompts/direct_answer_judge.md, model: haiku}
-    bydfi_business_impact: "首段无直接答案 = 难抢精选摘要位置"
+    platform_business_impact: "首段无直接答案 = 难抢精选摘要位置"
     tags: [featured-snippet, content-structure]
 
   - id: google.snippet.table-format-missing
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [learn, support], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.content.has_data_tables, inputs: [dom_tables]}
-    bydfi_business_impact: "表格内容更容易被精选摘要采用"
+    platform_business_impact: "表格内容更容易被精选摘要采用"
     tags: [featured-snippet, table]
 
   - id: google.snippet.nosnippet-blocking
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.97
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.robots.nosnippet_check, inputs: [meta_robots]}
-    bydfi_business_impact: "nosnippet 阻止精选摘要，除非有特殊隐私需求否则不应使用"
+    platform_business_impact: "nosnippet 阻止精选摘要，除非有特殊隐私需求否则不应使用"
     tags: [featured-snippet, robots]
 
   - id: google.snippet.max-snippet-too-short
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.robots.max_snippet_check, inputs: [meta_robots]}
-    bydfi_business_impact: "max-snippet:-1 让 Google 选择最佳长度"
+    platform_business_impact: "max-snippet:-1 让 Google 选择最佳长度"
     tags: [featured-snippet, robots]

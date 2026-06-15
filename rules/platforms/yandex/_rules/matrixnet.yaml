@@ -1,11 +1,11 @@
 # Yandex MatrixNet 算法规则
 # 创建：2026-06-10
 # ⭐ Will 知识库完全没覆盖 Yandex
-# BYDFi 俄罗斯市场（ru locale）必须管，Yandex 占 65%+
+# Platform 俄罗斯市场（ru locale）必须管，Yandex 占 65%+
 
 file_version: "1.0"
 file_purpose: "Yandex 排名因子 + 俄罗斯市场本地化"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 source_doc:
   url: https://yandex.com/support/webmaster/
@@ -46,10 +46,10 @@ rules:
     patch_hint:
       template: patches/add_yandex_metrica.diff.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex.Metrica 数据是 Yandex 排名的重要输入。
       不装 Metrica = Yandex 看不到真实用户行为 = 排名不上去。
-      BYDFi 俄文版必须装 Yandex.Metrica，与 GA 并存。
+      Platform 俄文版必须装 Yandex.Metrica，与 GA 并存。
     tags: [yandex-critical, metrica, user-behavior]
 
   - id: yandex.webmaster.not-verified
@@ -67,9 +67,9 @@ rules:
     patch_hint:
       template: patches/add_yandex_verification.diff.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex Webmaster 提供独立的 SEO 数据 + sitemap 提交入口。
-      BYDFi ru 版本必须在 Yandex Webmaster 验证。
+      Platform ru 版本必须在 Yandex Webmaster 验证。
     tags: [yandex, verification]
 
   - id: yandex.regional.serving-not-from-russia
@@ -84,10 +84,10 @@ rules:
       type: hard_rule
       fn: detectors.yandex.serving_region_check
       inputs: [http_headers, cdn_region, ip_geolocation]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex 强烈偏好俄罗斯境内服务的内容。
-      BYDFi ru 页面应通过俄罗斯 PoP 服务（Cloudflare/Akamai 有俄罗斯节点）。
-      但注意俄罗斯监管要求 ↑↑↑，可能影响 BYDFi 在俄业务合规。
+      Platform ru 页面应通过俄罗斯 PoP 服务（Cloudflare/Akamai 有俄罗斯节点）。
+      但注意俄罗斯监管要求 ↑↑↑，可能影响 Platform 在俄业务合规。
     tags: [yandex-critical, regional, serving]
     human_review_required: true
 
@@ -106,7 +106,7 @@ rules:
       args:
         red_flag_bounce_rate: 0.75
         red_flag_avg_time_seconds: 30
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex MatrixNet 极度看重用户行为。
       跳出率 > 75% 或停留 < 30s 的页面会被快速降权。
     tags: [yandex-critical, user-behavior, matrixnet]
@@ -139,7 +139,7 @@ rules:
       priority: P0
       auto_apply: false
       requires_review: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex 完全无法容忍机翻俄文。
       机翻俄文页直接被 MatrixNet 视为低质 → 不参与排名。
       必须真俄罗斯本土化内容。
@@ -161,7 +161,7 @@ rules:
       args:
         keyword_in_first_60_chars: true
         no_keyword_stuffing: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex 对 title 中的俄文关键词位置敏感。
       关键词必须在前 60 字符出现。
     tags: [yandex, title, russian]

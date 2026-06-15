@@ -1,4 +1,4 @@
-# BYDFi SEO Audit Skill — V1 里程碑报告
+# Platform SEO Audit Skill — V1 里程碑报告
 
 > 日期：2026-06-10（单日全栈推进）
 > Owner：Kelly
@@ -50,7 +50,7 @@ rules/
 │   ├── severity-definition.yaml
 │   ├── confidence-calibration.yaml
 │   └── conflict-resolution.yaml
-├── bydfi/                # BYDFi 专属（5 份）
+├── platform/                # Platform 专属（5 份）
 │   ├── pros-ticker-blacklist.yaml
 │   ├── fintech-compliance.yaml
 │   ├── republished-and-tagging.yaml
@@ -99,7 +99,7 @@ rules/
 - **30+ Patch 模板**：覆盖所有 patch_hint 引用
 - **GSC / Cloudflare / Slack / Ahrefs 集成**：integrations/ 模块
 - **规则同步管道**：F8 daily-pull-agent 实际运行
-- **BYDFi 真实页面试跑**：≥ 10 次 audit 校准规则
+- **Platform 真实页面试跑**：≥ 10 次 audit 校准规则
 - **golden fixture e2e 跑通**：5 个 fixture 全部 CI 验收
 
 ---
@@ -149,8 +149,8 @@ rules/
 
 **W3（1 周）**：剩余 6 个 agent + 4 个核心命令串联
 
-**W4（1 周）**：BYDFi 真实页面试跑 + 规则校准 + V1 验收
+**W4（1 周）**：Platform 真实页面试跑 + 规则校准 + V1 验收
 
 ---
 
-*Generated 2026-06-10 by Claude (Opus 4.7) — BYDFi SEO Audit Skill V1 设计阶段交付*
+*Generated 2026-06-10 by Claude (Opus 4.7) — Platform SEO Audit Skill V1 设计阶段交付*

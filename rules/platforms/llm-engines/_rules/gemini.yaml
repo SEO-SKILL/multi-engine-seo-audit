@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Gemini + Google AI Overview 引用率优化"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 gemini_mechanics:
   google_search_integration: 紧密（AI Overview 直接调用 Gemini）
@@ -27,7 +27,7 @@ rules:
       args:
         check_ua: Google-Extended
         report_both: [allowed, blocked]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google-Extended 是 Gemini 训练 bot。
       禁 Google-Extended ≠ 禁 Google Search（Googlebot 走另一条）。
       Kelly 拍板：禁 Google-Extended（不让 Google 训练）+ 允许 Googlebot（保留搜索）。
@@ -58,9 +58,9 @@ rules:
           - 缺受众
           - 缺事实来源
           - 内容过期
-    bydfi_business_impact: |
+    platform_business_impact: |
       AI Overview 占 Google SERP 首屏，零点击但带品牌曝光 + 引用流量。
-      BYDFi /learn /tools 内容应针对 AI Overview 优化（TL;DR + 表格 + 数据源）。
+      Platform /learn /tools 内容应针对 AI Overview 优化（TL;DR + 表格 + 数据源）。
     tags: [gemini, ai-overview, google]
 
   - id: gemini.brand-mention-in-llm
@@ -77,11 +77,11 @@ rules:
       inputs: [brand_name]
       args:
         test_queries:
-          - "What is BYDFi?"
-          - "Is BYDFi safe?"
-          - "BYDFi vs Binance"
-          - "BYDFi fees"
-    bydfi_business_impact: |
-      "LLM 时代的品牌词监控"：定期问主流 LLM 关于 BYDFi 的描述。
+          - "What is Platform?"
+          - "Is Platform safe?"
+          - "Platform vs Binance"
+          - "Platform fees"
+    platform_business_impact: |
+      "LLM 时代的品牌词监控"：定期问主流 LLM 关于 Platform 的描述。
       负面 / 错误描述需要通过 PR / 内容优化来纠正。
     tags: [gemini, brand-monitoring]

@@ -1,0 +1,86 @@
+# Yahoo!JAPAN 深度规则集（V2 补完）
+# Yahoo!JAPAN 用 Google 索引 + 自家 ranking + Yahoo! ニュース / 知恵袋 / ショッピング 信号
+# 创建：2026-06-12
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+locale_focus: ja
+source_doc:
+  url: https://help.yahoo-net.jp/s/article/H000007517
+  pulled_at: 2026-06-12
+
+rules:
+  # === Yahoo!ニュース source 引用（新闻类内容权威性）===
+  - id: yahoo-jp.news.source-citation
+    source: yahoo-jp-research
+    severity: medium
+    confidence_default: 0.72
+    applies_to: {page_types: [news, blog, learn], platforms: [yahoo-japan], locales: [ja]}
+    detector:
+      type: hard_rule
+      fn: detectors.jp.news_source_citation_check
+      inputs: [visible_text, raw_html]
+    bydfi_business_impact: |
+      Yahoo!JAPAN 高度依赖 Yahoo!ニュース 信号给金融 / 资讯类内容加权。
+      引用 ロイター / 日経 / Bloomberg 等权威源能显著提升排名。
+    tags: [yahoo-japan, news, citation]
+
+  # === .jp TLD / 日本服务器优先 ===
+  - id: yahoo-jp.regional.jp-tld-or-cdn
+    source: yahoo-jp-research
+    severity: low
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [yahoo-japan], locales: [ja]}
+    detector:
+      type: hard_rule
+      fn: detectors.jp.jp_tld_or_cdn_check
+      inputs: [page_url, http_headers]
+    bydfi_business_impact: |
+      Yahoo!JAPAN 对 .jp 域名 + 日本 CDN 节点有地域加权。
+      BYDFi 非 .jp 域名建议至少配置日本 CDN 节点（CloudFront ap-northeast-1）。
+    tags: [yahoo-japan, regional, tld, cdn]
+
+  # === Q&A 结构化数据（Yahoo!知恵袋 集成）===
+  - id: yahoo-jp.chiebukuro.qa-schema-missing
+    source: yahoo-jp-research
+    severity: low
+    confidence_default: 0.70
+    applies_to: {page_types: [faq, support, questions], platforms: [yahoo-japan], locales: [ja]}
+    detector:
+      type: hard_rule
+      fn: detectors.jp.qa_schema_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      Yahoo!JAPAN 对带 QAPage / FAQPage JSON-LD 的页面在"よくある質問"搜索中权重高。
+      BYDFi /support 与 /questions 页应该输出 schema.org QAPage。
+    tags: [yahoo-japan, schema, qa, chiebukuro]
+
+  # === 移动优先（日本移动用户 70%+，与 Yandex mobile 类似）===
+  - id: yahoo-jp.mobile.responsive-required
+    source: yahoo-jp-research
+    severity: high
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [yahoo-japan], locales: [ja]}
+    detector:
+      type: hard_rule
+      fn: detectors.jp.mobile_responsive_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      日本移动搜索占 70%+，Yahoo!JAPAN 强制移动适配。
+      BYDFi /ja 没有 viewport meta 直接被移动 SERP 降权。
+    tags: [yahoo-japan, mobile, viewport]
+
+  # === 日文敬语等级一致（敬語 / です・ます調 vs だ・である調）===
+  - id: yahoo-jp.content.honorific-consistency
+    source: yahoo-jp-research
+    severity: low
+    confidence_default: 0.65
+    applies_to: {page_types: [learn, support, blog], platforms: [yahoo-japan], locales: [ja]}
+    detector:
+      type: hybrid
+      fn: detectors.jp.honorific_consistency_check
+      inputs: [visible_text]
+    bydfi_business_impact: |
+      Yahoo!JAPAN 用户对日文敬语等级敏感。混用です・ます と だ・である 调
+      被 Yahoo! 信号识别为低质 / 机翻。BYDFi 教育类内容统一用 です・ます 调。
+    tags: [yahoo-japan, honorific, japanese, content-quality]

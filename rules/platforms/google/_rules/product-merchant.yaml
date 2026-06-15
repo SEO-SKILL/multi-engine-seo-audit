@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.product.schema-incomplete
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.93
     applies_to: {page_types: [product, price], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.product_completeness, inputs: [jsonld]}
-    bydfi_business_impact: "Product schema 必备 name/offers/aggregateRating（前提是有可见评分）"
+    platform_business_impact: "Product schema 必备 name/offers/aggregateRating（前提是有可见评分）"
     tags: [product, schema]
 
   - id: google.product.hasAdultConsideration-required
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [product], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.adult_consideration_check, inputs: [jsonld, product_category]}
-    bydfi_business_impact: "2026-05 新字段，加密/金融产品需评估是否声明"
+    platform_business_impact: "2026-05 新字段，加密/金融产品需评估是否声明"
     tags: [product, schema, new-field]
 
   - id: google.merchant.brand-name-mismatch
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [product], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.brand_consistency, inputs: [jsonld, visible_brand]}
-    bydfi_business_impact: "Product.brand 必须与可见品牌一致"
+    platform_business_impact: "Product.brand 必须与可见品牌一致"
     tags: [product, brand, schema]
 
   - id: google.merchant.gtin-mpn-missing
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.88
     applies_to: {page_types: [product], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.schema.gtin_check, inputs: [jsonld]}
-    bydfi_business_impact: "实物产品需要 GTIN/MPN（金融产品 N/A）"
+    platform_business_impact: "实物产品需要 GTIN/MPN（金融产品 N/A）"
     tags: [product, gtin]

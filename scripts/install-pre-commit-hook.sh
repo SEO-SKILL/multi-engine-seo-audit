@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 安装 git pre-commit hook，让 BYDFi 内容仓库 commit 前自动跑 gate
-# 用法: 在 BYDFi 内容仓库内运行此脚本
+# 安装 git pre-commit hook，让 Platform 内容仓库 commit 前自动跑 gate
+# 用法: 在 Platform 内容仓库内运行此脚本
 
 set -e
 
@@ -14,7 +14,7 @@ fi
 
 cat > "$HOOK_PATH" << 'EOF'
 #!/usr/bin/env bash
-# BYDFi SEO Audit pre-commit hook
+# Platform SEO Audit pre-commit hook
 SKILL_DIR="$HOME/.claude/skills/seo-audit"
 
 # 找到所有 staged 的 MD/HTML 文件
@@ -46,5 +46,5 @@ EOF
 
 chmod +x "$HOOK_PATH"
 echo "✅ Installed pre-commit hook at $HOOK_PATH"
-echo "   现在每次 commit 前会自动跑 BYDFi SEO Audit Skill gate 命令"
+echo "   现在每次 commit 前会自动跑 Platform SEO Audit Skill gate 命令"
 echo "   如需绕过: git commit --no-verify"

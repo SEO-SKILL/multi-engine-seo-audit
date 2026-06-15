@@ -4,7 +4,7 @@
 
 file_version: "1.0"
 file_purpose: "技术 SEO 基线检测（所有平台通用）"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 
 rules:
@@ -24,8 +24,8 @@ rules:
     patch_hint:
       template: patches/force_https.diff.j2
       priority: P0
-    bydfi_business_impact: |
-      非 HTTPS 页面 2026 年所有主流搜索引擎都不索引。BYDFi 必须全站 HTTPS。
+    platform_business_impact: |
+      非 HTTPS 页面 2026 年所有主流搜索引擎都不索引。Platform 必须全站 HTTPS。
     tags: [https, technical-baseline]
 
   - id: shared.technical.http-status-not-200
@@ -43,7 +43,7 @@ rules:
         expected: 200
         allowed: [200]
         ok_for_canonical: [301]
-    bydfi_business_impact: |
+    platform_business_impact: |
       4xx/5xx 状态码的页面无法索引。
       301 重定向只对 canonical 链 OK，不对自身页面 OK。
     tags: [http-status, technical-baseline]
@@ -60,8 +60,8 @@ rules:
       type: hard_rule
       fn: detectors.technical.robots_txt_validate
       inputs: [robots_txt_content]
-    bydfi_business_impact: |
-      robots.txt 语法错误可能导致整站被禁抓。一行错就能让 BYDFi 从 Google 消失。
+    platform_business_impact: |
+      robots.txt 语法错误可能导致整站被禁抓。一行错就能让 Platform 从 Google 消失。
     tags: [robots, technical-baseline]
     human_review_required: true
 
@@ -82,7 +82,7 @@ rules:
       template: patches/add_viewport_meta.diff.j2
       priority: P1
       auto_apply: yes_with_diff_preview
-    bydfi_business_impact: |
+    platform_business_impact: |
       移动优先索引时代必备。
     tags: [viewport, mobile, technical-baseline]
 
@@ -99,7 +99,7 @@ rules:
       inputs: [page_url, sibling_locale_urls, content_hashes]
       args:
         similarity_threshold: 0.92  # 不同语言版本相似度过高 = 机翻嫌疑
-    bydfi_business_impact: |
+    platform_business_impact: |
       9 语言版本如果只是机翻，内容相似度过高会被识别为重复内容（多平台同理）。
     tags: [duplicate, multi-locale, technical-baseline]
 
@@ -117,6 +117,6 @@ rules:
       args:
         max_html_kb: 500
         max_total_kb: 3000
-    bydfi_business_impact: |
-      过大的页面影响 Core Web Vitals。BYDFi 工具页应控制 HTML < 500KB。
+    platform_business_impact: |
+      过大的页面影响 Core Web Vitals。Platform 工具页应控制 HTML < 500KB。
     tags: [performance, page-size]

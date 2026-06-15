@@ -4,7 +4,7 @@
 
 file_version: "1.0"
 file_purpose: "ChatGPT Search / Copilot 引用率优化（Bing 索引 → LLM 抓取）"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 
 chatgpt_search_mechanics:
@@ -34,8 +34,8 @@ rules:
       template: patches/allow_gptbot.diff.j2
       priority: P1
       auto_apply: yes_with_diff_preview
-    bydfi_business_impact: |
-      如果 robots.txt 禁止 GPTBot，ChatGPT Search 完全看不见 BYDFi。
+    platform_business_impact: |
+      如果 robots.txt 禁止 GPTBot，ChatGPT Search 完全看不见 Platform。
       但要注意：允许 GPTBot 抓取意味着内容会被 OpenAI 用于训练。
       Kelly 需拍板：是否允许训练 vs 仅允许搜索。
     tags: [ai, robots, gptbot]
@@ -54,9 +54,9 @@ rules:
       inputs: [robots_txt_parsed]
       args:
         required_allow_for_ua: [ClaudeBot, anthropic-ai, Claude-Web]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Claude Code / Claude Web 用户搜索时会触发 ClaudeBot。
-      BYDFi 想被 Claude 引用必须放行。
+      Platform 想被 Claude 引用必须放行。
     tags: [ai, robots, claude]
 
   - id: bing.ai.perplexity-bot-allowed
@@ -72,9 +72,9 @@ rules:
       inputs: [robots_txt_parsed]
       args:
         required_allow_for_ua: [PerplexityBot]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Perplexity 是金融 / 投资类用户重度使用的 AI 搜索。
-      不放行 = Perplexity 用户完全看不到 BYDFi。
+      不放行 = Perplexity 用户完全看不到 Platform。
     tags: [ai, robots, perplexity]
 
   - id: bing.ai.dense-information-blocks
@@ -94,9 +94,9 @@ rules:
           - 每个 H2 段落 70-150 字（最易被 AI 摘抄）
           - 关键数据用表格或粗体
           - 段首陈述结论
-    bydfi_business_impact: |
+    platform_business_impact: |
       ChatGPT Search 倾向从"短段落 + 高密度信息"提取答案。
-      BYDFi 应避免冗长导论，每段直接给答案。
+      Platform 应避免冗长导论，每段直接给答案。
     tags: [ai, content-density]
 
   - id: bing.ai.schema-for-ai-context
@@ -116,7 +116,7 @@ rules:
           - WebApplication
           - SoftwareApplication
           - QAPage
-    bydfi_business_impact: |
+    platform_business_impact: |
       AI 抓取时会用 schema 理解页面用途。
       合约工具页应有 SoftwareApplication / WebApplication schema。
       Learn 内容应有 LearningResource schema。

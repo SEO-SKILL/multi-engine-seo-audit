@@ -5,7 +5,7 @@
 
 file_version: "1.0"
 file_purpose: "Naver C-Rank 算法适配规则（韩国市场 60%+ 份额）"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 source_doc:
   url: https://searchadvisor.naver.com/guide/seo-naver-rank
@@ -40,7 +40,7 @@ rules:
     confidence_default: 0.85
     applies_to:
       page_types: [all]
-      platforms: [naver, bydfi]
+      platforms: [naver, platform]
       locales: [ko]
       commands: [audit, gate, watch]
     detector:
@@ -71,8 +71,8 @@ rules:
     fixtures:
       positive: fixtures/naver-machine-translated-page.html
       negative: fixtures/naver-native-korean-page.html
-    bydfi_business_impact: |
-      韩国用户占 BYDFi 流量重要部分，Naver 60%+ 搜索份额。
+    platform_business_impact: |
+      韩国用户占 Platform 流量重要部分，Naver 60%+ 搜索份额。
       机翻韩文页直接被 Naver 视为低质，不参与排名。
       必须真韩国本土化内容，包含韩国 KRW、韩国监管表述、符合韩国阅读习惯。
     tags: [naver-critical, localization, korean]
@@ -101,9 +101,9 @@ rules:
       when: detector.confidence < 0.75
       prompt_template: prompts/naver_creator_judge.md
       model: sonnet
-    bydfi_business_impact: |
-      C-Rank 看的是"作者"而不是"页面"。BYDFi 韩文内容应该由固定作者持续输出，
-      让 Naver 识别 BYDFi 韩文团队是"加密领域专家"，而非随机内容农场。
+    platform_business_impact: |
+      C-Rank 看的是"作者"而不是"页面"。Platform 韩文内容应该由固定作者持续输出，
+      让 Naver 识别 Platform 韩文团队是"加密领域专家"，而非随机内容农场。
     tags: [naver-critical, c-rank, author-authority]
 
   - id: naver.crank.topic-focus
@@ -122,8 +122,8 @@ rules:
       args:
         period_days: 90
         max_off_topic_ratio: 0.30
-    bydfi_business_impact: |
-      Naver 偏好"主题专注"的站点。BYDFi 韩文版应保持 90%+ 内容在加密/交易/金融主题。
+    platform_business_impact: |
+      Naver 偏好"主题专注"的站点。Platform 韩文版应保持 90%+ 内容在加密/交易/金融主题。
       不要发跨度太大的内容（如生活方式、娱乐）冲淡主题。
     tags: [naver, topic-focus]
 
@@ -145,7 +145,7 @@ rules:
           - bounce_rate < 0.70
           - return_visitor_ratio
           - inbound_clicks_from_naver
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver 比 Google 更重视用户行为数据（停留 / 回访 / 互动）。
       内容质量低导致跳出的页面，Naver 会直接降权。
     tags: [naver, engagement]
@@ -167,7 +167,7 @@ rules:
           - naver_news_links
           - naver_blog_links (when appropriate)
           - naver_cafe_links
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver 偏好提及 Naver 生态内的可信来源。
       如果引用韩国新闻，优先用 Naver News 链接。
     tags: [naver, ecosystem]
@@ -184,7 +184,7 @@ rules:
       type: hard_rule
       fn: detectors.naver.serving_region_check
       inputs: [http_headers, cdn_region]
-    bydfi_business_impact: |
-      Naver 偏好韩国 IP 服务的内容。BYDFi 韩文页面应通过韩国 CDN 节点服务。
+    platform_business_impact: |
+      Naver 偏好韩国 IP 服务的内容。Platform 韩文页面应通过韩国 CDN 节点服务。
       可通过 Cloudflare/AWS 配置韩国 PoP。
     tags: [naver, serving-region]

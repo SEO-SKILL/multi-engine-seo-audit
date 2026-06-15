@@ -39,7 +39,7 @@ async def gate_md_file(
     ai = AgentInput(
         trace_id=trace_id,
         run_id=run_id,
-        project="bydfi",
+        project="platform",
         command=Command.GATE,
         target=Target(url=None, locale=locale, content_path=str(md_path)),
         context=Context(snapshots={

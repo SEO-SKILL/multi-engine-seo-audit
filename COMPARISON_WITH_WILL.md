@@ -38,7 +38,7 @@
 | DuckDuckGo | ❌ | ❌ | ✅ |
 | Yahoo Japan | ❌ | ❌ | ✅ |
 
-**结论**：Will 只管 Google。BYDFi 9 语言市场中的韩国 / 俄罗斯（合计可能占整体流量的 15-25%）完全裸奔。
+**结论**：Will 只管 Google。Platform 9 语言市场中的韩国 / 俄罗斯（合计可能占整体流量的 15-25%）完全裸奔。
 
 ### 2.2 规则形态
 
@@ -78,7 +78,7 @@ patch_hint:
 fixtures:
   positive: fixtures/empty-shell-suspect.html
   negative: fixtures/good-ssr-page.html
-bydfi_business_impact: |
+platform_business_impact: |
   影响所有依赖 SSR/CSR 的页面，特别是 /price/*, /how-to-buy/*, /tools/*
   MEXC 事故 L04 同源问题
 ```
@@ -87,7 +87,7 @@ bydfi_business_impact: |
 
 ### 2.3 业务对齐深度
 
-Will 在 `01-帮助性内容与E-E-A-T.md` 已经对齐 BYDFi 频道：
+Will 在 `01-帮助性内容与E-E-A-T.md` 已经对齐 Platform 频道：
 
 > price、how-to-buy、support、wiki、crypto-review 这些频道不能只靠模板化改写
 
@@ -204,7 +204,7 @@ Will 切换过来不用学新东西。
 
 - Will 每月花 N 天在更新追踪 → 我们一天自动做完
 - Will 写一篇文章前要花 30 分钟对照清单 → 我们 30 秒
-- 省下的时间 Will 可以专注做"判断 / 决策 / 沉淀 BYDFi 业务洞察"
+- 省下的时间 Will 可以专注做"判断 / 决策 / 沉淀 Platform 业务洞察"
 
 ---
 
@@ -223,7 +223,7 @@ Will 切换过来不用学新东西。
 - Will → 无
 - 我们 → Naver C-Rank / DIA / 本地化质量 / 韩文检测全套
 
-### 测试 3：抓 BYDFi 任意 URL 用 ChatGPT Search 试搜，看引用率
+### 测试 3：抓 Platform 任意 URL 用 ChatGPT Search 试搜，看引用率
 
 - Will → 不知道怎么测
 - 我们 → geo-agent 自动跑
@@ -245,7 +245,7 @@ Will 切换过来不用学新东西。
 > 我们正在做一个 SEO 检测 skill。Will 团队的 Google SEO 知识库是非常好的起点和参考，但作为可执行的自动化系统，我们做了 3 个升级：
 >
 > 1. **从静态文档 → 自动化系统**：Will 的 76 份 MD 是给人读的，我们 300+ 条 YAML 规则是给机器跑的。Will 检查一篇文章 30 分钟，我们 30 秒。
-> 2. **从单平台 → 8 平台**：Will 只覆盖 Google，我们覆盖 Google + Bing + Naver（韩国）+ Yandex（俄罗斯）+ Perplexity/ChatGPT/Claude/Gemini。BYDFi 的韩国和俄罗斯市场 SEO 风险终于被纳入管理。
+> 2. **从单平台 → 8 平台**：Will 只覆盖 Google，我们覆盖 Google + Bing + Naver（韩国）+ Yandex（俄罗斯）+ Perplexity/ChatGPT/Claude/Gemini。Platform 的韩国和俄罗斯市场 SEO 风险终于被纳入管理。
 > 3. **从人工巡检 → 实时同步**：Will 月度人工更新，我们每日自动同步官方源 + LLM 提取 + Git 化版本管理。
 >
 > Will 团队的知识库是 V1 的 benchmark，我们要做的是让 Will 主动放弃他那套，转用我们的 skill。

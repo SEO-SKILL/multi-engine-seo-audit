@@ -1,0 +1,61 @@
+# Google AI Overviews（前身 SGE，Search Generative Experience）优化规则
+# 区别于 LLM-engines（ChatGPT/Claude/Perplexity）：Google AI Overviews 集成在 Google SERP 顶部
+# 创建：2026-06-12
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/appearance/ai-features
+  pulled_at: 2026-06-12
+
+rules:
+  # === AI Overviews 引用 ===
+  - id: google.ai-overviews.answerable-block-missing
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.72
+    applies_to:
+      page_types: [learn, support, faq, questions]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.google_2024.answerable_block_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      Google AI Overviews 倾向引用结构化、可问答的内容块（FAQ / How-to / Step-by-step）。
+      BYDFi /learn /support 页若仅有长段落，无明确问答块 → 进不了 AI Overviews。
+    tags: [ai-overviews, sge, geo, answerable]
+
+  # === AI 引用源 trust signal ===
+  - id: google.ai-overviews.author-and-citation-signals
+    source: google-search-central
+    severity: medium
+    confidence_default: 0.75
+    applies_to:
+      page_types: [news, blog, learn, crypto-review]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.google_2024.ai_citation_signals_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      AI Overviews 引用源时优先选择有：作者署名 + 权威引用 + 日期 + jsonld Article 的页面。
+      BYDFi 缺这些 = 内容被 AI 引用概率几乎为 0。
+    tags: [ai-overviews, citation, author, eeat]
+
+  # === AI Overviews 移动优化 ===
+  - id: google.ai-overviews.mobile-readability
+    source: google-search-central
+    severity: low
+    confidence_default: 0.65
+    applies_to:
+      page_types: [all]
+      platforms: [google]
+    detector:
+      type: hard_rule
+      fn: detectors.google_2024.mobile_readability_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      AI Overviews 在移动端展开尤其重要：信息密度 + 简洁段落 + 列表 + 标题层级清晰。
+      BYDFi 移动 SERP 中 AI Overview 引用概率与移动版可读性直接相关。
+    tags: [ai-overviews, mobile, readability]

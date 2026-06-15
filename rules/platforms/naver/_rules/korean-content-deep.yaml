@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ko
 
 rules:
@@ -9,7 +9,7 @@ rules:
     confidence_default: 0.82
     applies_to: {page_types: [price, learn, how-to-buy], platforms: [naver], locales: [ko]}
     detector: {type: llm_judge, prompt_template: prompts/naver_korean_finance_judge.md, model: sonnet}
-    bydfi_business_impact: "韩国金融语境（KRW / 韩国监管 / 韩国税务）"
+    platform_business_impact: "韩国金融语境（KRW / 韩国监管 / 韩国税务）"
     tags: [naver, korean, finance]
 
   - id: naver.content.no-korean-payment-method
@@ -18,7 +18,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [how-to-buy], platforms: [naver], locales: [ko]}
     detector: {type: hard_rule, fn: detectors.naver.korean_payment_check, inputs: [page_content]}
-    bydfi_business_impact: "韩国 how-to-buy 页应提及 KakaoPay / Toss / 韩国银行转账等本地支付"
+    platform_business_impact: "韩国 how-to-buy 页应提及 KakaoPay / Toss / 韩国银行转账等本地支付"
     tags: [naver, korean, payment]
 
   - id: naver.content.cyrillic-or-cjk-mix
@@ -27,5 +27,5 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [naver], locales: [ko]}
     detector: {type: hard_rule, fn: detectors.naver.character_consistency, inputs: [visible_text]}
-    bydfi_business_impact: "韩文页混用日文/中文字符让 Naver 怀疑机翻"
+    platform_business_impact: "韩文页混用日文/中文字符让 Naver 怀疑机翻"
     tags: [naver, korean, character-set]

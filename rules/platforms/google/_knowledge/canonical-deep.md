@@ -1,4 +1,4 @@
-# Canonical 规范化深度指南（BYDFi 版）
+# Canonical 规范化深度指南（Platform 版）
 
 > 对标 Will 知识库 `12-canonical规范化.md` 深做
 > 来源：https://developers.google.com/search/docs/crawling-indexing/canonicalization
@@ -18,10 +18,10 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 
 | 方式 | 优先级 | 示例 |
 |---|---|---|
-| HTTP Link header | 最高 | `Link: <https://bydfi.com/btc>; rel="canonical"` |
-| `<link rel="canonical">` in `<head>` | 高 | `<link rel="canonical" href="https://bydfi.com/btc">` |
-| Sitemap | 中 | `<loc>https://bydfi.com/btc</loc>` |
-| 301 重定向 | 高（但是另一种机制）| `Location: https://bydfi.com/btc` |
+| HTTP Link header | 最高 | `Link: <https://example.com/btc>; rel="canonical"` |
+| `<link rel="canonical">` in `<head>` | 高 | `<link rel="canonical" href="https://example.com/btc">` |
+| Sitemap | 中 | `<loc>https://example.com/btc</loc>` |
+| 301 重定向 | 高（但是另一种机制）| `Location: https://example.com/btc` |
 
 ---
 
@@ -31,14 +31,14 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 
 最常见，告诉 Google "this is the canonical"。
 ```html
-<link rel="canonical" href="https://bydfi.com/en/futures">
+<link rel="canonical" href="https://example.com/en/futures">
 ```
 
 ### 2. Cross-domain canonical（跨域）
 
-⚠️ **MEXC 事故核心**：当 BYDFi 转载第三方文章时，必须 canonical 到原文。
+⚠️ **MEXC 事故核心**：当 Platform 转载第三方文章时，必须 canonical 到原文。
 ```html
-<!-- BYDFi /news/some-news 转载 BlockchainReporter -->
+<!-- Platform /news/some-news 转载 BlockchainReporter -->
 <link rel="canonical" href="https://blockchainreporter.net/the-original">
 ```
 
@@ -46,9 +46,9 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 
 每个语言版本应 canonical 到自己 + 用 hreflang 指向其他语言。
 ```html
-<!-- bydfi.com/ko/learn -->
-<link rel="canonical" href="https://bydfi.com/ko/learn">
-<link rel="alternate" hreflang="en" href="https://bydfi.com/en/learn">
+<!-- example.com/ko/learn -->
+<link rel="canonical" href="https://example.com/ko/learn">
+<link rel="alternate" hreflang="en" href="https://example.com/en/learn">
 ```
 
 ❌ 错误：所有语言 canonical 到英文版（等于告诉 Google 其他语言都是重复）
@@ -58,7 +58,7 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 如有 AMP 版本：
 ```html
 <!-- AMP page -->
-<link rel="canonical" href="https://bydfi.com/non-amp-version">
+<link rel="canonical" href="https://example.com/non-amp-version">
 ```
 
 ### 5. Pagination
@@ -75,7 +75,7 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 window.addEventListener('DOMContentLoaded', () => {
   const link = document.createElement('link');
   link.rel = 'canonical';
-  link.href = 'https://bydfi.com/btc';
+  link.href = 'https://example.com/btc';
   document.head.appendChild(link);
 });
 ```
@@ -100,9 +100,9 @@ Google 可能只跟随 1 跳。直接 canonical 到最终版。
 
 ### 错误 4：Self-canonical on 转载内容（MEXC 事故 L01）
 ```html
-<!-- BYDFi /news/some-article 转载 BlockchainReporter -->
+<!-- Platform /news/some-article 转载 BlockchainReporter -->
 <!-- ❌ 错误：self-canonical 但内容是转载 -->
-<link rel="canonical" href="https://bydfi.com/news/some-article">
+<link rel="canonical" href="https://example.com/news/some-article">
 ```
 应：
 - cross-domain canonical 到原文，OR
@@ -111,15 +111,15 @@ Google 可能只跟随 1 跳。直接 canonical 到最终版。
 ### 错误 5：JS 改写 canonical 与 raw HTML 不一致
 ```html
 <!-- raw HTML: -->
-<link rel="canonical" href="https://bydfi.com/v1">
+<link rel="canonical" href="https://example.com/v1">
 <!-- JS 后改成: -->
-<link rel="canonical" href="https://bydfi.com/v2">
+<link rel="canonical" href="https://example.com/v2">
 ```
 Google 选择哪个不确定 → 信号弱。
 
 ---
 
-## 五、BYDFi 频道级 Canonical 策略
+## 五、Platform 频道级 Canonical 策略
 
 | 频道 | Canonical 策略 |
 |---|---|
@@ -151,4 +151,4 @@ Google 选择哪个不确定 → 信号弱。
 ## 七、与 Will 知识库的关系
 
 Will `12-canonical规范化.md` 是 Google 文档的中文版。
-我们这版 = Will 内容 + BYDFi 频道级实操 + MEXC 事故案例对照 + 可执行规则 ID。
+我们这版 = Will 内容 + Platform 频道级实操 + MEXC 事故案例对照 + 可执行规则 ID。

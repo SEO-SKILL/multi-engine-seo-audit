@@ -15,5 +15,5 @@ def citation_friendliness(visible_text=None, jsonld=None, structured_elements=No
 
 
 def brand_mention_count(visible_text=None) -> dict:
-    count = (visible_text or "").lower().count("bydfi")
+    count = (visible_text or "").lower().count("platform")
     return {"count": count}

@@ -22,17 +22,17 @@ def test_agent_input_minimal():
     ai = AgentInput(
         run_id="test-001",
         command=Command.AUDIT,
-        target=Target(url="https://bydfi.com"),
+        target=Target(url="https://example.com"),
     )
-    assert ai.project == "bydfi"
+    assert ai.project == "platform"
     assert ai.budget.usd_remaining == 0.03
 
 
 def test_finding_with_evidence():
     f = Finding(
-        id="bydfi.l02.ticker-context-mismatch",
+        id="platform.l02.ticker-context-mismatch",
         source=FindingSource.LLM_JUDGE,
-        platform=Platform.BYDFI,
+        platform=Platform.PLATFORM,
         severity=Severity.BLOCKER,
         confidence=0.92,
         evidence=Evidence(text_snippet="Pros and Cons"),
@@ -55,9 +55,9 @@ def test_audit_report_verdict():
     report = AuditReport(
         trace_id="t1",
         run_id="r1",
-        project="bydfi",
+        project="platform",
         command=Command.AUDIT,
-        target=Target(url="https://bydfi.com"),
+        target=Target(url="https://example.com"),
         final_verdict=FinalVerdict.BLOCKED,
         brand_seo_score=40.0,
         findings_by_severity={Severity.BLOCKER: [blocker_f]},

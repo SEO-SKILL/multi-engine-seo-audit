@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.security.mixed-content
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.security.mixed_content_check, inputs: [resources]}
-    bydfi_business_impact: "HTTPS 页面引用 HTTP 资源 = 浏览器警告 + SEO 影响"
+    platform_business_impact: "HTTPS 页面引用 HTTP 资源 = 浏览器警告 + SEO 影响"
     tags: [security, https, mixed-content]
 
   - id: shared.security.hsts-missing
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.security.hsts_header_check, inputs: [http_headers]}
-    bydfi_business_impact: "Strict-Transport-Security 必备（金融站点）"
+    platform_business_impact: "Strict-Transport-Security 必备（金融站点）"
     tags: [security, hsts]
 
   - id: shared.security.csp-missing
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.security.csp_check, inputs: [http_headers]}
-    bydfi_business_impact: "Content-Security-Policy 防 XSS"
+    platform_business_impact: "Content-Security-Policy 防 XSS"
     tags: [security, csp]
 
   - id: shared.security.ssl-expiry-soon
@@ -35,7 +35,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [domain], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.security.ssl_expiry_check, inputs: [ssl_cert]}
-    bydfi_business_impact: "SSL 证书 30 天内过期 = 即将全站不可访问"
+    platform_business_impact: "SSL 证书 30 天内过期 = 即将全站不可访问"
     tags: [security, ssl]
 
   - id: shared.security.hacked-content
@@ -44,5 +44,5 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [shared, google]}
     detector: {type: hybrid, fn: detectors.security.hacked_content_check, inputs: [page_content]}
-    bydfi_business_impact: "被黑塞菠菜/赌博/色情 = Google 立即处置"
+    platform_business_impact: "被黑塞菠菜/赌博/色情 = Google 立即处置"
     tags: [security, hacked, critical]

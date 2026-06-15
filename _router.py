@@ -19,7 +19,7 @@ class PlatformRouter:
         self.config = yaml.safe_load(cfg_path.read_text())
         self._rules_cache: dict | None = None
 
-    def get_platforms_for_locale(self, locale: str, project: str = "bydfi") -> list[str]:
+    def get_platforms_for_locale(self, locale: str, project: str = "platform") -> list[str]:
         routing = self.config["projects"][project].get("platform_routing", {})
         return routing.get(locale or "en", routing.get("en", ["google"]))
 
@@ -52,7 +52,7 @@ class PlatformRouter:
         """按上下文过滤适用规则"""
         all_rules = self.load_all_rules()
         platforms = platforms_override or self.get_platforms_for_locale(locale or "en")
-        platforms_set = set(platforms) | {"shared", "bydfi"}  # always include shared+bydfi
+        platforms_set = set(platforms) | {"shared", "platform"}  # always include shared+platform
 
         matched: list[dict] = []
         for rule in all_rules.values():
@@ -83,9 +83,9 @@ class PlatformRouter:
 
             matched.append(rule)
 
-        # BYDFi 风控规则优先
+        # Platform 风控规则优先
         matched.sort(key=lambda r: (
-            0 if "bydfi" in str(r.get("source", "")) else 1,
+            0 if "platform" in str(r.get("source", "")) else 1,
             {"blocker": 0, "high": 1, "medium": 2, "low": 3, "info": 4}.get(r.get("severity", "low"), 4),
         ))
         return matched

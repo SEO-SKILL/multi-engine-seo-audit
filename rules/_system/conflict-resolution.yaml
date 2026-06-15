@@ -6,7 +6,7 @@ schema_version: "1.0"
 
 # 一、规则来源优先级（从高到低）
 source_priority:
-  1: bydfi-incident             # BYDFi 自家事故复盘（MEXC）权威性最高
+  1: platform-incident             # Platform 自家事故复盘（MEXC）权威性最高
   2: google-status-dashboard    # Google 实时状态
   3: google-spam-policy         # Google 垃圾内容政策
   4: google-search-central      # Google 官方文档
@@ -15,7 +15,7 @@ source_priority:
   7: yandex-webmaster
   8: llm-engine-docs
   9: industry-incident          # 其他公司事故案例
-  10: bydfi-compliance          # BYDFi 内部合规
+  10: platform-compliance          # Platform 内部合规
   11: third-party-research      # 第三方研究（仅 alert）
   12: internal-llm-extraction   # LLM 提取（需人工 review 后 promote）
 
@@ -59,12 +59,12 @@ scenarios:
       - apply by locale routing
       - 在 report 中明示"为 Google 优化 vs 为 Naver 优化"差异
 
-  scenario_3_bydfi_internal_overrides_google:
+  scenario_3_platform_internal_overrides_google:
     description: |
-      BYDFi 合规要求"必须有风险提示"，Google 没有此要求 → BYDFi 规则胜出
+      Platform 合规要求"必须有风险提示"，Google 没有此要求 → Platform 规则胜出
     rule:
-      - source: bydfi-compliance > all platform rules for content compliance
-      - source: bydfi-incident always wins on duplicate detection scenario
+      - source: platform-compliance > all platform rules for content compliance
+      - source: platform-incident always wins on duplicate detection scenario
 
   scenario_4_confidence_low_with_high_severity:
     description: |

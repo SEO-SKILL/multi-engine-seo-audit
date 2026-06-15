@@ -47,6 +47,6 @@
 
 - 不允许 "guaranteed return / 保证收益" 类违规话术
 - 不允许暗示"必涨/必跌/X 元目标价"
-- BYDFi 工具页需带风险提示
+- Platform 工具页需带风险提示
 - 多语言版本必须真本地化（不是机翻）
 - YMYL 金融内容必须明示 "Not financial advice"

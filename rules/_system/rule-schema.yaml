@@ -21,7 +21,7 @@ rule:
     - llm_judge              # LLM 复核配置
     - patch_hint             # 修复 patch 模板
     - fixtures               # 测试 fixture 路径
-    - bydfi_business_impact  # 对 BYDFi 业务的具体影响说明
+    - platform_business_impact  # 对 Platform 业务的具体影响说明
     - supersedes             # 被本规则替代的旧规则 ID
     - valid_from             # 规则生效日期
     - superseded_at          # 规则失效日期
@@ -36,7 +36,7 @@ fields:
     type: string
     pattern: "^[a-z][a-z0-9_-]*(\\.[a-z][a-z0-9_-]*)+$"
     examples:
-      - bydfi.l02.ticker-context-mismatch
+      - platform.l02.ticker-context-mismatch
       - google.canonical.cross-domain-required
       - naver.c-rank.korean-content-required
       - shared.url.redirect-chain-too-long
@@ -44,8 +44,8 @@ fields:
   source:
     type: enum
     values:
-      - bydfi-incident          # BYDFi 内部事故复盘（最高权威）
-      - bydfi-compliance        # BYDFi 合规要求
+      - platform-incident          # Platform 内部事故复盘（最高权威）
+      - platform-compliance        # Platform 合规要求
       - google-search-central   # Google 官方 Search Central
       - google-status-dashboard # Google Search Status Dashboard
       - google-spam-policy      # Google 垃圾内容政策
@@ -100,7 +100,7 @@ fields:
           - region
       platforms:
         type: array
-        items_enum: [google, bing, naver, yandex, baidu, duckduckgo, llm-engines, shared, bydfi]
+        items_enum: [google, bing, naver, yandex, baidu, duckduckgo, llm-engines, shared, platform]
       locales:
         type: array
         items_enum: [en, zh-CN, ja, ko, vi, tr, pt, es, ru, all]

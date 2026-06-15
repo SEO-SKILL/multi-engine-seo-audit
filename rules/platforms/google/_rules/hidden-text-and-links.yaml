@@ -1,0 +1,70 @@
+# Google Hidden Text & Links 检测
+# 隐藏文本 / 隐藏链接 / 关键词堆砌 / 白底白字 / display:none 文字
+# Manual Action 高发区
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://developers.google.com/search/docs/essentials/spam-policies#hidden-text-and-links
+  pulled_at: 2026-06-12
+
+rules:
+  - id: google.hidden-text.css-display-none
+    source: google-search-central
+    severity: blocker
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [google], commands: [audit, gate]}
+    detector:
+      type: hard_rule
+      fn: detectors.hidden_content.display_none_text_check
+      inputs: [raw_html]
+    bydfi_business_impact: "display:none / visibility:hidden 隐藏关键词 → Manual Action 高发，BYDFi 必修底线"
+    tags: [hidden-text, manual-action-risk, spam-policy]
+
+  - id: google.hidden-text.same-color-background
+    source: google-search-central
+    severity: blocker
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hard_rule
+      fn: detectors.hidden_content.same_color_check
+      inputs: [raw_html]
+    bydfi_business_impact: "白底白字 / 同色文本 → Google 视为典型黑帽 SEO"
+    tags: [hidden-text, manual-action-risk]
+
+  - id: google.hidden-text.off-screen-positioning
+    source: google-search-central
+    severity: high
+    confidence_default: 0.72
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hard_rule
+      fn: detectors.hidden_content.off_screen_check
+      inputs: [raw_html]
+    bydfi_business_impact: "negative margin / position:absolute;left:-9999px 等屏外隐藏 → Manual Action"
+    tags: [hidden-text, manual-action-risk]
+
+  - id: google.hidden-text.zero-font-size
+    source: google-search-central
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hard_rule
+      fn: detectors.hidden_content.zero_font_check
+      inputs: [raw_html]
+    bydfi_business_impact: "font-size:0 / font-size:1px 文字 → 视为隐藏"
+    tags: [hidden-text]
+
+  - id: google.hidden-links.anchor-text-spam
+    source: google-search-central
+    severity: high
+    confidence_default: 0.70
+    applies_to: {page_types: [all], platforms: [google]}
+    detector:
+      type: hard_rule
+      fn: detectors.hidden_content.hidden_links_check
+      inputs: [raw_html]
+    bydfi_business_impact: "隐藏 anchor 文字（仅 1 字符 / 标点 / 隐形链接）→ Manual Action"
+    tags: [hidden-links, manual-action-risk]

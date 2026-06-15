@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.crawl-budget.too-many-low-value-urls
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [domain], platforms: [google]}
     detector: {type: external_api, fn: integrations.gsc.crawl_stats_check, inputs: [property]}
-    bydfi_business_impact: "9 语言 × 数千页面 = crawl budget 紧张"
+    platform_business_impact: "9 语言 × 数千页面 = crawl budget 紧张"
     tags: [crawl-budget]
 
   - id: google.crawl-budget.parameter-explosion
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [domain], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.url.parameter_explosion_check, inputs: [url_inventory]}
-    bydfi_business_impact: "?utm_*?ref=* 等组合让 crawl 浪费"
+    platform_business_impact: "?utm_*?ref=* 等组合让 crawl 浪费"
     tags: [crawl-budget, url-parameter]
 
   - id: google.crawl-budget.soft-404-pages
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.crawl.soft_404_check, inputs: [page_response, content]}
-    bydfi_business_impact: "返回 200 但内容是 'Not Found' = soft 404 浪费 crawl"
+    platform_business_impact: "返回 200 但内容是 'Not Found' = soft 404 浪费 crawl"
     tags: [crawl-budget, soft-404]
 
   - id: google.crawl-budget.discovered-not-crawled-ratio
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.88
     applies_to: {page_types: [domain], platforms: [google]}
     detector: {type: external_api, fn: integrations.gsc.discovered_not_crawled_ratio, inputs: [property]}
-    bydfi_business_impact: "已发现-未抓取占比高 = 信号弱"
+    platform_business_impact: "已发现-未抓取占比高 = 信号弱"
     tags: [crawl-budget, gsc]

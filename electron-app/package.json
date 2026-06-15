@@ -1,0 +1,97 @@
+{
+  "name": "bydfi-seo-audit",
+  "productName": "BYDFi SEO Audit",
+  "version": "1.0.0",
+  "description": "BYDFi 内部 SEO 深度审计工具（442+ 规则 · 4 大搜索引擎 · 9 locale 路由）",
+  "main": "main.js",
+  "private": true,
+  "author": {
+    "name": "BYDFi SEO Team",
+    "email": "kelly@bydfi.com"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build:mac": "electron-builder --mac --arm64",
+    "build:mac-intel": "electron-builder --mac --x64",
+    "build:win": "electron-builder --win",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.bydfi.seo-audit",
+    "productName": "BYDFi SEO Audit",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "logo.png",
+      "splash.html",
+      "settings.html",
+      "build/icon.*",
+      "!node_modules/**/{test,tests,docs,example,examples}/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "skill",
+        "filter": [
+          "**/*",
+          "!.venv/**",
+          "!__pycache__/**",
+          "!**/__pycache__/**",
+          "!**/*.pyc",
+          "!.git/**",
+          "!electron-app/**",
+          "!dist/**",
+          "!node_modules/**",
+          "!fixtures/**",
+          "!image-cache/**",
+          "!deliverables/**"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null
+    },
+    "dmg": {
+      "title": "BYDFi SEO Audit ${version}",
+      "icon": "build/icon.png",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png"
+    }
+  }
+}

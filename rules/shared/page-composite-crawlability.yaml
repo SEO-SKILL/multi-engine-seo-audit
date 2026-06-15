@@ -2,7 +2,7 @@
 # 创建：2026-06-10
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   canonical_present_and_ssr:  0.30
@@ -26,7 +26,7 @@ rules:
       inputs: [raw_html, headers, robots_txt]
       args:
         threshold_low: 0.60
-    bydfi_business_impact: |
+    platform_business_impact: |
       可抓取性综合分 < 0.60 = canonical/hreflang/robots/viewport 多个同时缺失。
       Google 看不到完整页面 = 不参与排名。
     tags: [crawlability, composite]

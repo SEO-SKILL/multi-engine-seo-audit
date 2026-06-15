@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.duplicate.within-site
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hybrid, fn: detectors.duplicate.intra_site_check, inputs: [page_corpus]}
-    bydfi_business_impact: "站内重复内容稀释权重"
+    platform_business_impact: "站内重复内容稀释权重"
     tags: [duplicate]
 
   - id: google.duplicate.paginated-without-rel
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.88
     applies_to: {page_types: [news, blog], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.duplicate.pagination_check, inputs: [pagination_links]}
-    bydfi_business_impact: "分页页面应使用 canonical 指向 view-all 或保留所有版本"
+    platform_business_impact: "分页页面应使用 canonical 指向 view-all 或保留所有版本"
     tags: [duplicate, pagination]
 
   - id: google.duplicate.session-id-in-url
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.duplicate.session_param_check, inputs: [url_params]}
-    bydfi_business_impact: "URL 含 sessionid 会产生大量重复页面"
+    platform_business_impact: "URL 含 sessionid 会产生大量重复页面"
     tags: [duplicate, session-id]
 
   - id: google.duplicate.www-vs-non-www
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.duplicate.www_normalization, inputs: [url, sibling_urls]}
-    bydfi_business_impact: "www.bydfi.com 和 bydfi.com 必须 301 到统一版本"
+    platform_business_impact: "www.example.com 和 example.com 必须 301 到统一版本"
     tags: [duplicate, www]

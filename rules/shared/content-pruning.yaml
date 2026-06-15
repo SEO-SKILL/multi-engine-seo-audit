@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.pruning.thin-content-zero-traffic
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [shared, google], commands: [watch]}
     detector: {type: external_api, fn: integrations.gsc.zero_traffic_check, inputs: [url, history_days]}
-    bydfi_business_impact: "薄内容 + 长期 0 流量 → pruning 候选（删除 / noindex / 合并）"
+    platform_business_impact: "薄内容 + 长期 0 流量 → pruning 候选（删除 / noindex / 合并）"
     tags: [pruning, content-lifecycle]
 
   - id: shared.pruning.decay-pattern
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [news, blog, learn], platforms: [shared, google], commands: [watch]}
     detector: {type: external_api, fn: integrations.gsc.decay_pattern_check, inputs: [url, history_months]}
-    bydfi_business_impact: "持续 6+ 月流量下降 = 需要更新或下架"
+    platform_business_impact: "持续 6+ 月流量下降 = 需要更新或下架"
     tags: [pruning, decay]
 
   - id: shared.pruning.cannibalization-merge-candidate
@@ -26,5 +26,5 @@ rules:
     confidence_default: 0.82
     applies_to: {page_types: [all], platforms: [shared, google]}
     detector: {type: hybrid, fn: detectors.pruning.merge_candidate_check, inputs: [page_inventory]}
-    bydfi_business_impact: "多页面同关键词 → 合并到最强页面 + 301"
+    platform_business_impact: "多页面同关键词 → 合并到最强页面 + 301"
     tags: [pruning, cannibalization, merge]

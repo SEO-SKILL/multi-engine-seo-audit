@@ -22,10 +22,11 @@ class Platform(str, Enum):
     NAVER = "naver"
     YANDEX = "yandex"
     BAIDU = "baidu"
+    YAHOO_JAPAN = "yahoo-japan"
     DUCKDUCKGO = "duckduckgo"
     LLM_ENGINES = "llm-engines"
     SHARED = "shared"
-    BYDFI = "bydfi"
+    PLATFORM = "platform"
 
 
 class Severity(str, Enum):
@@ -61,6 +62,7 @@ class Target(BaseModel):
     url: str | None = None
     locale: str | None = None
     content_path: str | None = None
+    page_type: str | None = None
 
 
 class Budget(BaseModel):
@@ -77,7 +79,7 @@ class Context(BaseModel):
 class AgentInput(BaseModel):
     trace_id: str = Field(default_factory=lambda: str(uuid4()))
     run_id: str
-    project: str = "bydfi"
+    project: str = "platform"
     command: Command
     target: Target
     platforms: list[Platform] = Field(default_factory=list)
@@ -153,6 +155,7 @@ class AuditReport(BaseModel):
     final_verdict: FinalVerdict
     brand_seo_score: float = Field(ge=0.0, le=100.0)
     findings_by_severity: dict[Severity, list[Finding]] = Field(default_factory=dict)
+    skipped_rules: list[dict] = Field(default_factory=list)
     agent_outputs: list[AgentOutput] = Field(default_factory=list)
     total_metrics: Metrics = Field(default_factory=Metrics)
     generated_at: datetime = Field(default_factory=datetime.utcnow)

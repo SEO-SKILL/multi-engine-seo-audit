@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Breadcrumb / 网站名称 / 站内导航 SEO"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
 
@@ -26,9 +26,9 @@ rules:
       template: patches/add_breadcrumb_schema.diff.j2
       priority: P2
       auto_apply: yes_with_diff_preview
-    bydfi_business_impact: |
+    platform_business_impact: |
       BreadcrumbList schema 让 SERP 显示 breadcrumb 而不是 URL。
-      BYDFi 工具页 / 学习页应该都有。
+      Platform 工具页 / 学习页应该都有。
     tags: [breadcrumb, schema]
 
   - id: google.breadcrumb.visible-not-rendered
@@ -44,7 +44,7 @@ rules:
       inputs: [rendered_dom, jsonld_parsed]
       args:
         require_schema_matches_visible: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       可见 breadcrumb 必须与 schema 一致（schema 真实性原则）。
     tags: [breadcrumb, visibility]
 
@@ -62,8 +62,8 @@ rules:
       inputs: [jsonld_parsed]
       args:
         require_organization_or_website: true
-    bydfi_business_impact: |
-      Organization / WebSite schema 帮助 Google SERP 显示"BYDFi"而不是 URL。
+    platform_business_impact: |
+      Organization / WebSite schema 帮助 Google SERP 显示"Platform"而不是 URL。
     tags: [site-name, schema, organization]
 
   - id: google.sitelinks.search-action
@@ -77,6 +77,6 @@ rules:
       type: hard_rule
       fn: detectors.schema.sitelinks_searchbox_check
       inputs: [jsonld_parsed]
-    bydfi_business_impact: |
-      SearchAction schema 让 Google 在 BYDFi SERP 上显示搜索框。
+    platform_business_impact: |
+      SearchAction schema 让 Google 在 Platform SERP 上显示搜索框。
     tags: [sitelinks, searchbox]

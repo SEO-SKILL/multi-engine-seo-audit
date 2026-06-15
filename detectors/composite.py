@@ -147,7 +147,7 @@ def internal_linking_composite_quality(raw_html: str, site_link_graph: dict | No
     """内链综合分"""
     from collections import Counter
     soup = BeautifulSoup(raw_html, "lxml")
-    internal_links = [a for a in soup.find_all("a", href=True) if a["href"].startswith("/") or "bydfi.com" in a["href"]]
+    internal_links = [a for a in soup.find_all("a", href=True) if a["href"].startswith("/") or "example.com" in a["href"]]
     anchors = [a.get_text().strip().lower() for a in internal_links if a.get_text().strip()]
     anchor_counter = Counter(anchors)
 
@@ -192,6 +192,114 @@ def geo_composite_quality(raw_html: str, robots_txt: str | None = None) -> dict:
         "table_data_present":      {"pass": 1.0 if has_tables else 0.0, "weight": 0.10},
         "list_steps_present":      {"pass": 1.0 if has_lists else 0.0, "weight": 0.10},
         "ai_bots_allowed":         {"pass": 1.0 if bots_ok else 0.0, "weight": 0.15},
+    }
+    return _score(sub)
+
+
+def naver_composite_quality(raw_html: str, locale: str | None = None) -> dict:
+    """Naver 专属 composite — 不照搬 Google 维度
+
+    Naver 核心：C-Rank（创作者权威）+ 韩文真实性 + Naver 生态 + 用户行为
+    Naver 几乎不看 schema / 外链权重
+    """
+    import re
+    soup = BeautifulSoup(raw_html, "lxml")
+    text = soup.get_text()
+
+    korean_chars = len(re.findall(r"[\uac00-\ud7af]", text))
+    has_korean = korean_chars >= 200
+    has_krw = "KRW" in text or "원" in text
+    cjk_other = len(re.findall(r"[\u4e00-\u9fff\u3040-\u30ff]", text))
+    mixed_script = cjk_other > 100 and korean_chars > 100
+
+    has_author = bool(soup.find(attrs={"rel": "author"}) or soup.find(class_=lambda c: c and "author" in (c or "").lower()))
+    has_author_url = any("/author" in a.get("href", "") for a in soup.find_all("a", href=True))
+
+    has_naver_eco = any("naver.com" in a.get("href", "") for a in soup.find_all("a", href=True))
+    has_kr_payment = any(k in text.lower() for k in ["kakaopay", "tosspay", "naverpay", "카카오"])
+
+    h_count = len(soup.find_all(["h2", "h3"]))
+    paragraphs = soup.find_all("p")
+    short_p = sum(1 for p in paragraphs if 50 <= len(p.get_text()) <= 200)
+    topic_focused = h_count >= 3 and short_p >= 3
+
+    has_kr_regulatory = any(k in text for k in ["금융위", "한국", "금감원"])
+    has_kr_context = has_krw or has_kr_regulatory
+
+    has_viewport = bool(soup.find("meta", attrs={"name": "viewport"}))
+
+    sub = {
+        "korean_authenticity":   {"pass": 1.0 if has_korean else 0.0, "weight": 0.25},
+        "no_mixed_script":       {"pass": 0.0 if mixed_script else 1.0, "weight": 0.10},
+        "creator_authority":     {"pass": 1.0 if (has_author and has_author_url) else 0.5 if has_author else 0.0, "weight": 0.20},
+        "naver_ecosystem_link":  {"pass": 1.0 if has_naver_eco else 0.5, "weight": 0.10},
+        "korean_local_context":  {"pass": 1.0 if has_kr_context else 0.3, "weight": 0.15},
+        "topic_focus":           {"pass": 1.0 if topic_focused else 0.5, "weight": 0.10},
+        "mobile_viewport":       {"pass": 1.0 if has_viewport else 0.0, "weight": 0.10},
+    }
+    return _score(sub)
+
+
+def yandex_composite_quality(raw_html: str, locale: str | None = None, headers: dict | None = None) -> dict:
+    """Yandex 专属 composite
+
+    Yandex 核心：MatrixNet 用户行为 + 区域信号 + 俄文真实性 + Metrica
+    """
+    import re
+    soup = BeautifulSoup(raw_html, "lxml")
+    text = soup.get_text()
+
+    cyrillic = len(re.findall(r"[а-яА-Я]", text))
+    has_russian = cyrillic >= 200
+    has_rub = "RUB" in text or "рубл" in text.lower() or "руб" in text
+
+    scripts_text = " ".join(str(s) for s in soup.find_all("script"))
+    has_metrica = "mc.yandex.ru/metrika" in scripts_text or "yandex_metrika" in scripts_text
+
+    has_ru_phone = bool(re.search(r"\+7", text))
+    has_ru_reg = any(k in text.lower() for k in ["россия", "москва", "цб рф", "роскомнадзор"])
+
+    word_count = len(text.split())
+    has_substantial = word_count >= 300
+    has_geo_meta = bool(soup.find("meta", attrs={"name": lambda n: n and "geo" in (n or "").lower()}))
+    has_engagement = bool(soup.find_all(["form", "button"]))
+
+    sub = {
+        "russian_authenticity":   {"pass": 1.0 if has_russian else 0.0, "weight": 0.25},
+        "yandex_metrica":         {"pass": 1.0 if has_metrica else 0.0, "weight": 0.20},
+        "russian_local_context":  {"pass": 1.0 if (has_rub or has_ru_phone or has_ru_reg) else 0.3, "weight": 0.15},
+        "content_substance":      {"pass": 1.0 if has_substantial else 0.4, "weight": 0.15},
+        "geo_meta_signal":        {"pass": 1.0 if has_geo_meta else 0.5, "weight": 0.10},
+        "engagement_potential":   {"pass": 1.0 if has_engagement else 0.5, "weight": 0.15},
+    }
+    return _score(sub)
+
+
+def baidu_composite_quality(raw_html: str, headers: dict | None = None) -> dict:
+    """Baidu 专属 composite
+
+    Baidu 核心：ICP 备案 + 简体中文 + Baiduspider 友好 + 中国服务器
+    """
+    import re
+    soup = BeautifulSoup(raw_html, "lxml")
+    text = soup.get_text()
+
+    chinese = len(re.findall(r"[\u4e00-\u9fff]", text))
+    has_chinese = chinese >= 200
+    has_simplified = "简体" in text or chinese >= 50  # 粗略判定
+
+    footer = (soup.find("footer") or soup).get_text() if soup.find("footer") else text[-2000:]
+    has_icp = bool(re.search(r"ICP\s*备?\s*\d+", footer, re.IGNORECASE))
+
+    has_baidu_share = any("share.baidu.com" in str(s) for s in soup.find_all("script"))
+    has_cny = "CNY" in text or "人民币" in text or "¥" in text
+
+    sub = {
+        "chinese_authenticity":  {"pass": 1.0 if has_chinese else 0.0, "weight": 0.30},
+        "icp_license":           {"pass": 1.0 if has_icp else 0.0, "weight": 0.30},
+        "cny_local_context":     {"pass": 1.0 if has_cny else 0.5, "weight": 0.20},
+        "baidu_ecosystem":       {"pass": 1.0 if has_baidu_share else 0.5, "weight": 0.10},
+        "viewport_mobile":       {"pass": 1.0 if soup.find("meta", attrs={"name": "viewport"}) else 0.0, "weight": 0.10},
     }
     return _score(sub)
 

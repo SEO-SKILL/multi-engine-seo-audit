@@ -32,7 +32,7 @@
 
 ```json
 {
-  "rule_id": "bydfi.l01.republished-content-low-increment",
+  "rule_id": "platform.l01.republished-content-low-increment",
   "severity": "blocker",
   "confidence": 0.88,
   "evidence": {
@@ -43,6 +43,6 @@
     "missing_signals": ["原作者 bio", "我方编辑评审", "FAQ", "风险提示"]
   },
   "recommendation": "三选一：(1) noindex (2) cross-domain canonical 到原文 (3) 补足原创增量 ≥ 50%",
-  "reasoning": "页面 92% 内容与原文相同，且 self-canonical。仅 12% 是 BYDFi 新增。"
+  "reasoning": "页面 92% 内容与原文相同，且 self-canonical。仅 12% 是 Platform 新增。"
 }
 ```

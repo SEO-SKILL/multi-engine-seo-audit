@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Google Core Update / Helpful Content / Spam Update 适配"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 # 历史更新时间线（daily-pull-agent 自动维护）
 core_update_timeline:
@@ -33,7 +33,7 @@ rules:
       args:
         red_flag_drop_pct: 30
         time_window_days: 14
-    bydfi_business_impact: |
+    platform_business_impact: |
       Core Update 后 14 天内流量下跌 > 30% = 高度可能受影响。
       触发 traffic drop SOP（参考操作手册 Google 自然流量下跌排查 SOP）。
     tags: [core-update, traffic-drop, sop-trigger]
@@ -50,9 +50,9 @@ rules:
       prompt_template: prompts/helpful_content_signal_judge.md
       model: sonnet
       inputs: [visible_text, page_purpose, author_metadata, sources]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Helpful Content 信号弱的页面在 Core Update 中容易被打击。
-      BYDFi 应主动 audit 所有内容页，提前修复 Helpful Content 信号。
+      Platform 应主动 audit 所有内容页，提前修复 Helpful Content 信号。
     tags: [helpful-content, core-update]
 
   - id: google.spam-update.scaled-content-risk
@@ -71,7 +71,7 @@ rules:
           - similar_pages_above_50
           - template_similarity_above_0.85
           - thin_content_ratio_above_0.30
-    bydfi_business_impact: |
+    platform_business_impact: |
       程序化页面（/price/* /how-to-buy/*）必须每页有独特价值。
       Spam Update 主要打击规模化低增量内容。
     tags: [spam-update, scaled-content]

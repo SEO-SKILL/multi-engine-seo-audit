@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.multilingual.translation-quality
@@ -15,9 +15,9 @@ rules:
       prompt_template: prompts/translation_quality_judge.md
       model: sonnet
       inputs: [visible_text, locale, source_text_if_available]
-    bydfi_business_impact: |
+    platform_business_impact: |
       机翻质量直接影响 Google + 本地搜索引擎排名。
-      BYDFi 9 语言版本必须真本地化（非纯机翻）。
+      Platform 9 语言版本必须真本地化（非纯机翻）。
     tags: [multilingual, translation, localization]
 
   - id: shared.multilingual.locale-specific-content-missing
@@ -39,7 +39,7 @@ rules:
           ja: [日本円 JPY, 日本金融厅备案, 日本本地支付]
           ru: [Russian Ruble RUB, 俄罗斯监管]
           tr: [Turkish Lira TRY]
-    bydfi_business_impact: |
+    platform_business_impact: |
       仅机翻不够，必须有目标地区的真实内容上下文。
     tags: [multilingual, localization-depth]
 
@@ -63,7 +63,7 @@ rules:
           ko: KRW
           ru: RUB
           tr: TRY
-    bydfi_business_impact: |
+    platform_business_impact: |
       韩文页只显示 USD 价格 = 用户体验差 + 本地 SEO 信号弱。
       应同时显示 KRW + USD 双货币。
     tags: [multilingual, currency]

@@ -102,13 +102,20 @@ def deprecated_types_check(jsonld_parsed: list | None = None) -> dict:
 
 
 def deprecated_faqpage_check(jsonld: list | None = None) -> dict:
+    """FAQ 富结果 2026-05 弃用 — 检测 FAQPage schema 仍存在则触发"""
     has_faqpage = any(isinstance(b, dict) and b.get("@type") == "FAQPage" for b in (jsonld or []))
-    return {"has_faqpage_schema": has_faqpage}
+    return {
+        "has_faqpage_schema": has_faqpage,
+        "suspect_deprecated_faqpage": has_faqpage,  # FAQ 弃用了，still 用就触发提示
+    }
 
 
 def deprecated_howto_check(jsonld: list | None = None) -> dict:
     has_howto = any(isinstance(b, dict) and b.get("@type") == "HowTo" for b in (jsonld or []))
-    return {"has_howto_schema": has_howto}
+    return {
+        "has_howto_schema": has_howto,
+        "suspect_deprecated_howto": has_howto,
+    }
 
 
 def breadcrumb_position_check(jsonld: list | None = None) -> dict:

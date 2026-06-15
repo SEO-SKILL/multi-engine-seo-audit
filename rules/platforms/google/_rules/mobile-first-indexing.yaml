@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: google.mobile.viewport-not-responsive
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [google, shared]}
     detector: {type: hard_rule, fn: detectors.mobile.viewport_responsive_check, inputs: [head_meta]}
-    bydfi_business_impact: "移动优先索引要求 viewport meta 必须设置"
+    platform_business_impact: "移动优先索引要求 viewport meta 必须设置"
     tags: [mobile, viewport]
 
   - id: google.mobile.touch-target-too-small
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.mobile.touch_target_size, inputs: [rendered_dom]}
-    bydfi_business_impact: "触摸目标 < 48px 影响移动可用性"
+    platform_business_impact: "触摸目标 < 48px 影响移动可用性"
     tags: [mobile, ux]
 
   - id: google.mobile.text-too-small
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hard_rule, fn: detectors.mobile.text_size_check, inputs: [computed_styles]}
-    bydfi_business_impact: "正文字号 < 12px 在移动端不可读"
+    platform_business_impact: "正文字号 < 12px 在移动端不可读"
     tags: [mobile, typography]
 
   - id: google.mobile.intrusive-interstitials
@@ -35,7 +35,7 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: llm_judge, prompt_template: prompts/intrusive_interstitial_judge.md, model: haiku}
-    bydfi_business_impact: "首屏 popup 阻挡内容直接降权"
+    platform_business_impact: "首屏 popup 阻挡内容直接降权"
     tags: [mobile, ux, popup]
 
   - id: google.mobile.parity-with-desktop
@@ -44,5 +44,5 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [google]}
     detector: {type: hybrid, fn: detectors.mobile.parity_check, inputs: [mobile_html, desktop_html]}
-    bydfi_business_impact: "移动版必须保留桌面版核心内容（移动优先索引要求）"
+    platform_business_impact: "移动版必须保留桌面版核心内容（移动优先索引要求）"
     tags: [mobile, parity]

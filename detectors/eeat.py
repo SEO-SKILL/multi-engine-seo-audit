@@ -95,3 +95,25 @@ def org_credentials_check(page_content=None, jsonld_organization=None, footer=No
     text = (page_content or "") + " " + (footer or "")
     has = any(k in text.lower() for k in ["address", "phone", "registered", "license"])
     return {"has_credentials": has}
+
+
+def organization_signal_check(raw_html=None, jsonld_parsed=None, **_) -> dict:
+    """首页/落地页 Organization 信号（about/contact + JSON-LD Organization）"""
+    html = (raw_html or "").lower()
+    has_about = "/about" in html or "关于我们" in (raw_html or "")
+    has_contact = "/contact" in html or "/help" in html or "联系我们" in (raw_html or "")
+    has_org_jsonld = False
+    for item in (jsonld_parsed or []):
+        if isinstance(item, dict):
+            t = str(item.get("@type", ""))
+            if "Organization" in t or "Corporation" in t:
+                has_org_jsonld = True
+                break
+    score = sum([has_about, has_contact, has_org_jsonld])
+    return {
+        "has_about_link": has_about,
+        "has_contact_link": has_contact,
+        "has_organization_jsonld": has_org_jsonld,
+        "org_signal_score": score,
+        "suspect_weak_org_signal": score < 2,
+    }

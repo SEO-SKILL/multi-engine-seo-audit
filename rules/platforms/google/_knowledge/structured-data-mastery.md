@@ -1,4 +1,4 @@
-# 结构化数据精通（BYDFi 防 MEXC L04 复发版）
+# 结构化数据精通（Platform 防 MEXC L04 复发版）
 
 > 对标 Will 知识库 `18-结构化数据总览与通用规则.md`
 > 来源：https://developers.google.com/search/docs/appearance/structured-data
@@ -6,7 +6,7 @@
 
 ---
 
-## 一、为什么 BYDFi 必须把这个学透
+## 一、为什么 Platform 必须把这个学透
 
 **MEXC 事故 L04 就是 schema 字段虚假触发的 manual action**。
 Schema 不是"加个 JSON-LD 就行"，是"每个字段必须对应可见内容"。
@@ -84,7 +84,7 @@ Schema 类型必须匹配页面真实用途。
 
 ---
 
-## 三、BYDFi 必备 Schema 清单（全站基线）
+## 三、Platform 必备 Schema 清单（全站基线）
 
 ```html
 <!-- 1. Organization (全站 footer 共享) -->
@@ -92,14 +92,14 @@ Schema 类型必须匹配页面真实用途。
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "BYDFi",
-  "url": "https://bydfi.com",
-  "logo": "https://bydfi.com/logo.png",
+  "name": "Platform",
+  "url": "https://example.com",
+  "logo": "https://example.com/logo.png",
   "foundingDate": "2019",
   "sameAs": [
-    "https://twitter.com/bydfi_official",
-    "https://www.linkedin.com/company/bydfi",
-    "https://t.me/bydfi_official"
+    "https://twitter.com/platform_official",
+    "https://www.linkedin.com/company/platform",
+    "https://t.me/platform_official"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -114,11 +114,11 @@ Schema 类型必须匹配页面真实用途。
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "url": "https://bydfi.com",
-  "name": "BYDFi",
+  "url": "https://example.com",
+  "name": "Platform",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://bydfi.com/search?q={search_term_string}",
+    "target": "https://example.com/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
@@ -130,9 +130,9 @@ Schema 类型必须匹配页面真实用途。
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    {"@type":"ListItem","position":1,"name":"Home","item":"https://bydfi.com/"},
-    {"@type":"ListItem","position":2,"name":"Learn","item":"https://bydfi.com/en/learn"},
-    {"@type":"ListItem","position":3,"name":"BTC Liquidation","item":"https://bydfi.com/en/learn/btc-liquidation"}
+    {"@type":"ListItem","position":1,"name":"Home","item":"https://example.com/"},
+    {"@type":"ListItem","position":2,"name":"Learn","item":"https://example.com/en/learn"},
+    {"@type":"ListItem","position":3,"name":"BTC Liquidation","item":"https://example.com/en/learn/btc-liquidation"}
   ]
 }
 </script>
@@ -153,18 +153,18 @@ Schema 类型必须匹配页面真实用途。
   "dateModified": "2026-06-08",
   "author": {
     "@type": "Person",
-    "name": "BYDFi Research",
-    "url": "https://bydfi.com/author/research"
+    "name": "Platform Research",
+    "url": "https://example.com/author/research"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "BYDFi",
+    "name": "Platform",
     "logo": {"@type": "ImageObject", "url": "..."}
   },
   "reviewedBy": {
     "@type": "Person",
-    "name": "BYDFi Risk Management",
-    "url": "https://bydfi.com/author/risk"
+    "name": "Platform Risk Management",
+    "url": "https://example.com/author/risk"
   }
 }
 ```
@@ -200,7 +200,7 @@ Schema 类型必须匹配页面真实用途。
   "@type": "Product",
   "name": "BTC/USDT Perpetual Futures",
   "description": "...",
-  "brand": {"@type": "Brand", "name": "BYDFi"}
+  "brand": {"@type": "Brand", "name": "Platform"}
 }
 ```
 
@@ -229,4 +229,4 @@ Schema 类型必须匹配页面真实用途。
 ## 六、Will 知识库对照
 
 Will `18-结构化数据总览与通用规则.md` 列了 schema 类型清单。
-我们这版 = 类型清单 + BYDFi 频道映射 + MEXC 事故防复发 + 实操模板。
+我们这版 = 类型清单 + Platform 频道映射 + MEXC 事故防复发 + 实操模板。

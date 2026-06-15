@@ -1,0 +1,86 @@
+# Bing 深度规则集（V2 补完）
+# 补 Image Pack / News / Trust Signals / Mobile / HTTPS
+# 创建：2026-06-12
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+source_doc:
+  url: https://www.bing.com/webmasters/help
+  pulled_at: 2026-06-12
+
+rules:
+  # === Bing Image Pack（Bing 图片搜索权重比 Google 高）===
+  - id: bing.image-pack.alt-and-filename
+    source: bing-webmaster
+    source_url: https://www.bing.com/webmasters/help/optimizing-images-31aef9b
+    severity: medium
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [bing]}
+    detector:
+      type: hard_rule
+      fn: detectors.bing.image_pack_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      Bing Image Pack 在 SERP 占比比 Google 高 30%+。
+      所有图片必须有描述性 alt 和文件名（不是 IMG_001.jpg）。
+    tags: [bing, image-pack, alt, filename]
+
+  # === Bing News（新闻类内容权重）===
+  - id: bing.news.publisher-signals
+    source: bing-webmaster
+    severity: low
+    confidence_default: 0.70
+    applies_to: {page_types: [news, blog], platforms: [bing]}
+    detector:
+      type: hard_rule
+      fn: detectors.bing.news_publisher_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      Bing News 引用要求：JSON-LD NewsArticle / Article + publisher schema + dateline。
+      BYDFi 教育类内容 + 加密资讯如果想进 Bing News，必须满足这些信号。
+    tags: [bing, news, publisher, schema]
+
+  # === Bing Trust Signals（域名年龄 / backlinks 比 Google 更重）===
+  - id: bing.trust.signals-weak
+    source: bing-webmaster
+    severity: medium
+    confidence_default: 0.65
+    applies_to: {page_types: [all], platforms: [bing]}
+    detector:
+      type: hard_rule
+      fn: detectors.bing.trust_signals_check
+      inputs: [raw_html, visible_text]
+    bydfi_business_impact: |
+      Bing 算法比 Google 更看重 trust 信号：联系信息 / 实体地址 / 关于我们 / 法律条款。
+      BYDFi 缺这些会被 Bing 视为 thin / non-trustworthy 站点。
+    tags: [bing, trust, eeat]
+
+  # === Bing Mobile-Friendly（与 Google MFI 不同）===
+  - id: bing.mobile.viewport-required
+    source: bing-webmaster
+    source_url: https://www.bing.com/webmasters/help/mobile-friendliness-2-22dd6f1
+    severity: high
+    confidence_default: 0.90
+    applies_to: {page_types: [all], platforms: [bing]}
+    detector:
+      type: hard_rule
+      fn: detectors.bing.mobile_friendly_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      Bing 移动算法独立于 Google MFI，对 viewport meta 强制。
+      BYDFi 移动适配缺失会被 Bing 直接降权。
+    tags: [bing, mobile, viewport]
+
+  # === Bing HTTPS（与 Google HTTPS 类似）===
+  - id: bing.security.https-required
+    source: bing-webmaster
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [bing]}
+    detector:
+      type: hard_rule
+      fn: detectors.bing.https_check
+      inputs: [page_url]
+    bydfi_business_impact: |
+      Bing 2018+ HTTPS 是排名因素。BYDFi 任何 http 页面对 Bing 严重降权。
+    tags: [bing, https, security]

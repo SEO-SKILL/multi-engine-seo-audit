@@ -1,0 +1,39 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.learn.audience-not-specified
+    source: platform-compliance
+    severity: low
+    confidence_default: 0.80
+    applies_to: {page_types: [learn], platforms: [platform, google]}
+    detector: {type: llm_judge, prompt_template: prompts/audience_clarity_judge.md, model: haiku}
+    platform_business_impact: "Learn 内容必须明示受众（新手/高频/机构）"
+    tags: [platform, learn-center, audience]
+
+  - id: platform.learn.no-prerequisite-link
+    source: platform-compliance
+    severity: low
+    confidence_default: 0.78
+    applies_to: {page_types: [learn], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.learn_prerequisite_check, inputs: [internal_links]}
+    platform_business_impact: "进阶 Learn 应链接前置知识页"
+    tags: [platform, learn-center, learning-path]
+
+  - id: platform.learn.no-platform-specific-data
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.75
+    applies_to: {page_types: [learn], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/platform_specific_data_judge.md, model: haiku}
+    platform_business_impact: "Learn 内容应有 Platform 平台特定数据（费率/规则/案例）"
+    tags: [platform, learn-center, originality]
+
+  - id: platform.learn.no-glossary-link
+    source: platform-compliance
+    severity: low
+    confidence_default: 0.85
+    applies_to: {page_types: [learn], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.glossary_link_check, inputs: [internal_links]}
+    platform_business_impact: "首次出现的专业术语应链接到 glossary"
+    tags: [platform, learn-center, internal-linking]

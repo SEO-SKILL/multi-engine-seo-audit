@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.a11y.html-lang-missing
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.a11y.html_lang_check, inputs: [html_tag]}
-    bydfi_business_impact: "<html lang> 缺失影响多语言 SEO + 无障碍"
+    platform_business_impact: "<html lang> 缺失影响多语言 SEO + 无障碍"
     tags: [accessibility, multilingual]
 
   - id: shared.a11y.heading-hierarchy-broken
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.90
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.a11y.heading_hierarchy_check, inputs: [headings]}
-    bydfi_business_impact: "H1 → H3 跳 H2 不利于内容结构识别"
+    platform_business_impact: "H1 → H3 跳 H2 不利于内容结构识别"
     tags: [accessibility, headings]
 
   - id: shared.a11y.multiple-h1
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.a11y.h1_count_check, inputs: [headings]}
-    bydfi_business_impact: "多个 H1 让搜索引擎混乱"
+    platform_business_impact: "多个 H1 让搜索引擎混乱"
     tags: [accessibility, headings]
 
   - id: shared.a11y.link-text-vague
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.a11y.link_text_check, inputs: [links]}
-    bydfi_business_impact: "Click here / Read more 类锚文本对无障碍 + SEO 都差"
+    platform_business_impact: "Click here / Read more 类锚文本对无障碍 + SEO 都差"
     tags: [accessibility, links]

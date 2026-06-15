@@ -5,7 +5,7 @@
 
 file_version: "1.0"
 file_purpose: "JSON-LD 字段必须反映页面可见内容，否则触发结构化数据人工处置"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 source_doc:
   url: https://developers.google.com/search/docs/appearance/structured-data/sd-policies
@@ -15,7 +15,7 @@ source_doc:
 rules:
 
   - id: google.schema.field-not-grounded-in-visible-content
-    source: bydfi-incident
+    source: platform-incident
     severity: blocker
     confidence_default: 0.88
     applies_to:
@@ -54,14 +54,14 @@ rules:
     fixtures:
       positive: fixtures/schema-fake-rating.html
       negative: fixtures/schema-grounded.html
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L04 核心问题：schema 塞了 MEXC App 的 AggregateRating，但页面没有评分组件。
       Google 政策：所有 JSON-LD 字段必须对应可见内容，否则视为误导，触发人工处置。
-    tags: [bydfi-critical, schema, mexc-incident, structured-data-manual-action]
+    tags: [platform-critical, schema, mexc-incident, structured-data-manual-action]
     human_review_required: true
 
   - id: google.schema.jsonld-csr-only
-    source: bydfi-incident
+    source: platform-incident
     severity: high
     confidence_default: 0.95
     applies_to:
@@ -79,10 +79,10 @@ rules:
       priority: P0
       auto_apply: false
       requires_review: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故核心：raw HTML 没有 NewsArticle JSON-LD，仅渲染后出现。
       Googlebot 抓取时可能看不到 schema。所有关键 schema 类型必须 SSR 输出。
-    tags: [bydfi-critical, schema, ssr-required]
+    tags: [platform-critical, schema, ssr-required]
 
   - id: google.schema.aggregaterating-without-review-component
     source: google-spam-policy
@@ -102,13 +102,13 @@ rules:
           - dom 中有 review/comment 列表
           - 可见 average rating star
           - 用户可见的 review count
-    bydfi_business_impact: |
+    platform_business_impact: |
       Google 明确规定 AggregateRating 必须对应页面可见的 review/rating 组件。
       光放 schema 不放可见组件 = 操纵富结果 = 人工处置。
     tags: [schema, aggregaterating, review-snippet]
 
   - id: google.schema.copyrightnotice-inconsistent
-    source: bydfi-incident
+    source: platform-incident
     severity: medium
     confidence_default: 0.94
     applies_to:
@@ -123,13 +123,13 @@ rules:
           - copyrightNotice.copyrightHolder.name
           - copyrightNotice.email
           - copyrightNotice.creditedAgent
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L04 子问题：copyrightNotice 邮箱和页面可见邮箱不一致。
       声明不一致降低富结果资格。
     tags: [schema, mexc-incident, consistency]
 
   - id: google.schema.relatedlink-topic-mismatch
-    source: bydfi-incident
+    source: platform-incident
     severity: high
     confidence_default: 0.86
     applies_to:
@@ -147,11 +147,11 @@ rules:
     patch_hint:
       template: patches/remove_unrelated_schema_links.diff.j2
       priority: P0
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L02 子问题：schema relatedLink 指向 PROS 价格页，
       但页面主题是 Techsslaash 评测。
       schema relatedLink 必须与页面主题语义一致。
-    tags: [bydfi-critical, schema, mexc-incident, ticker-mismatch]
+    tags: [platform-critical, schema, mexc-incident, ticker-mismatch]
 
   - id: google.schema.deprecated-types
     source: google-search-central
@@ -172,6 +172,6 @@ rules:
     patch_hint:
       template: patches/remove_deprecated_schema.diff.j2
       priority: P3
-    bydfi_business_impact: |
+    platform_business_impact: |
       FAQ 富结果已弃用，继续保留 FAQPage schema 不会处置但占资源。
     tags: [schema, deprecation]

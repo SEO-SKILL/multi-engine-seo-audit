@@ -3,7 +3,7 @@
 # 不是单点 schema 字段缺失，而是 schema 整体策略是否完整
 
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   ssr_not_csr_only:           0.25  # 必须 SSR 输出（MEXC L04 同源）
@@ -21,7 +21,7 @@ rules:
     confidence_default: 0.85
     applies_to:
       page_types: [all]
-      platforms: [google, shared, bydfi]
+      platforms: [google, shared, platform]
       commands: [audit, gate, watch]
     detector:
       type: hybrid
@@ -33,24 +33,24 @@ rules:
     patch_hint:
       template: patches/schema_composite_remediation.md.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       Schema 综合分 < 0.50 = SSR 缺失 + 字段虚假同时存在 = MEXC 事故同源风险。
     tags: [schema, composite, mexc-related]
 
   - id: shared.schema.page-composite-fake-rating
-    source: bydfi-incident
+    source: platform-incident
     severity: blocker
     confidence_default: 0.92
     applies_to:
       page_types: [all]
-      platforms: [google, bydfi]
+      platforms: [google, platform]
     detector:
       type: hybrid
       fn: detectors.composite.schema_composite_quality
       inputs: [raw_html, rendered_html]
       args:
         fail_if_fake_rating: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       AggregateRating 字段虚假 = MEXC 事故 L04 同源 = 立即 manual action。
       Composite 直接降到 0。
     tags: [schema, composite, mexc-critical, blocker]

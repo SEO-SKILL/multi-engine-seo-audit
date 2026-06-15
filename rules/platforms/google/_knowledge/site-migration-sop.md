@@ -1,8 +1,8 @@
-# 网站迁移 SOP（BYDFi 防 SEO 流量崩盘版）
+# 网站迁移 SOP（Platform 防 SEO 流量崩盘版）
 
 > 来源：https://developers.google.com/search/docs/crawling-indexing/site-move-no-url-changes
-> 创建：2026-06-10 / 维护：kelly@bydfi.com
-> 适用场景：BYDFi 切换 CDN / 迁移服务器 / 跨云迁移（无 URL 变化）
+> 创建：2026-06-10 / 维护：kelly@example.com
+> 适用场景：Platform 切换 CDN / 迁移服务器 / 跨云迁移（无 URL 变化）
 
 ---
 
@@ -31,7 +31,7 @@
 ### 1. 新环境准备
 - [ ] 上传/同步所有内容到新服务器/CDN
 - [ ] 创建测试环境（按 IP 限制访问）
-- [ ] 临时 hostname（如 `beta.bydfi.com`）
+- [ ] 临时 hostname（如 `beta.example.com`）
 - [ ] **临时 hostname 上 `noindex` meta + robots.txt `Disallow: /`**（防意外索引）
 
 ### 2. Googlebot 访问验证
@@ -50,7 +50,7 @@
 - [ ] Google Analytics 代码保留
 
 ### 5. 临时 hostname 在 GSC 验证（可选）
-- [ ] 添加 `beta.bydfi.com` property
+- [ ] 添加 `beta.example.com` property
 - [ ] 验证 Googlebot 能访问 beta（不索引）
 
 ---
@@ -68,7 +68,7 @@
 - [ ] 监控 ISP DNS 缓存刷新进度
 
 ### 3. 立即验证
-- [ ] 主页跑 `seo-audit audit https://bydfi.com`
+- [ ] 主页跑 `seo-audit audit https://example.com`
 - [ ] 关键页（/futures, /price/btc, /learn）逐个 audit
 - [ ] 跑 `scripts/batch_audit.py` 全 10 页对比基线
 
@@ -116,12 +116,12 @@
 
 ### 3. 复盘 + 沉淀
 - [ ] 记录到 `tasks/lessons.md`
-- [ ] 如有事故，记录到 `rules/bydfi/google-action-history.md`
-- [ ] 更新 BYDFi 内部 runbook
+- [ ] 如有事故，记录到 `rules/platform/google-action-history.md`
+- [ ] 更新 Platform 内部 runbook
 
 ---
 
-## 七、BYDFi 迁移红线（必修清单）
+## 七、Platform 迁移红线（必修清单）
 
 迁移期任何时刻发现以下情况，**立即回滚**：
 
@@ -134,13 +134,13 @@
 
 ---
 
-## 八、与 BYDFi SEO Audit Skill 集成
+## 八、与 Platform SEO Audit Skill 集成
 
 | 迁移阶段 | Skill 命令 |
 |---|---|
-| Pre-Migration 验证 | `seo-audit audit https://beta.bydfi.com` |
+| Pre-Migration 验证 | `seo-audit audit https://beta.example.com` |
 | D-Day 验证 | `scripts/batch_audit.py` 全 10 页 |
-| 24h 监控 | `seo-audit watch bydfi.com` |
+| 24h 监控 | `seo-audit watch example.com` |
 | 对比基线 | 上次 batch_audit JSON snapshot diff |
 | 红线检测 | `audit` 输出 Composite Scores 是否跌 |
 

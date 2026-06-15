@@ -21,7 +21,9 @@ SKILL_ROOT = Path(__file__).parent.parent
 OFFICIAL_SOURCES = {
     "google_search_central_blog": "https://developers.google.com/search/blog",
     "google_status_dashboard": "https://status.search.google.com",
-    "google_search_central_news": "https://developers.google.com/search/blog/rss",
+    "google_search_central_news": "https://developers.google.com/search/blog/feed/posts",
+    # baidu_search_resource: 已下线
+    "yahoo_jp_search_advisor": "https://help.yahoo-net.jp/s/article/H000007517",
     "bing_webmaster_blog": "https://blogs.bing.com/webmaster",
     "naver_search_advisor": "https://searchadvisor.naver.com/guide",
     "yandex_webmaster": "https://yandex.com/blog/webmaster",
@@ -40,7 +42,7 @@ async def daily_pull() -> dict:
     async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
         for name, url in OFFICIAL_SOURCES.items():
             try:
-                resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (BYDFi-SEO-Sync)"})
+                resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Platform-SEO-Sync)"})
                 content_hash = hashlib.sha256(resp.text.encode()).hexdigest()
                 cache_file = cache_dir / f"{name}.hash"
                 last_hash = cache_file.read_text().strip() if cache_file.exists() else ""
@@ -130,10 +132,18 @@ def diff_engine(new_candidates: list[dict], existing_rules_path: Path) -> dict:
     }
 
 
-def alert_to_slack(changes: dict) -> dict:
-    """有重大变化时推 Slack 提醒"""
-    from integrations.slack import send_alert
-    return {"would_alert": changes.get("change_classification") in ("major", "breaking")}
+def alert_to_lark(changes: dict, candidates_count: int = 0) -> dict:
+    """有重大变化时推 Lark 提醒（Platform 用飞书）"""
+    import os, httpx
+    webhook = os.environ.get("LARK_WEBHOOK")
+    if not webhook or changes.get("change_classification") not in ("major", "breaking"):
+        return {"alerted": False, "reason": "no_webhook_or_minor"}
+    msg = f"📡 SEO Rule Sync — {changes.get('change_classification','?').upper()} change · {candidates_count} 候选规则待审核"
+    try:
+        httpx.post(webhook, json={"msg_type":"text","content":{"text":msg}}, timeout=10)
+        return {"alerted": True, "via": "lark"}
+    except Exception as e:
+        return {"alerted": False, "error": str(e)}
 
 
 def version_commit(branch_name: str, changes: dict) -> dict:
@@ -161,7 +171,7 @@ async def run_sync() -> dict:
                 extracted.extend(candidates)
 
     diff = diff_engine(extracted, SKILL_ROOT / "rules")
-    alert = alert_to_slack(diff)
+    alert = alert_to_lark(diff, candidates_count=len(extracted))
     commit = version_commit(f"rule-sync/{datetime.utcnow().strftime('%Y-%m-%d')}", diff)
 
     return {

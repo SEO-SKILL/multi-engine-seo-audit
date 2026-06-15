@@ -1,0 +1,162 @@
+# Platform 专属：金融合规规则
+# 跨国合规：US-SEC / EU-MiCA / SG-MAS / JP-JFSA / HK-SFC
+# 创建：2026-06-10
+
+file_version: "1.0"
+file_purpose: "金融内容合规自检，避免触发监管 + Google YMYL 高要求"
+maintainer: kelly@example.com
+last_reviewed_at: 2026-06-10
+
+# 全局风险关键词黑名单
+risk_keywords:
+  hard_banned:  # 在任何 Platform 页面都不允许出现
+    - guaranteed return
+    - guaranteed profit
+    - risk-free
+    - 100% profit
+    - certain profit
+    - no risk
+    - 保证收益
+    - 稳赚不赔
+    - 零风险
+    - 100% 盈利
+
+  context_sensitive:  # 视上下文判断
+    - investment advice  # 必须紧跟 "not financial advice"
+    - financial advice
+    - 投资建议
+    - 必涨
+    - 必跌
+
+  regional_banned:
+    US-SEC:
+      - unregistered_security_unqualified
+      - investment_contract_without_disclaimer
+    EU-MiCA:
+      - 任何明示/暗示"高收益保证"的表述
+    JP-JFSA:
+      - 未备案的境外金融服务直接 CTA
+    SG-MAS:
+      - 暗示银行级保障的措辞
+
+# 风险提示模板（双语）
+risk_disclaimer_templates:
+  en: |
+    This result is for estimation only and does not constitute financial advice.
+    Actual results may vary due to market volatility, fees, funding rates, margin rules,
+    mark price, liquidity, and platform risk controls.
+  zh-CN: |
+    计算结果仅供参考，不构成任何投资建议或交易承诺。实际结果可能因市场波动、手续费、
+    资金费率、保证金规则、标记价格、流动性和平台风控规则等因素发生变化。
+
+# 规则定义
+rules:
+
+  - id: example.compliance.banned-keywords-present
+    source: platform-compliance
+    severity: blocker
+    confidence_default: 0.99
+    applies_to:
+      page_types: [all]
+      platforms: [google, platform]
+      locales: [all]
+      commands: [audit, gate, watch]
+    detector:
+      type: hard_rule
+      fn: detectors.compliance.keyword_blacklist
+      inputs: [visible_text]
+      args:
+        blacklist_file: this_file
+        match_mode: case_insensitive_word_boundary
+    patch_hint:
+      template: patches/remove_banned_keyword.diff.j2
+      priority: P0
+      auto_apply: false
+      requires_review: true
+    fixtures:
+      positive: fixtures/banned-keyword-page.html
+      negative: fixtures/compliant-tools-page.html
+    platform_business_impact: |
+      任何 Platform 页面出现"guaranteed return / 保证收益 / 100% profit"等都会触发
+      US-SEC / EU-MiCA / JP-JFSA / HK-SFC 多国监管风险，必须立即清除。
+    tags: [platform-critical, compliance, regulatory]
+    human_review_required: true
+
+  - id: example.compliance.risk-disclaimer-required
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.93
+    applies_to:
+      page_types: [tools, calculator, price, how-to-buy, learn, futures, copy-trading, bot]
+      platforms: [google, platform]
+      locales: [all]
+      commands: [audit, gate]
+    detector:
+      type: hard_rule
+      fn: detectors.compliance.has_risk_disclaimer
+      inputs: [visible_text, page_template]
+      args:
+        templates_file: this_file
+        position_required: [footer, near_cta, calculator_result]
+        min_word_match: 5
+    patch_hint:
+      template: patches/inject_risk_disclaimer.diff.j2
+      priority: P0
+      auto_apply: yes_with_diff_preview
+    fixtures:
+      positive: fixtures/calculator-no-disclaimer.html
+      negative: fixtures/calculator-with-disclaimer.html
+    platform_business_impact: |
+      YMYL 金融工具页必须有醒目风险提示。直接对标 PRD §12.4 统一风险提示文案。
+      影响所有计算器 / 收益预测 / 跟单 / Bot 类页面。
+    tags: [compliance, ymyl, fintech, mandatory]
+
+  - id: example.compliance.region-restricted-content
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.88
+    applies_to:
+      page_types: [all]
+      platforms: [google, platform]
+      locales: [all]
+    detector:
+      type: hybrid
+      fn: detectors.compliance.region_restriction_check
+      inputs: [visible_text, locale, available_regions_db]
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.80
+      prompt_template: prompts/region_restriction_judge.md
+      model: sonnet
+    platform_business_impact: |
+      不同地区受监管限制不同。US 用户不能访问的合约产品页不应在 .com 主站对美 IP 渲染
+      CTA；JP 用户访问需要明示日本金融厅备案状态。
+    tags: [compliance, geo-restriction]
+    human_review_required: true
+
+  - id: example.compliance.ymyl-eeat-required
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.91
+    applies_to:
+      page_types: [learn, news, blog, support, questions, faq, crypto-review]
+      platforms: [google, bing, naver, platform]
+    detector:
+      type: hybrid
+      fn: detectors.eeat.ymyl_signal_check
+      inputs: [visible_text, jsonld, author_metadata]
+      args:
+        required_signals: [author_name, author_bio, published_date, last_updated, sources]
+    llm_judge:
+      enabled: true
+      when: detector.confidence < 0.85
+      prompt_template: prompts/eeat_ymyl_judge.md
+      model: sonnet
+    patch_hint:
+      template: patches/add_eeat_metadata.diff.j2
+      priority: P1
+    platform_business_impact: |
+      Google 对 YMYL 金融页要求更高 E-E-A-T。所有 Platform 教育 / 评测 / 客服内容必须有
+      作者署名 / 作者简介 / 发布日期 / 更新日期 / 引用来源。
+      参考：rules/platform/_knowledge/ymyl-financial-rules.md
+    tags: [eeat, ymyl, fintech]

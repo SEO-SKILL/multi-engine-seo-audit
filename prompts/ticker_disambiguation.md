@@ -30,7 +30,7 @@
 
 ```json
 {
-  "rule_id": "bydfi.l02.ticker-context-mismatch",
+  "rule_id": "platform.l02.ticker-context-mismatch",
   "severity": "blocker",
   "confidence": 0.92,
   "evidence": {

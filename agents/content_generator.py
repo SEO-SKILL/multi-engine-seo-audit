@@ -78,12 +78,12 @@ def _fallback_templates(keyword: str, page_type: str, audience: str) -> dict:
     templates_by_type = {
         "learn": {
             "titles": [
-                f"{keyword} - Complete Guide | BYDFi",
+                f"{keyword} - Complete Guide | Platform",
                 f"What Is {keyword}? {audience.title()} Guide for 2026",
                 f"{keyword} Explained: Definition, Examples, Risks",
             ],
             "meta_descriptions": [
-                f"Learn {keyword} on BYDFi. Complete guide with examples, calculator, and risk analysis.",
+                f"Learn {keyword} on Platform. Complete guide with examples, calculator, and risk analysis.",
                 f"Master {keyword} step by step. Designed for {audience} crypto traders.",
             ],
             "h1s": [
@@ -93,21 +93,21 @@ def _fallback_templates(keyword: str, page_type: str, audience: str) -> dict:
         },
         "tools": {
             "titles": [
-                f"{keyword} Calculator | Free Online Tool | BYDFi",
-                f"Calculate {keyword} - Instant, Accurate | BYDFi",
+                f"{keyword} Calculator | Free Online Tool | Platform",
+                f"Calculate {keyword} - Instant, Accurate | Platform",
             ],
             "meta_descriptions": [
-                f"Use BYDFi's free {keyword} calculator. Instant, accurate, no signup required.",
+                f"Use Platform's free {keyword} calculator. Instant, accurate, no signup required.",
             ],
             "h1s": [f"{keyword} Calculator"],
         },
         "price": {
             "titles": [
-                f"{keyword} Price Today | Live Chart | BYDFi",
-                f"{keyword} Price: USD, Market Cap, Volume | BYDFi",
+                f"{keyword} Price Today | Live Chart | Platform",
+                f"{keyword} Price: USD, Market Cap, Volume | Platform",
             ],
             "meta_descriptions": [
-                f"Real-time {keyword} price, charts, and market data on BYDFi. Source: CoinGecko.",
+                f"Real-time {keyword} price, charts, and market data on Platform. Source: CoinGecko.",
             ],
             "h1s": [f"{keyword} Price"],
         },

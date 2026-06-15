@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Naver DIA+ 深度意图分析适配"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ko
 
 rules:
@@ -27,7 +27,7 @@ rules:
           - transactional  # 想买/想交易
           - navigational   # 找特定品牌/平台
           - investigational # 比较/研究
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver DIA 算法判断"用户搜索意图 vs 页面提供内容"匹配度。
       韩国用户搜"비트코인 사는 법"（如何买比特币）= transactional + investigational。
       工具页不应优化纯 informational 关键词。
@@ -51,7 +51,7 @@ rules:
           - 是否完整回答 query
           - 用户读完是否仍需再搜
           - 是否涵盖相关子问题
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver DIA+ 偏好"完整回答"，避免用户回到 Naver 再搜。
-      BYDFi /learn 内容应在 H2 层面覆盖所有相关子问题。
+      Platform /learn 内容应在 H2 层面覆盖所有相关子问题。
     tags: [naver, dia, completeness]

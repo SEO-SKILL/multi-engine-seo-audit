@@ -1,6 +1,6 @@
 file_version: "1.0"
 file_purpose: "V2 用户行为信号（Pogo-sticking / Dwell Time / Scroll Depth）"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.behavior.pogosticking-detected
@@ -9,7 +9,7 @@ rules:
     confidence_default: 0.82
     applies_to: {page_types: [all], platforms: [shared, google], commands: [watch]}
     detector: {type: external_api, fn: integrations.ga4.pogo_check, inputs: [url]}
-    bydfi_business_impact: "Pogo-sticking 严重 → Google 直接降权 (V2)"
+    platform_business_impact: "Pogo-sticking 严重 → Google 直接降权 (V2)"
     tags: [user-behavior, pogosticking, v2]
 
   - id: shared.behavior.dwell-time-low
@@ -18,7 +18,7 @@ rules:
     confidence_default: 0.78
     applies_to: {page_types: [learn, news, blog], platforms: [shared], commands: [watch]}
     detector: {type: external_api, fn: integrations.ga4.dwell_time_check, inputs: [url]}
-    bydfi_business_impact: "停留 < 30s = 内容质量信号弱 (V2)"
+    platform_business_impact: "停留 < 30s = 内容质量信号弱 (V2)"
     tags: [user-behavior, dwell-time, v2]
 
   - id: shared.behavior.scroll-depth-shallow
@@ -27,7 +27,7 @@ rules:
     confidence_default: 0.75
     applies_to: {page_types: [learn, news, blog], platforms: [shared], commands: [watch]}
     detector: {type: external_api, fn: integrations.ga4.scroll_depth_check, inputs: [url]}
-    bydfi_business_impact: "scroll < 25% = 用户没看到正文核心 (V2)"
+    platform_business_impact: "scroll < 25% = 用户没看到正文核心 (V2)"
     tags: [user-behavior, scroll-depth, v2]
 
   - id: shared.behavior.bounce-rate-high
@@ -36,5 +36,5 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [all], platforms: [shared], commands: [watch]}
     detector: {type: external_api, fn: integrations.ga4.bounce_rate_check, inputs: [url]}
-    bydfi_business_impact: "Bounce > 70% = 用户期望与页面不匹配 (V2)"
+    platform_business_impact: "Bounce > 70% = 用户期望与页面不匹配 (V2)"
     tags: [user-behavior, bounce-rate, v2]

@@ -1,14 +1,14 @@
-# Manual Actions + Reconsideration Request 工作流（BYDFi 防复发版）
+# Manual Actions + Reconsideration Request 工作流（Platform 防复发版）
 
 > 来源：https://support.google.com/webmasters/answer/9044175?hl=zh-Hans
-> 创建：2026-06-10 / 维护：kelly@bydfi.com
+> 创建：2026-06-10 / 维护：kelly@example.com
 > 战略价值：⭐⭐⭐ MEXC 事故（2026-Q1）后必备 SOP
 
 ---
 
 ## 一、人工处置措施 18 大类型（速查）
 
-| 类型 | 严重度 | BYDFi 高风险场景 |
+| 类型 | 严重度 | Platform 高风险场景 |
 |---|---|---|
 | **严重网络垃圾问题（Pure Spam）** | ⚠️⚠️⚠️ 全站影响 | 程序化生成大量低质币种页 / 模板化复用 |
 | **被黑网页（Hacked Content）** | ⚠️⚠️⚠️ 安全+SEO 双重 | 被注入菠菜/赌博/色情 keyword |
@@ -46,14 +46,14 @@ Google 文档明确要求重新审核请求包含三个要素：
 - URL Y: 已删除 AggregateRating schema 字段
 
 **已实施的预防措施**：
-- 上线 BYDFi SEO Audit Skill Pre-publish Gate（防复发）
+- 上线 Platform SEO Audit Skill Pre-publish Gate（防复发）
 - 添加每周 Watch 全站 audit
 - ContentForge 集成 audit pre-check
 
 ## 3. 记录您在采取措施后获得的成果
 
 **修复后的证据**：
-- BYDFi SEO Audit Skill 跑 audit 输出（含 0 blocker / 0 high finding）
+- Platform SEO Audit Skill 跑 audit 输出（含 0 blocker / 0 high finding）
 - 截图：受影响页面修复前后对比
 - GSC URL 检查工具显示已修复
 - 流量恢复趋势图（如适用）
@@ -76,7 +76,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 
 ---
 
-## 四、BYDFi 防复发 SOP
+## 四、Platform 防复发 SOP
 
 ### 4.1 主动监控（每日）
 - 检查 GSC「人工处置措施」报告（必须有 GSC 服务账号）
@@ -90,7 +90,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 4. 启动 audit `--mode forensic` 全站扫描
 
 ### 4.3 修复阶段（1-7 天）
-1. 用 BYDFi SEO Audit Skill 检出根因
+1. 用 Platform SEO Audit Skill 检出根因
 2. 应用 patch 模板（已有 11 个）
 3. 跑 `seo-audit audit <修复后 URL>` 验证 0 blocker
 4. 跑 golden fixture 测试不退化
@@ -98,7 +98,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 
 ### 4.4 提交 Reconsideration（修复完成后）
 1. 用上述「标准模板」准备文档
-2. 附 BYDFi SEO Audit Report（PDF/JSON）作证据
+2. 附 Platform SEO Audit Report（PDF/JSON）作证据
 3. Kelly 在 GSC 提交
 4. 邮件归档审核确认信
 5. 进入等待期
@@ -106,12 +106,12 @@ Google 文档明确要求重新审核请求包含三个要素：
 ### 4.5 处置撤销后
 1. 跑全站 `seo-audit watch` 确认未退化
 2. 在 `tasks/lessons.md` 记录完整复盘
-3. 在 `rules/bydfi/google-action-history.md` 增加案例
+3. 在 `rules/platform/google-action-history.md` 增加案例
 4. 沉淀新规则（避免下次再犯）
 
 ---
 
-## 五、与 BYDFi SEO Audit Skill 的对接
+## 五、与 Platform SEO Audit Skill 的对接
 
 | Skill 能力 | 用于 Manual Action 流程的哪一步 |
 |---|---|

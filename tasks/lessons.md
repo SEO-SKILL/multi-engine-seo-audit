@@ -1,4 +1,4 @@
-# BYDFi SEO Audit Skill — 经验沉淀
+# Platform SEO Audit Skill — 经验沉淀
 
 > 按 CLAUDE.md「Self-Evolution Loop」规范：每次用户纠错或踩坑后立即记录。
 > 创建：2026-06-10
@@ -17,7 +17,7 @@
 - 检测 canonical 是否指向自身但内容来自外站
 - 计算正文与原文语义相似度
 - 相似度 > 80% 必须给 cross-domain canonical 或 noindex 建议
-- 或要求补 BYDFi 自有编辑评审、风险边界、事实核验、独立增量段落
+- 或要求补 Platform 自有编辑评审、风险边界、事实核验、独立增量段落
 
 ---
 
@@ -28,9 +28,9 @@
 **Why**：让 Google 和用户把"Techsslaash 评测"误读成 Pharos 代币内容，内部链接语义污染重。
 
 **How to apply**：
-- 维护 ticker 白名单 + 黑名单（`rules/bydfi/sensitive-tickers.yaml`）
+- 维护 ticker 白名单 + 黑名单（`rules/platform/sensitive-tickers.yaml`）
 - 对新闻正文里的 ticker 自动识别加上下文判断（语义解析整段，不是单词匹配）
-- BYDFi 文章页禁用未在白名单的 ticker 行情组件
+- Platform 文章页禁用未在白名单的 ticker 行情组件
 - schema 里的 relatedLink 必须经过语义校验
 
 ---
@@ -84,13 +84,13 @@
 **How to apply**：
 - Pre-publish Gate 必须是硬卡口，不是建议
 - 任何"暂不上线"的判定必须有 owner 拍板才能 override
-- 历史处置案例必须沉淀到 `rules/bydfi/google-action-history.md`
+- 历史处置案例必须沉淀到 `rules/platform/google-action-history.md`
 
 ---
 
 ## 待积累区（V1 上线后填）
 
-### 来自 BYDFi 真实页面审核
+### 来自 Platform 真实页面审核
 （W4 后开始填）
 
 ### 来自 Codex 协作踩坑
@@ -152,7 +152,7 @@
 
 **触发场景**：补 Google「网站迁移」文档到规则库。
 
-**Why**：BYDFi 未来切 CDN / 迁移服务器是必然。Google 列了完整迁移流程，最常见事故是"staging 的 noindex/robots 没移除"。
+**Why**：Platform 未来切 CDN / 迁移服务器是必然。Google 列了完整迁移流程，最常见事故是"staging 的 noindex/robots 没移除"。
 
 **How to apply**：
 - 写 8 条 site-migration 规则
@@ -170,7 +170,7 @@
 
 **触发场景**：补 Google 官方「人工处置措施」文档（https://support.google.com/webmasters/answer/9044175）到规则库。
 
-**Why**：BYDFi 2026-Q1 已经被 manual action 过一次（MEXC 事故）。Google 列了 18 大类型，**每一类都有专属预防规则 + Reconsideration Request 标准流程**。
+**Why**：Platform 2026-Q1 已经被 manual action 过一次（MEXC 事故）。Google 列了 18 大类型，**每一类都有专属预防规则 + Reconsideration Request 标准流程**。
 
 **How to apply**：
 - 15 条规则覆盖 18 大类型（部分类型合并）
@@ -194,7 +194,7 @@
 
 **How to apply**：
 - 不消费 Will 知识库
-- 参考他的结构 + 主题覆盖 + BYDFi 业务对齐方式
+- 参考他的结构 + 主题覆盖 + Platform 业务对齐方式
 - 必须在他没覆盖的维度做（Naver / GEO / Cloaking / Web3 / 跨 LLM / 时间序列）
 - 必须在他覆盖的维度做得更深（每条规则带 detector + fixture + patch hint）
 

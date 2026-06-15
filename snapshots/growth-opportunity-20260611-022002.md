@@ -1,4 +1,4 @@
-# BYDFi SEO 增长机会量化报告
+# Platform SEO 增长机会量化报告
 
 > 生成时间：2026-06-11T02:20:02.192413
 > 基线流量：250,000 / 月
@@ -65,13 +65,13 @@
 
 | 页面 | URL | Score | Verdict |
 |---|---|---|---|
-| homepage | https://bydfi.com | 78 | 上线 |
-| futures | https://bydfi.com/en/futures | 58 | 上线 |
-| learn | https://bydfi.com/en/learn | 78 | 上线 |
-| price | https://bydfi.com/en/price/btc | 78 | 上线 |
-| support | https://bydfi.com/en/support | 88 | 上线 |
-| homepage-ko | https://bydfi.com/ko | 78 | 上线 |
-| homepage-ja | https://bydfi.com/ja | 78 | 上线 |
+| homepage | https://example.com | 78 | 上线 |
+| futures | https://example.com/en/futures | 58 | 上线 |
+| learn | https://example.com/en/learn | 78 | 上线 |
+| price | https://example.com/en/price/btc | 78 | 上线 |
+| support | https://example.com/en/support | 88 | 上线 |
+| homepage-ko | https://example.com/ko | 78 | 上线 |
+| homepage-ja | https://example.com/ja | 78 | 上线 |
 
 ---
-*本报告由 BYDFi SEO Audit Skill 自动生成。具体修复方案见 `BYDFI_REMEDIATION_PLAN.md`。*
+*本报告由 Platform SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*

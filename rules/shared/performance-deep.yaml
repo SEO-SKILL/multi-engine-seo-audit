@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.perf.ttfb-too-slow
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.perf.ttfb_check, inputs: [http_timing], args: {max_ms: 800}}
-    bydfi_business_impact: "TTFB > 800ms 影响 LCP + 用户体验"
+    platform_business_impact: "TTFB > 800ms 影响 LCP + 用户体验"
     tags: [performance, ttfb]
 
   - id: shared.perf.render-blocking-resources
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.92
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.perf.render_blocking_check, inputs: [head_scripts, head_styles]}
-    bydfi_business_impact: "首屏 render-blocking CSS/JS 拖慢 LCP"
+    platform_business_impact: "首屏 render-blocking CSS/JS 拖慢 LCP"
     tags: [performance, render-blocking]
 
   - id: shared.perf.unminified-resources
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.93
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.perf.minification_check, inputs: [resources]}
-    bydfi_business_impact: "未压缩 JS/CSS 浪费带宽"
+    platform_business_impact: "未压缩 JS/CSS 浪费带宽"
     tags: [performance, minification]
 
   - id: shared.perf.brotli-not-used
@@ -35,7 +35,7 @@ rules:
     confidence_default: 0.85
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.perf.compression_check, inputs: [http_headers]}
-    bydfi_business_impact: "Brotli 比 gzip 压缩比高 ~20%"
+    platform_business_impact: "Brotli 比 gzip 压缩比高 ~20%"
     tags: [performance, compression]
 
   - id: shared.perf.http2-not-enabled
@@ -44,5 +44,5 @@ rules:
     confidence_default: 0.99
     applies_to: {page_types: [all], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.perf.http_version_check, inputs: [http_protocol]}
-    bydfi_business_impact: "HTTP/2 + 是 2026 基线"
+    platform_business_impact: "HTTP/2 + 是 2026 基线"
     tags: [performance, http2]

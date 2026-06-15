@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "跨搜索引擎 E-E-A-T 通用基线"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
 
@@ -21,7 +21,7 @@ rules:
       args:
         require_author_profile_page: true
         check_profile_completeness: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       文章作者必须有独立的 /author/{name} 页面，含简介 + 历史文章 + 联系方式。
       作者权威性是 E-E-A-T 关键信号。
     tags: [eeat, author, authority]
@@ -44,8 +44,8 @@ rules:
           - 物理地址（如适用）
           - 联系方式
           - 监管资质
-    bydfi_business_impact: |
-      BYDFi 应在 /about /security /transparency 等页面披露完整公司信息。
+    platform_business_impact: |
+      Platform 应在 /about /security /transparency 等页面披露完整公司信息。
       金融行业可信度的基础。
     tags: [eeat, organization, transparency]
 
@@ -67,7 +67,7 @@ rules:
           - 评分有理由
           - 优缺点都有
           - 利益冲突声明
-    bydfi_business_impact: |
+    platform_business_impact: |
       评测内容（crypto-review / compare 页）必须 authentic。
       虚假评论 / 一边倒好评 = Google YMYL 红线。
     tags: [eeat, review, ymyl]

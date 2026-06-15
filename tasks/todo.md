@@ -1,4 +1,4 @@
-# BYDFi SEO Audit Skill — 执行清单（V1 + V2）
+# Platform SEO Audit Skill — 执行清单（V1 + V2）
 
 > 按 CLAUDE.md「Task Management」规范：每完成一项立即勾选。
 > 排期：V1 ≈ 4 周 / V2 ≈ 4-6 周
@@ -12,7 +12,7 @@
 - [x] Codex 调研：sub-agent 接口规范（输入/输出 JSON schema）
 - [x] Claude 审 Codex 调研报告 → 5 项决策固化（PRD §13）
 - [x] 写 `SKILL.md` 入口（Claude）
-- [x] 写 `config.yaml` 默认配置（BYDFi 单租户）+ 成本预算调整
+- [x] 写 `config.yaml` 默认配置（Platform 单租户）+ 成本预算调整
 - [ ] 初始化 `pyproject.toml` + `uv.lock`（等 Codex quota 恢复）
 - [x] **Will 知识库定位转向：benchmark to beat（PRD v1.2）**
 - [x] **4 个元规则文件落地（rules/_system/）**
@@ -21,9 +21,9 @@
   - [x] `confidence-calibration.yaml`
   - [x] `conflict-resolution.yaml`
 - [x] **10 条种子规则落地（Day 2-3 / 2026-06-10）**
-  - [x] `bydfi/pros-ticker-blacklist.yaml`（3 条规则 + Ticker 黑白名单）
-  - [x] `bydfi/fintech-compliance.yaml`（4 条规则 + 跨国合规黑名单）
-  - [x] `bydfi/google-action-history.md`（MEXC 案例完整复盘）
+  - [x] `platform/pros-ticker-blacklist.yaml`（3 条规则 + Ticker 黑白名单）
+  - [x] `platform/fintech-compliance.yaml`（4 条规则 + 跨国合规黑名单）
+  - [x] `platform/google-action-history.md`（MEXC 案例完整复盘）
   - [x] `platforms/google/_rules/e-e-a-t.yaml`（6 条规则）
   - [x] `platforms/google/_rules/canonical.yaml`（5 条规则）
   - [x] `platforms/google/_rules/structured-data-truthfulness.yaml`（6 条规则 — Will 没有）
@@ -34,14 +34,14 @@
 - [x] **合计：47 条结构化可执行规则**（V1 目标 300+，已完成 ~15%）
 - [x] **Day 4 — self-knowledge 文档（超越 Will 版本）**
   - [x] `platforms/google/_knowledge/helpful-content-eat.md`（285 行）
-    - BYDFi 频道级业务对齐（vs Will 仅列频道名）
+    - Platform 频道级业务对齐（vs Will 仅列频道名）
     - AI Overview 维度（Will 完全没有）
     - GEO 维度（Will 完全没有）
 - [x] **Day 5 — 补全 MEXC 事故剩余 2 类规则**
-  - [x] `bydfi/republished-and-tagging.yaml`（3 条规则）
-    - `bydfi.l01.republished-content-low-increment`（L01 转载原创增量）
-    - `bydfi.l05.tagging-topic-mismatch`（L05 分类标签错配）
-    - `bydfi.l05.tag-page-quality`（标签页质量）
+  - [x] `platform/republished-and-tagging.yaml`（3 条规则）
+    - `platform.l01.republished-content-low-increment`（L01 转载原创增量）
+    - `platform.l05.tagging-topic-mismatch`（L05 分类标签错配）
+    - `platform.l05.tag-page-quality`（标签页质量）
 - [x] **MEXC 事故 7 类问题对应规则：7/7 ✅ 全覆盖**
 - [x] **W1 复盘已写入 lessons.md**
 
@@ -62,7 +62,7 @@
 - [x] `shared/sitemap-quality.yaml`（7 条规则 — 含 MEXC L03 类似 sitemap-robots 冲突检测）
 
 ### Self-Knowledge 知识 MD（继续超越 Will）
-- [x] `platforms/google/_knowledge/spam-policies-scale.md`（对照 Will 03，加加密行业案例 + AI 处置时间线 + BYDFi 程序化 SEO 红线）
+- [x] `platforms/google/_knowledge/spam-policies-scale.md`（对照 Will 03，加加密行业案例 + AI 处置时间线 + Platform 程序化 SEO 红线）
 
 ### Golden Fixtures（V1 必备 5 个 HTML 测试样本）
 - [x] `fixtures/mexc-incident.html`（MEXC 事故页 — 必须能检出 10+ 个 finding）
@@ -246,13 +246,13 @@
 
 ## 📚 Phase 3 — 规则库初始化（W2）
 
-### BYDFi 专属规则（能力 #11 知识沉淀起点）
+### Platform 专属规则（能力 #11 知识沉淀起点）
 
-- [ ] `rules/bydfi/pros-ticker-blacklist.yaml`（PROS / SEC / BTC 等敏感 ticker）
-- [ ] `rules/bydfi/fintech-compliance.yaml`（风险提示模板 + 黑名单词）
-- [ ] `rules/bydfi/google-action-history.md`（MEXC 事故复盘 + 后续案例）
-- [ ] `rules/bydfi/seo-final-review-rules.yaml`（byd-google-seo-final-review 口径）
-- [ ] `rules/bydfi/sensitive-tickers.yaml`（加密 ticker 消歧义白名单）
+- [ ] `rules/platform/pros-ticker-blacklist.yaml`（PROS / SEC / BTC 等敏感 ticker）
+- [ ] `rules/platform/fintech-compliance.yaml`（风险提示模板 + 黑名单词）
+- [ ] `rules/platform/google-action-history.md`（MEXC 事故复盘 + 后续案例）
+- [ ] `rules/platform/seo-final-review-rules.yaml`（byd-google-seo-final-review 口径）
+- [ ] `rules/platform/sensitive-tickers.yaml`（加密 ticker 消歧义白名单）
 
 ### 5 个平台规则库
 
@@ -328,7 +328,7 @@
 - [ ] `SKILL.md` 入口文档
 - [ ] 各 sub-agent README
 - [ ] 用户使用指南（命令 + 配置 + 故障排查）
-- [ ] BYDFi 真实页面试跑 ≥ 10 次
+- [ ] Platform 真实页面试跑 ≥ 10 次
 - [ ] 根据反馈调整规则库
 - [ ] V1 验收 checklist 全过
 
@@ -404,7 +404,7 @@
 | 业务能力数 | 16 | 0 | 34 |
 | 框架模块数 | 9 | 0 | 11 |
 | 平台规则库 | 5 | 0 | 8 |
-| BYDFi 规则数 | ≥ 30 | 0 | ≥ 100 |
+| Platform 规则数 | ≥ 30 | 0 | ≥ 100 |
 | 单页审核成本 | < $0.02 | — | < $0.01 |
 | 单页审核耗时 | < 30s | — | < 20s |
 | Prompt Caching 命中率 | ≥ 80% | — | ≥ 90% |

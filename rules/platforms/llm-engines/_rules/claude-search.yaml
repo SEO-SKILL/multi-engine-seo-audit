@@ -4,13 +4,13 @@
 
 file_version: "1.0"
 file_purpose: "Claude (Anthropic) Search 引用率优化"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 claude_search_mechanics:
   bot_name: ClaudeBot / anthropic-ai
   ranking: 偏好可验证、有 citation 的内容
   output: 内联引用 + URL
-  user_segment: 开发者 / 知识工作者（与 BYDFi 用户重叠度低，但价值高）
+  user_segment: 开发者 / 知识工作者（与 Platform 用户重叠度低，但价值高）
 
 rules:
 
@@ -31,8 +31,8 @@ rules:
           - ClaudeBot
           - anthropic-ai
           - Claude-Web
-    bydfi_business_impact: |
-      Claude 用户群是开发者 + 高端知识工作者，BYDFi 想覆盖这部分人群必须放行。
+    platform_business_impact: |
+      Claude 用户群是开发者 + 高端知识工作者，Platform 想覆盖这部分人群必须放行。
     tags: [claude, robots]
 
   - id: claude.content.technical-depth
@@ -52,6 +52,6 @@ rules:
           - 技术深度匹配读者（不要给开发者讲基础）
           - 有具体代码 / 公式 / 数据
           - 有可执行示例
-    bydfi_business_impact: |
-      Claude 用户偏好技术深度。BYDFi 的 API 文档 / 量化策略页对这部分用户价值高。
+    platform_business_impact: |
+      Claude 用户偏好技术深度。Platform 的 API 文档 / 量化策略页对这部分用户价值高。
     tags: [claude, technical-content]

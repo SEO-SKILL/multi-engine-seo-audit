@@ -39,9 +39,9 @@
       "how": 0.3,
       "why": 0.5
     },
-    "risk_signals": ["缺作者背景", "无 BYDFi 自有数据", "改写自其他文章"]
+    "risk_signals": ["缺作者背景", "无 Platform 自有数据", "改写自其他文章"]
   },
-  "recommendation": "补 BYDFi 自有数据 / 经验 / 风险分析；明确作者背景",
+  "recommendation": "补 Platform 自有数据 / 经验 / 风险分析；明确作者背景",
   "reasoning": "Helpful Content 信号弱，Core Update 时易被打击"
 }
 ```

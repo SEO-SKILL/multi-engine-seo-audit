@@ -1,0 +1,91 @@
+# Yandex 反垃圾算法集（AGS / Minusinsk / Madrid / Andromeda）
+# 创建：2026-06-12
+# 补齐 Yandex 缺失算法：反垃圾站 / 反垃圾外链 / 商业意图 / mobile-first / HTTPS
+
+file_version: "1.0"
+maintainer: kelly@bydfi.com
+last_reviewed_at: 2026-06-12
+source_doc:
+  url: https://yandex.com/support/webmaster/threats.html
+  pulled_at: 2026-06-12
+locale_focus: ru
+
+rules:
+  # === AGS 算法（反垃圾站）：类似 Baidu 飓风 ===
+  - id: yandex.ags.auto-generated-content
+    source: yandex-webmaster
+    source_url: https://yandex.com/support/webmaster/threats/spam.html
+    severity: high
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
+    detector:
+      type: hybrid
+      fn: detectors.yandex.auto_generated_content_check
+      inputs: [visible_text]
+    bydfi_business_impact: |
+      Yandex AGS 直接降权机器生成 / 模板拼凑 / 低质内容站点。
+      BYDFi 俄文页若被识别为机翻量产，整站排名严重下降。
+    tags: [yandex, ags, anti-spam, anti-scraping]
+
+  # === Minusinsk 算法（反垃圾外链 — 类似 Baidu 绿萝）===
+  - id: yandex.minusinsk.paid-or-spam-backlinks
+    source: yandex-webmaster
+    source_url: https://yandex.com/support/webmaster/threats/links.html
+    severity: high
+    confidence_default: 0.72
+    applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
+    detector:
+      type: hard_rule
+      fn: detectors.yandex.spam_backlinks_check
+      inputs: [outbound_links]
+    bydfi_business_impact: |
+      Minusinsk 算法专打购买链接 / 链接交易 / 垃圾外链网络。
+      BYDFi 俄文页不要交叉外链或购买俄文论坛外链。
+    tags: [yandex, minusinsk, spam, backlinks]
+
+  # === Madrid 算法（商业意图 — 区别于 y1.commercial-intent-mismatch）===
+  - id: yandex.madrid.commercial-trust-signals
+    source: yandex-webmaster
+    severity: medium
+    confidence_default: 0.75
+    applies_to: {page_types: [product, price, learn], platforms: [yandex], locales: [ru]}
+    detector:
+      type: hard_rule
+      fn: detectors.yandex.commercial_trust_check
+      inputs: [visible_text, raw_html]
+    bydfi_business_impact: |
+      Madrid 算法对商业类查询（交易所 / 金融）要求 trust 信号：
+      公司信息 / 实体地址 / 客服电话 / 法律实体 / 退款政策。
+      缺失直接影响商业意图查询排名。
+    tags: [yandex, madrid, commercial, trust]
+
+  # === Yandex Mobile-First（区别于 Google MFI）===
+  - id: yandex.mobile.viewport-and-responsive
+    source: yandex-webmaster
+    source_url: https://yandex.com/support/webmaster/mobile-applications/mobile-friendly.html
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
+    detector:
+      type: hard_rule
+      fn: detectors.yandex.mobile_friendly_check
+      inputs: [raw_html]
+    bydfi_business_impact: |
+      Yandex 移动端搜索结果优先 mobile-friendly 页面。
+      BYDFi 俄文站若没有 viewport meta / responsive 布局 → 移动端排名严重削弱。
+    tags: [yandex, mobile, viewport]
+
+  # === HTTPS 强制 ===
+  - id: yandex.security.https-required
+    source: yandex-webmaster
+    severity: high
+    confidence_default: 0.95
+    applies_to: {page_types: [all], platforms: [yandex], locales: [ru]}
+    detector:
+      type: hard_rule
+      fn: detectors.yandex.https_check
+      inputs: [page_url]
+    bydfi_business_impact: |
+      Yandex 2017+ 起 HTTPS 是排名因素，金融类页面（YMYL）尤其严格。
+      BYDFi 任何 http:// 页面对俄文用户都会有"不安全"警告 → 跳出率高。
+    tags: [yandex, https, security]

@@ -1,0 +1,48 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.price.data-source-not-cited
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.93
+    applies_to: {page_types: [price], platforms: [platform, google]}
+    detector: {type: hard_rule, fn: detectors.platform.price_source_check, inputs: [page_content]}
+    platform_business_impact: "价格数据必须标来源（CoinGecko / Etherscan）"
+    tags: [platform, price-page, fact-citation]
+
+  - id: platform.price.deviation-from-source
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.92
+    applies_to: {page_types: [price], platforms: [platform]}
+    detector: {type: external_api, fn: integrations.coingecko.deviation_check, inputs: [coin, page_price]}
+    platform_business_impact: "价格偏差 > 5% 说明数据质量有问题"
+    tags: [platform, price-page, data-quality]
+
+  - id: platform.price.no-risk-disclaimer
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.95
+    applies_to: {page_types: [price], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.has_risk_disclaimer, inputs: [page_content]}
+    platform_business_impact: "币种页必备风险提示"
+    tags: [platform, price-page, compliance]
+
+  - id: platform.price.prediction-language
+    source: platform-compliance
+    severity: blocker
+    confidence_default: 0.85
+    applies_to: {page_types: [price], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/price_prediction_judge.md, model: haiku}
+    platform_business_impact: "禁止暗示'必涨/必跌/X 年内到 100K'类预测"
+    tags: [platform, price-page, compliance, regulatory]
+
+  - id: platform.price.k-line-source-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.88
+    applies_to: {page_types: [price], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.k_line_metadata, inputs: [page_charts]}
+    platform_business_impact: "K 线图必须标数据源 + 时间戳精确到秒"
+    tags: [platform, price-page, chart]

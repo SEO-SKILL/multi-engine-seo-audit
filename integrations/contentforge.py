@@ -1,5 +1,5 @@
 """
-ContentForge 集成 hook（BYDFi 内部 SEO 内容工厂）
+ContentForge 集成 hook（Platform 内部 SEO 内容工厂）
 让 ContentForge 生成内容时自动跑 gate
 对照 reference: ~/.claude/projects/-Users-coco/memory/reference_contentforge.md
 """
@@ -16,7 +16,7 @@ def is_configured() -> bool:
 
 async def pre_publish_check(content_md: str, locale: str = "en") -> dict:
     """
-    ContentForge AI 写完内容 → 调用此 hook → 自动跑 BYDFi SEO Audit gate
+    ContentForge AI 写完内容 → 调用此 hook → 自动跑 Platform SEO Audit gate
     返回 pass/fail，让 ContentForge 决定是否打回 AI 重写
     """
     import tempfile
@@ -73,7 +73,7 @@ async def post_publish_audit(url: str, locale: str | None = None) -> dict:
 def webhook_payload(audit_result: dict) -> dict:
     """格式化成 ContentForge webhook 期望的 payload"""
     return {
-        "tool": "bydfi-seo-audit",
+        "tool": "platform-seo-audit",
         "version": "1.0",
         "audit_result": audit_result,
         "actionable": not audit_result.get("pass", False),

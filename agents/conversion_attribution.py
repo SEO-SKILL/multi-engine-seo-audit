@@ -31,7 +31,7 @@ async def run(input_: AgentInput) -> AgentOutput:
         artifacts=artifacts,
         next_actions=[
             "需要 GA4 API 接入 (organic traffic → conversion)",
-            "需要 BYDFi 后端 LTV 数据 (per landing page)",
+            "需要 Platform 后端 LTV 数据 (per landing page)",
             "需要 GSC API brand vs non-brand split",
             "需要 Google Ads CPC 数据估算流量等价价值",
         ],

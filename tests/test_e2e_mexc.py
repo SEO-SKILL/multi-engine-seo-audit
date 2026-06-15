@@ -51,7 +51,7 @@ async def _audit_fixture(fixture_html: str, simulate_csr: bool = False, locale: 
 def test_mexc_fixture_detects_blocker_pros_ticker(mexc_incident_html: str):
     """MEXC 事故页必须检出 PROS ticker 错配（blocker）"""
     findings = asyncio.run(_audit_fixture(mexc_incident_html, simulate_csr=True))
-    assert "bydfi.l02.ticker-context-mismatch" in findings, \
+    assert "platform.l02.ticker-context-mismatch" in findings, \
         f"MEXC fixture should detect PROS misidentification, got: {findings}"
 
 

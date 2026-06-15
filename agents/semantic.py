@@ -24,11 +24,38 @@ from integrations.anthropic_client import CostTracker, judge
 
 
 SEMANTIC_JUDGES = [
-    ("schema_grounding_judge", "google.schema.field-not-grounded-in-visible-content"),
-    ("eeat_author_judge", "google.eeat.author-attribution-missing"),
-    ("thin-content-vs-serp", "google.eeat.thin-content-vs-serp"),
-    ("helpful_content_signal_judge", "google.helpful-content.signal-weak"),
+    # (prompt_template, default_rule_id, default_platform)
+    ("schema_grounding_judge", "google.schema.field-not-grounded-in-visible-content", "google"),
+    ("eeat_author_judge", "google.eeat.author-attribution-missing", "google"),
+    ("thin-content-vs-serp", "google.eeat.thin-content-vs-serp", "google"),
+    ("helpful_content_signal_judge", "google.helpful-content.signal-weak", "google"),
+    ("republished_originality_judge", "google.duplicate-content.plagiarism-no-value-add", "google"),
 ]
+
+# 按 locale 路由的本地化 LLM judge
+LOCALE_LLM_JUDGES = {
+    "ko": [
+        ("naver_korean_authenticity_judge", "naver.content.korean-honorific-usage", "naver"),
+        ("naver_korean_authenticity_judge", "naver.dia.content-completeness", "naver"),
+    ],
+    "ja": [
+        ("republished_originality_judge", "yahoo-jp.content.japanese-financial-context", "yahoo-japan"),
+    ],
+    "ru": [
+        ("republished_originality_judge", "yandex.y1.content-quality-low", "yandex"),
+    ],
+    # zh-CN：Baidu 已下线，走 Google 路径，无 locale-specific judge
+}
+
+
+_PLATFORM_MAP = {
+    "google": Platform.GOOGLE,
+    "naver": Platform.NAVER,
+    "yandex": Platform.YANDEX,
+    "baidu": Platform.BAIDU,
+    "yahoo-japan": Platform.YAHOO_JAPAN,
+    "bing": Platform.BING,
+}
 
 
 async def run(input_: AgentInput) -> AgentOutput:
@@ -58,23 +85,39 @@ async def run(input_: AgentInput) -> AgentOutput:
     }
 
     findings: list[Finding] = []
-    for judge_name, default_rule_id in SEMANTIC_JUDGES:
+
+    # 通用 Google judges + locale-aware judges 合并
+    locale = (input_.target.locale or "").strip()
+    judges_to_run = list(SEMANTIC_JUDGES)
+    if locale in LOCALE_LLM_JUDGES:
+        judges_to_run.extend(LOCALE_LLM_JUDGES[locale])
+
+    for entry in judges_to_run:
         if cost_tracker.remaining() < 0.005:
-            break
+            # Gemini 免费层不扣 anthropic budget，但保留 budget 检查作为安全阀
+            pass  # 不 break，让 Gemini 跑
+        judge_name, default_rule_id, default_platform_str = entry
+        default_platform = _PLATFORM_MAP.get(default_platform_str, Platform.GOOGLE)
         result = await judge(
             prompt_template=judge_name,
             model="haiku",
-            inputs=inputs,
+            inputs={**inputs, "_target_rule_id": default_rule_id, "_target_platform": default_platform_str},
             cost_tracker=cost_tracker,
+            no_cache=input_.context.no_cache,
         )
         if result.get("skipped") or result.get("stub") or result.get("parse_error"):
             continue
         if result.get("severity") and result.get("severity") != "info":
             try:
+                # 优先用 LLM 返回的 rule_id，否则用 default
+                returned_rid = result.get("rule_id") or default_rule_id
+                # 如果 returned_rid 跟 default_platform 不匹配，用 default
+                if not returned_rid.startswith(default_platform_str + ".") and default_platform_str != "google":
+                    returned_rid = default_rule_id
                 findings.append(Finding(
-                    id=result.get("rule_id", default_rule_id),
+                    id=returned_rid,
                     source=FindingSource.LLM_JUDGE,
-                    platform=Platform.GOOGLE,
+                    platform=default_platform,
                     severity=Severity(result["severity"]),
                     confidence=float(result.get("confidence", 0.5)),
                     evidence=Evidence(text_snippet=str(result.get("evidence", {}))[:300]),

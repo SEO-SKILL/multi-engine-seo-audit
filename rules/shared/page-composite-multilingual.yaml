@@ -1,6 +1,6 @@
 # 多语言页面级组合（B）
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 composite_weights:
   hreflang_complete_set:   0.25
@@ -25,7 +25,7 @@ rules:
       inputs: [raw_html, locale, sibling_alternates]
       args:
         threshold_low: 0.60
-    bydfi_business_impact: |
+    platform_business_impact: |
       多语言综合分低 = 该 locale 完全不参与本地搜索。
       MEXC 事故 L03 同源问题——hreflang/canonical/语言匹配多项同时缺。
     tags: [multilingual, composite, mexc-related]

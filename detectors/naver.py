@@ -54,3 +54,71 @@ def character_consistency(visible_text: str) -> dict:
     total = max(1, korean_chars + cjk_other)
     mixed = cjk_other / total > 0.10 if korean_chars > 100 else False
     return {"korean_chars": korean_chars, "cjk_other": cjk_other, "mixed_script_suspect": mixed}
+
+
+# === AiRSearch 内容连贯性 ===
+def content_coherence_check(visible_text: str | None = None, **_) -> dict:
+    import re
+    text = visible_text or ""
+    if not text:
+        return {"insufficient_content": True}
+    # 韩文句子（。 / 다. / 요.）
+    sentences = re.split(r"[.!?\n。]|다\.|요\.", text)
+    sentences = [s.strip() for s in sentences if s.strip()]
+    korean_sentences = [s for s in sentences if re.search(r"[\uac00-\ud7af]", s)]
+    if len(korean_sentences) < 5:
+        return {"insufficient_korean_content": True, "korean_sentence_count": len(korean_sentences)}
+    avg_len = sum(len(s) for s in korean_sentences) / max(1, len(korean_sentences))
+    very_short = sum(1 for s in korean_sentences if len(s) < 8) / len(korean_sentences)
+    return {
+        "korean_sentence_count": len(korean_sentences),
+        "avg_sentence_length": round(avg_len, 1),
+        "very_short_ratio": round(very_short, 2),
+        "low_coherence_suspect": very_short > 0.4 or avg_len < 15,
+    }
+
+
+# === Smart Block（FAQPage / HowTo schema）===
+def smart_block_check(raw_html: str | None = None, **_) -> dict:
+    html = (raw_html or "").lower().replace(" ", "")
+    has_faqpage = '"@type":"faqpage"' in html or '"faqpage"' in html
+    has_howto = '"@type":"howto"' in html or '"howto"' in html
+    has_breadcrumb = '"@type":"breadcrumblist"' in html
+    return {
+        "has_faqpage_schema": has_faqpage,
+        "has_howto_schema": has_howto,
+        "has_breadcrumb_schema": has_breadcrumb,
+        "passed": has_faqpage or has_howto or has_breadcrumb,
+    }
+
+
+# === Knowledge iN (지식인) 引用 ===
+def knowledge_in_check(raw_html: str | None = None, visible_text: str | None = None, **_) -> dict:
+    text = (visible_text or "") + " " + (raw_html or "")
+    text_l = text.lower()
+    has_kin_link = "kin.naver.com" in text_l
+    has_kin_mention = "지식인" in text or "kin.naver" in text_l
+    return {
+        "has_kin_link": has_kin_link,
+        "has_kin_mention": has_kin_mention,
+        "passed": has_kin_link or has_kin_mention,
+    }
+
+
+# === Mobile-Friendly ===
+def mobile_friendly_check(raw_html: str | None = None, **_) -> dict:
+    html = (raw_html or "").lower()
+    has_viewport = "<meta" in html and "viewport" in html and "width=device-width" in html
+    return {"has_viewport_meta": has_viewport, "passed": has_viewport}
+
+
+# === HTTPS ===
+def https_check(page_url: str | None = None, **_) -> dict:
+    return {"is_https": (page_url or "").startswith("https://"), "passed": (page_url or "").startswith("https://")}
+
+
+# === Webmaster Tools 验证 ===
+def webmaster_verification_check(raw_html: str | None = None, **_) -> dict:
+    html = (raw_html or "").lower()
+    has_naver_verify = "naver-site-verification" in html
+    return {"has_naver_verification": has_naver_verify, "passed": has_naver_verify}

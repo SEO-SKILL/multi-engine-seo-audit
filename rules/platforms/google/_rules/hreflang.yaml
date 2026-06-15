@@ -4,7 +4,7 @@
 
 file_version: "1.0"
 file_purpose: "hreflang 配置一致性、可抓取性、语言匹配检测"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 source_doc:
   url: https://developers.google.com/search/docs/specialty/international/localized-versions
@@ -14,7 +14,7 @@ source_doc:
 rules:
 
   - id: google.hreflang.alternate-returns-404
-    source: bydfi-incident
+    source: platform-incident
     severity: high
     confidence_default: 0.99
     applies_to:
@@ -35,13 +35,13 @@ rules:
     fixtures:
       positive: fixtures/bad-hreflang-404.html
       negative: fixtures/good-hreflang.html
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L03：alternate 返回 404 → Google 忽略整组 hreflang。
       所有 alternate 必须真实存在且可访问。
-    tags: [bydfi-critical, hreflang, mexc-incident]
+    tags: [platform-critical, hreflang, mexc-incident]
 
   - id: google.hreflang.alternate-blocked-by-robots
-    source: bydfi-incident
+    source: platform-incident
     severity: high
     confidence_default: 0.97
     applies_to:
@@ -56,10 +56,10 @@ rules:
       priority: P0
       auto_apply: false
       requires_review: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L03 核心：hreflang 输出了 `/bg-BG/news/1057200`，
       但 robots.txt 禁止 `/bg-BG/news/*`。Google 看到这种矛盾会忽略 hreflang。
-    tags: [bydfi-critical, hreflang, robots, mexc-incident]
+    tags: [platform-critical, hreflang, robots, mexc-incident]
     human_review_required: true
 
   - id: google.hreflang.language-mismatch
@@ -81,7 +81,7 @@ rules:
       when: detector.confidence < 0.75
       prompt_template: prompts/hreflang_language_judge.md
       model: haiku
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故 L03 子问题：部分 alternate 声明是 `en-TR` 但内容是英文（不是土耳其语）。
       hreflang 必须真实反映 alternate 页面的语言。
     tags: [hreflang, localization-quality]
@@ -100,7 +100,7 @@ rules:
     patch_hint:
       template: patches/add_hreflang_return_tags.diff.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       hreflang 必须是双向的：A 声明 B 是 ko 版本，B 也必须声明 A 是相应版本。
     tags: [hreflang, bidirectional]
 
@@ -115,7 +115,7 @@ rules:
       type: hard_rule
       fn: detectors.hreflang.canonical_self_check
       inputs: [hreflang_alternates, canonical_per_alternate]
-    bydfi_business_impact: |
+    platform_business_impact: |
       每个语言版本的 canonical 必须指向自己。
       不能让所有语言版本都 canonical 到英文版（否则等于告诉 Google 其他语言版本都是重复内容）。
     tags: [hreflang, canonical]
@@ -131,7 +131,7 @@ rules:
       type: hard_rule
       fn: detectors.hreflang.x_default_check
       inputs: [hreflang_alternates]
-    bydfi_business_impact: |
+    platform_business_impact: |
       建议有 x-default 兜底（用于未匹配的 locale 用户）。
-      BYDFi 9 语言版本默认应有 x-default 指向 en。
+      Platform 9 语言版本默认应有 x-default 指向 en。
     tags: [hreflang, x-default]

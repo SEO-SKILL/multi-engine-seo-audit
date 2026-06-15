@@ -120,7 +120,7 @@ def test_ratelimit_daily_quota():
 def test_plugin_loading():
     from _plugins import load_all_plugins
     reg = load_all_plugins()
-    assert "bydfi.internal.support_contact_check" in reg.custom_detectors
+    assert "platform.internal.support_contact_check" in reg.custom_detectors
 
 
 def test_feedback_record_and_calibrate():

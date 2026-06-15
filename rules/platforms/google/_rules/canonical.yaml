@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Canonical 标签 + cross-domain canonical + canonical chain 检测"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
 source_doc:
   url: https://developers.google.com/search/docs/crawling-indexing/canonicalization
@@ -35,17 +35,17 @@ rules:
     fixtures:
       positive: fixtures/no-canonical-page.html
       negative: fixtures/good-canonical-page.html
-    bydfi_business_impact: |
-      所有 BYDFi 页面必须有 canonical。CSR 注入的 canonical 等于没有（lessons L04）。
+    platform_business_impact: |
+      所有 Platform 页面必须有 canonical。CSR 注入的 canonical 等于没有（lessons L04）。
     tags: [canonical, indexability]
 
   - id: google.canonical.self-canonical-on-republished
-    source: bydfi-incident
+    source: platform-incident
     severity: blocker
     confidence_default: 0.88
     applies_to:
       page_types: [news, blog, learn]
-      platforms: [google, bing, bydfi]
+      platforms: [google, bing, platform]
     detector:
       type: hybrid
       fn: detectors.canonical.republished_self_canonical_check
@@ -66,10 +66,10 @@ rules:
       priority: P0
       auto_apply: false
       requires_review: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       MEXC 事故核心：转载 BlockchainReporter 但 self-canonical 自己。
       转载内容必须 cross-domain canonical 到原文 或 noindex 或 补足原创增量。
-    tags: [bydfi-critical, canonical, mexc-incident, content-duplication]
+    tags: [platform-critical, canonical, mexc-incident, content-duplication]
     human_review_required: true
 
   - id: google.canonical.chain-too-long
@@ -88,7 +88,7 @@ rules:
     patch_hint:
       template: patches/fix_canonical_chain.diff.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       Canonical URL 本身应该返回 200，不应是 301/302。
     tags: [canonical, indexability]
 
@@ -103,7 +103,7 @@ rules:
       type: hard_rule
       fn: detectors.canonical.target_indexable
       inputs: [canonical_url, fetched_canonical_target]
-    bydfi_business_impact: |
+    platform_business_impact: |
       Canonical 指向被 noindex 的页面 = Google 看不到任何可索引页面。
     tags: [canonical, indexability]
 
@@ -120,7 +120,7 @@ rules:
       inputs: [url]
       args:
         gsc_endpoint: url_inspection
-    bydfi_business_impact: |
+    platform_business_impact: |
       GSC URL Inspection 可查看 Google 选定的 canonical 与我们声明的是否一致。
       不一致说明我们的 canonical 信号弱或被覆盖。
     tags: [canonical, gsc]

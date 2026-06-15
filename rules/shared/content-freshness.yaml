@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
   - id: shared.freshness.stale-content-no-update
@@ -8,7 +8,7 @@ rules:
     confidence_default: 0.88
     applies_to: {page_types: [news, learn, support, price], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.freshness.staleness_check, inputs: [date_modified, content_topic_volatility]}
-    bydfi_business_impact: "高变动主题 > 6 个月未更新自动 stale"
+    platform_business_impact: "高变动主题 > 6 个月未更新自动 stale"
     tags: [freshness, content-lifecycle]
 
   - id: shared.freshness.last-reviewed-format
@@ -17,7 +17,7 @@ rules:
     confidence_default: 0.95
     applies_to: {page_types: [learn, support], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.freshness.last_reviewed_format_check, inputs: [page_content]}
-    bydfi_business_impact: "'Last reviewed' 日期格式应为 ISO 8601 + 可见文本"
+    platform_business_impact: "'Last reviewed' 日期格式应为 ISO 8601 + 可见文本"
     tags: [freshness, format]
 
   - id: shared.freshness.update-history-missing
@@ -26,7 +26,7 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [learn, support], platforms: [shared]}
     detector: {type: hard_rule, fn: detectors.freshness.update_history_check, inputs: [page_content]}
-    bydfi_business_impact: "重要内容应有更新历史段（透明度）"
+    platform_business_impact: "重要内容应有更新历史段（透明度）"
     tags: [freshness, transparency]
 
   - id: shared.freshness.fake-update-pattern
@@ -35,5 +35,5 @@ rules:
     confidence_default: 0.75
     applies_to: {page_types: [news, learn], platforms: [shared, google]}
     detector: {type: llm_judge, prompt_template: prompts/fake_freshness_judge.md, model: sonnet}
-    bydfi_business_impact: "机械化改日期触发 Google spam policy"
+    platform_business_impact: "机械化改日期触发 Google spam policy"
     tags: [freshness, spam-risk]

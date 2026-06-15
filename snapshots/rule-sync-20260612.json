@@ -1,0 +1,65 @@
+{
+  "date": "2026-06-12T07:01:51.985838",
+  "sources": {
+    "google_search_central_blog": {
+      "url": "https://developers.google.com/search/blog",
+      "status": 200,
+      "content_hash": "8cca7a21f5c18ab3f680523abb852bec1fe9ab6a284c35544de50792b574b24a",
+      "changed": true,
+      "etag": null,
+      "last_modified": "Mon, 17 Mar 2025 19:25:12 GMT"
+    },
+    "google_status_dashboard": {
+      "url": "https://status.search.google.com",
+      "status": 200,
+      "content_hash": "c5a16cbc6f977c58ee5a66360ec88339b435a5768f6dc039fb34b140adf78d39",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "google_search_central_news": {
+      "url": "https://developers.google.com/search/blog/feed/posts",
+      "status": 404,
+      "content_hash": "1196e318ec95216795dc1ea57e391b6a763a1ca618eae2f23a25b29c01cb3443",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "baidu_search_resource": {
+      "url": "https://ziyuan.baidu.com/college/rules",
+      "status": 404,
+      "content_hash": "97808f55c7f40a997bf1fa7b133e0ded6ece6cfffd066b3d6b55e56b3bb3d3c6",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    },
+    "yahoo_jp_search_advisor": {
+      "url": "https://help.yahoo-net.jp/s/article/H000007517",
+      "error": ""
+    },
+    "bing_webmaster_blog": {
+      "url": "https://blogs.bing.com/webmaster",
+      "status": 200,
+      "content_hash": "03fdd7c5f61f914900b97f795e4dc499a45b5ac266ffe13ea5f137f7dd177568",
+      "changed": false,
+      "etag": null,
+      "last_modified": null
+    },
+    "naver_search_advisor": {
+      "url": "https://searchadvisor.naver.com/guide",
+      "status": 200,
+      "content_hash": "a1f381ec590bed6a08970f3464b0fdd5956bfd0a00975762ba3da932e956534d",
+      "changed": true,
+      "etag": "\"c5f3-xzlB7OfI1R2IToqABp0tN3qKd7w\"",
+      "last_modified": null
+    },
+    "yandex_webmaster": {
+      "url": "https://yandex.com/blog/webmaster",
+      "status": 200,
+      "content_hash": "adfc7c57b499ee15642e77c1a5d821bf679c94ae6ef4552e1d343ada26c39dff",
+      "changed": true,
+      "etag": null,
+      "last_modified": null
+    }
+  }
+}

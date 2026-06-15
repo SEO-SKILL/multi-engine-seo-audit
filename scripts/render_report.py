@@ -65,6 +65,6 @@ async def render(url: str, locale: str | None = None, output_path: str | None = 
 
 
 if __name__ == "__main__":
-    target_url = sys.argv[1] if len(sys.argv) > 1 else "https://bydfi.com"
+    target_url = sys.argv[1] if len(sys.argv) > 1 else "https://example.com"
     locale = sys.argv[2] if len(sys.argv) > 2 else None
     asyncio.run(render(url=target_url, locale=locale))

@@ -1,14 +1,43 @@
 """
-Anthropic LLM Client — 统一封装 + 成本控制 + Prompt Caching
+Anthropic LLM Client — 统一封装 + 成本控制 + Prompt Caching + 本地结果 Cache
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
 from typing import Any
 
 import structlog
+
+# 本地 diskcache: 30 分钟 TTL 防 LLM 输出抖动 + 节省成本
+_LLM_CACHE_DIR = Path("/tmp/seo-llm-cache")
+_LLM_CACHE_TTL = 1800  # 30 分钟
+_llm_cache = None
+
+
+def _get_cache():
+    global _llm_cache
+    if _llm_cache is None:
+        try:
+            from diskcache import Cache
+            _LLM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            _llm_cache = Cache(str(_LLM_CACHE_DIR))
+        except Exception as e:
+            logger.warning("llm_cache_init_failed", error=str(e))
+            _llm_cache = False  # 标记不可用
+    # diskcache.Cache.__bool__ uses __len__ → 空 cache 会被当 False
+    # 必须用 is False / is not None 显式检查
+    return _llm_cache if _llm_cache is not False else None
+
+
+def _cache_key(model: str, prompt_template: str, inputs: dict, system_prompt_hash: str) -> str:
+    payload = {
+        "m": model, "p": prompt_template, "i": inputs, "s": system_prompt_hash[:16],
+        "v": 1,  # 升级 → 整体 invalidate
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 logger = structlog.get_logger(__name__)
 
@@ -66,6 +95,53 @@ def load_prompt(name: str) -> str:
     return path.read_text()
 
 
+async def _gemini_fallback(system_prompt: str, user_message: str) -> dict | None:
+    """Gemini 免费层 fallback（1500 req/day · 15 req/min）"""
+    api_key = os.environ.get("GOOGLE_AI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        import httpx
+    except ImportError:
+        return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    payload = {
+        "contents": [{"parts": [{"text": user_message}]}],
+        "systemInstruction": {"parts": [{"text": system_prompt}]},
+        "generationConfig": {
+            "temperature": 0,
+            "responseMimeType": "application/json",
+            "maxOutputTokens": 4096,
+            "thinkingConfig": {"thinkingBudget": 0},  # 关 thinking 避免 token 浪费在 reasoning
+        },
+    }
+    # 使用 sync httpx 在 asyncio.to_thread 中调用，避开嵌套 asyncio.run 的 Event loop closed 问题
+    import asyncio
+    def _do_sync():
+        try:
+            r = httpx.post(url, json=payload, timeout=30)
+            if r.status_code != 200:
+                logger.warning("gemini_fallback_failed", status=r.status_code, body=r.text[:200])
+                return None
+            data = r.json()
+            cand = data.get("candidates", [{}])[0]
+            text = cand.get("content", {}).get("parts", [{}])[0].get("text", "")
+            if not text:
+                logger.warning("gemini_empty_text", finish_reason=cand.get("finishReason"))
+                return None
+            try:
+                if "```json" in text:
+                    text = text.split("```json")[1].split("```")[0]
+                return json.loads(text.strip())
+            except (json.JSONDecodeError, IndexError):
+                logger.warning("gemini_parse_failed", text_len=len(text), finish_reason=cand.get("finishReason"))
+                return {"raw_text": text[:500], "parse_error": True}
+        except Exception as e:
+            logger.warning("gemini_fallback_exception", error=str(e)[:200])
+            return None
+    return await asyncio.to_thread(_do_sync)
+
+
 async def judge(
     *,
     prompt_template: str,
@@ -73,11 +149,17 @@ async def judge(
     inputs: dict[str, Any],
     cost_tracker: CostTracker | None = None,
     system_prompt: str | None = None,
+    no_cache: bool = False,
 ) -> dict:
     """
     LLM Judge 调用封装
 
     返回结构化 JSON（finding 候选）
+
+    确定性 + 缓存：
+    - temperature=0 让同 prompt 出同 finding
+    - diskcache TTL=30min，key=hash(model+prompt+inputs)
+    - no_cache=True 强制走真 LLM
     """
     if cost_tracker and cost_tracker.remaining() <= 0:
         return {"skipped": True, "reason": "budget_exhausted"}
@@ -101,15 +183,40 @@ async def judge(
     system = system_prompt or load_prompt("_system")
     user_message = f"{template_text}\n\n## 输入数据\n```json\n{json.dumps(inputs, ensure_ascii=False, indent=2)}\n```"
 
+    # === 本地 cache 查询 ===
+    sys_hash = hashlib.sha256(system.encode()).hexdigest()
+    ck = _cache_key(model, prompt_template, inputs, sys_hash)
+    cache = None if no_cache else _get_cache()
+    if cache is not None:
+        hit = cache.get(ck)
+        if hit is not None:
+            hit_copy = dict(hit)
+            hit_copy["_cache_hit"] = True
+            return hit_copy
+
+    # === Anthropic 失败时自动 fallback 到 Gemini 免费层 ===
     client = AsyncAnthropic(api_key=api_key)
-    response = await client.messages.create(
-        model=MODEL_IDS[model],
-        max_tokens=1024,
-        system=[
-            {"type": "text", "text": system, "cache_control": {"type": "ephemeral"}},
-        ],
-        messages=[{"role": "user", "content": user_message}],
-    )
+    try:
+        response = await client.messages.create(
+            model=MODEL_IDS[model],
+            max_tokens=1024,
+            temperature=0,
+            system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
+            messages=[{"role": "user", "content": user_message}],
+        )
+    except Exception as anthropic_err:
+        err_str = str(anthropic_err).lower()
+        # 余额耗尽 / rate limit / 认证失败 → fallback Gemini
+        if any(s in err_str for s in ["credit balance", "insufficient", "rate limit", "401", "402", "429"]):
+            gemini_result = await _gemini_fallback(system, user_message)
+            if gemini_result is not None:
+                if cache is not None:
+                    try: cache.set(ck, gemini_result, expire=_LLM_CACHE_TTL)
+                    except Exception: pass
+                out = dict(gemini_result); out["_cache_hit"] = False; out["_provider"] = "gemini"
+                return out
+        logger.warning("llm_judge_failed", error=str(anthropic_err)[:200])
+        return {"skipped": True, "reason": "llm_failed", "error": str(anthropic_err)[:200]}
 
     usage = response.usage
     if cost_tracker:
@@ -123,9 +230,19 @@ async def judge(
 
     content_text = response.content[0].text if response.content else ""
     try:
-        # 提取 JSON 部分（LLM 可能带 ```json fence）
         if "```json" in content_text:
             content_text = content_text.split("```json")[1].split("```")[0]
-        return json.loads(content_text.strip())
+        result = json.loads(content_text.strip())
     except (json.JSONDecodeError, IndexError):
-        return {"raw_text": content_text, "parse_error": True}
+        result = {"raw_text": content_text, "parse_error": True}
+
+    # === 写 cache（TTL=30min）===
+    if cache is not None and not result.get("parse_error"):
+        try:
+            cache.set(ck, result, expire=_LLM_CACHE_TTL)
+        except Exception as ce:
+            logger.warning("llm_cache_set_failed", error=str(ce))
+
+    result_out = dict(result)
+    result_out["_cache_hit"] = False
+    return result_out

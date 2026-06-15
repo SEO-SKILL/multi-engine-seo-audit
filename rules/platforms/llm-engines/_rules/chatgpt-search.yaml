@@ -4,7 +4,7 @@
 
 file_version: "1.0"
 file_purpose: "ChatGPT Search 引用率优化"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 chatgpt_search_mechanics:
   index_source: Bing + OpenAI SearchGPT bot
@@ -31,8 +31,8 @@ rules:
           - GPTBot          # OpenAI 训练 + 搜索
           - ChatGPT-User    # ChatGPT 即时浏览
           - OAI-SearchBot   # 专用搜索 bot
-    bydfi_business_impact: |
-      禁 GPTBot = ChatGPT Search 看不见 BYDFi（全球 5 亿月活用户）。
+    platform_business_impact: |
+      禁 GPTBot = ChatGPT Search 看不见 Platform（全球 5 亿月活用户）。
       但允许 = OpenAI 用内容训练。Kelly 拍板。
       建议：允许 ChatGPT-User + OAI-SearchBot（搜索），禁 GPTBot（训练）。
     tags: [chatgpt, robots, bot-access]
@@ -55,9 +55,9 @@ rules:
           - 后续段落支持论据
           - 关键数字/事实有引用
           - 避免营销话术堵塞
-    bydfi_business_impact: |
+    platform_business_impact: |
       ChatGPT 偏好抓"直接答案 + 支持论据"结构。
-      BYDFi /learn 内容应改写为"答案先行"风格。
+      Platform /learn 内容应改写为"答案先行"风格。
     tags: [chatgpt, content-structure]
 
   - id: chatgpt.citation-rate-measurement
@@ -75,6 +75,6 @@ rules:
       args:
         v1_mode: sampling
         sample_queries_per_url: 3
-    bydfi_business_impact: |
-      实搜测试：拿主关键词去 ChatGPT Search，看 BYDFi 是否被引用 + 引用位置。
+    platform_business_impact: |
+      实搜测试：拿主关键词去 ChatGPT Search，看 Platform 是否被引用 + 引用位置。
     tags: [chatgpt, citation-rate, measurement]

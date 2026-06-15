@@ -1,4 +1,4 @@
-# BYDFi SEO Audit Skill — V2 里程碑报告
+# Platform SEO Audit Skill — V2 里程碑报告
 
 > 日期：2026-06-10
 > 状态：**V2 业务能力骨架交付（同日推进）**
@@ -32,7 +32,7 @@
 
 ### V2 规则扩展（3 个文件 / 12 条新规则）
 
-- `bydfi/v2-compliance-regions.yaml` — US-SEC / EU-MiCA / JP-JFSA / SG-MAS / HK-SFC 跨国合规（5 条）
+- `platform/v2-compliance-regions.yaml` — US-SEC / EU-MiCA / JP-JFSA / SG-MAS / HK-SFC 跨国合规（5 条）
 - `shared/v2-user-behavior.yaml` — Pogo-sticking / Dwell / Scroll Depth（4 条）
 - `shared/v2-ab-experiments.yaml` — A/B 实验能力（3 条）
 

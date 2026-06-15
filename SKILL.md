@@ -1,13 +1,13 @@
 ---
 name: seo-audit
-description: BYDFi 专属的 SEO 风控 + 增长决策中台。防 Google 人工处置 + 跑通合约工具页 SEO MVP。覆盖 34 项业务能力 / 11 个框架模块 / 8 个搜索引擎平台规则库。Triggers on '/seo-audit', 'SEO检测', 'SEO审核', 'pre-publish 卡审', '竞品 SEO 对比', '工具页 SEO 验收'.
+description: Platform 专属的 SEO 风控 + 增长决策中台。防 Google 人工处置 + 跑通合约工具页 SEO MVP。覆盖 34 项业务能力 / 11 个框架模块 / 8 个搜索引擎平台规则库。Triggers on '/seo-audit', 'SEO检测', 'SEO审核', 'pre-publish 卡审', '竞品 SEO 对比', '工具页 SEO 验收'.
 ---
 
-# BYDFi SEO Audit Skill
+# Platform SEO Audit Skill
 
 ## 一句话
 
-为 BYDFi 量身打造的 SEO 风控 + 增长中台 — 防 Google 处置 + 工具页 MVP 增长闭环 + 跨平台（Google/Bing/Naver/Yandex/LLM）规则库 + 组织级知识沉淀。
+为 Platform 量身打造的 SEO 风控 + 增长中台 — 防 Google 处置 + 工具页 MVP 增长闭环 + 跨平台（Google/Bing/Naver/Yandex/LLM）规则库 + 组织级知识沉淀。
 
 ## 4 个核心命令
 
@@ -32,8 +32,8 @@ description: BYDFi 专属的 SEO 风控 + 增长决策中台。防 Google 人工
 
 ## 项目范围
 
-- **租户**：BYDFi（单租户，架构留多租户 hook）
-- **域名**：bydfi.com
+- **租户**：Platform（单租户，架构留多租户 hook）
+- **域名**：example.com
 - **语言**：en, zh-CN, ja, ko, vi, tr, pt, es, ru
 - **竞品**：MEXC / WEEX / Binance / Bybit / OKX / CoinGlass
 - **合规区域**：US-SEC / EU-MiCA / SG-MAS / JP-JFSA / HK-SFC

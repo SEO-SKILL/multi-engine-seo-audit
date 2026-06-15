@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 v2_priority: true
 
 rules:
@@ -9,7 +9,7 @@ rules:
     confidence_default: 0.80
     applies_to: {page_types: [all], platforms: [duckduckgo]}
     detector: {type: hard_rule, fn: detectors.ddg.tracker_count, inputs: [resources]}
-    bydfi_business_impact: "DuckDuckGo 用户隐私敏感，过多 tracker 可能影响排名权重"
+    platform_business_impact: "DuckDuckGo 用户隐私敏感，过多 tracker 可能影响排名权重"
     tags: [ddg, privacy, tracker]
 
   - id: ddg.privacy.cookie-banner-blocking
@@ -18,5 +18,5 @@ rules:
     confidence_default: 0.75
     applies_to: {page_types: [all], platforms: [duckduckgo]}
     detector: {type: hybrid, fn: detectors.ddg.cookie_banner_check, inputs: [first_screen]}
-    bydfi_business_impact: "强制 cookie banner 用户体验差"
+    platform_business_impact: "强制 cookie banner 用户体验差"
     tags: [ddg, privacy, cookie]

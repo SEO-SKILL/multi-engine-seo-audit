@@ -17,7 +17,7 @@
 | 6 | 灵活抽样（Paywall）| ❌ **没专项** | 需补 paywall-flexible-sampling.yaml |
 | 7 | **Google 探索** | ✅ 已覆盖 | `_rules/discover.yaml` (2 条) |
 | 8 | **图像** | ✅ 已覆盖（深做）| `_rules/google-images-deep.yaml` (14 条) + composite |
-| 9 | 本地功能 | ❌ **没做**（BYDFi 不强相关）| Local SEO 跳过 |
+| 9 | 本地功能 | ❌ **没做**（Platform 不强相关）| Local SEO 跳过 |
 | 10 | **网页体验（CWV）** | ✅ 已覆盖 | `_rules/page-experience.yaml` (4 条) |
 | 11 | **首选来源** | ✅ 已覆盖 | `_rules/preferred-sources.yaml` (2 条) |
 | 12 | **排名系统** | ✅ 已覆盖 | `_rules/core-updates.yaml` + `helpful-content` |
@@ -30,7 +30,7 @@
 | 19 | **经过翻译的功能** | ✅ 已覆盖 | `hreflang.yaml` + `multilingual-quality.yaml` |
 | 20 | **视频** | ✅ 已覆盖 | `_rules/video-seo.yaml` (5 条) |
 | 21 | **视觉元素库** | ✅ 已覆盖 | `image-seo.yaml` + `google-images-deep.yaml` |
-| 22 | 网络故事（Web Stories） | ❌ **没做**（BYDFi 用不到）| 跳过 |
+| 22 | 网络故事（Web Stories） | ❌ **没做**（Platform 用不到）| 跳过 |
 | 23 | 尝鲜者计划（Labs）| — | 实验性，跳过 |
 
 ---
@@ -46,7 +46,7 @@
 2. **paywall-flexible-sampling.yaml**（灵活抽样）— 1 小时
 3. **title-link.yaml**（标题链接独立专项）— 1 小时
 
-### 跳过（3 个，BYDFi 不强相关）
-- 本地功能（Local SEO — BYDFi 是金融服务，不是实体店）
+### 跳过（3 个，Platform 不强相关）
+- 本地功能（Local SEO — Platform 是金融服务，不是实体店）
 - 网络故事（Web Stories — 加密类不用）
 - 尝鲜者计划（实验性）

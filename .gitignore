@@ -29,6 +29,21 @@ cache/*/
 *.pem
 secrets/
 
+# Platform 内部交付物（含合规风险 + 弱点细节，绝不公开）
+deliverables/
+
+# Electron app build artifacts
+electron-app/node_modules/
+electron-app/dist/
+electron-app/build/icon.iconset/
+
+# Runtime / log
+*.log
+seo-audit-runs/
+
+# Claude session image cache
+image-cache/
+
 # IDE
 .vscode/
 .idea/
@@ -37,3 +52,6 @@ secrets/
 
 # macOS
 .DS_Store
+
+# CI workflow（需要 OAuth workflow scope 才能 push，临时排除）
+.github/workflows/

@@ -9,52 +9,52 @@
   "results": [
     {
       "label": "homepage",
-      "url": "https://bydfi.com",
+      "url": "https://example.com",
       "error": "No module named 'detectors'"
     },
     {
       "label": "futures",
-      "url": "https://bydfi.com/en/futures",
+      "url": "https://example.com/en/futures",
       "error": "No module named 'detectors'"
     },
     {
       "label": "copy-trading",
-      "url": "https://bydfi.com/en/copy-trading",
+      "url": "https://example.com/en/copy-trading",
       "error": "No module named 'detectors'"
     },
     {
       "label": "learn",
-      "url": "https://bydfi.com/en/learn",
+      "url": "https://example.com/en/learn",
       "error": "No module named 'detectors'"
     },
     {
       "label": "price",
-      "url": "https://bydfi.com/en/price/btc",
+      "url": "https://example.com/en/price/btc",
       "error": "No module named 'detectors'"
     },
     {
       "label": "support",
-      "url": "https://bydfi.com/en/support",
+      "url": "https://example.com/en/support",
       "error": "No module named 'detectors'"
     },
     {
       "label": "homepage-ko",
-      "url": "https://bydfi.com/ko",
+      "url": "https://example.com/ko",
       "error": "No module named 'detectors'"
     },
     {
       "label": "homepage-ja",
-      "url": "https://bydfi.com/ja",
+      "url": "https://example.com/ja",
       "error": "No module named 'detectors'"
     },
     {
       "label": "homepage-ru",
-      "url": "https://bydfi.com/ru",
+      "url": "https://example.com/ru",
       "error": "No module named 'detectors'"
     },
     {
       "label": "homepage-zh",
-      "url": "https://bydfi.com/zh-CN",
+      "url": "https://example.com/zh-CN",
       "error": "No module named 'detectors'"
     }
   ]

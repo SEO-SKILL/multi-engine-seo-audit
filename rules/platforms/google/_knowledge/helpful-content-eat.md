@@ -1,12 +1,12 @@
-# Helpful Content 与 E-E-A-T（BYDFi 深度版）
+# Helpful Content 与 E-E-A-T（Platform 深度版）
 
 > 对标 Will 知识库 `01-帮助性内容与E-E-A-T.md`，**我们这版在 3 个维度做了实质增量**：
 >
-> 1. **BYDFi 频道级业务对齐**（Will 只列频道名，我们给到具体落地动作）
+> 1. **Platform 频道级业务对齐**（Will 只列频道名，我们给到具体落地动作）
 > 2. **加入 AI Overview / Google SGE 维度**（Will 完全没有）
 > 3. **加入 GEO 时代的引用友好度策略**（Will 完全没有）
 >
-> 创建：2026-06-10 / 维护：kelly@bydfi.com
+> 创建：2026-06-10 / 维护：kelly@example.com
 
 ---
 
@@ -25,7 +25,7 @@
 
 ---
 
-## 二、BYDFi 频道级落地动作（vs Will 的泛建议）
+## 二、Platform 频道级落地动作（vs Will 的泛建议）
 
 Will 在他的版本里只列了频道名（"price/how-to-buy/support/wiki/crypto-review"），但没给落地动作。我们这版到每个频道的**具体执行清单**。
 
@@ -39,7 +39,7 @@ Will 在他的版本里只列了频道名（"price/how-to-buy/support/wiki/crypt
 |---|---|---|
 | 实时价格 / 24h 涨跌 / 成交量 / 市值 | ✅ | 数据来源标 `CoinGecko / DefiLlama` |
 | K 线图（多周期）| ✅ | 数据来源 + 时间戳精确到秒 |
-| 项目简介 | ✅ | "BYDFi 加密研究团队整理" + 最后更新日期 |
+| 项目简介 | ✅ | "Platform 加密研究团队整理" + 最后更新日期 |
 | 市场数据（ATH / ATL / 流通量）| ✅ | 来源 |
 | **风险提示**（PRD §12.4 模板）| ✅ | 必须有 |
 | **价格预测免责声明** | ✅ | 不允许预测，必须用"参考资料"措辞 |
@@ -61,7 +61,7 @@ Will 在他的版本里只列了频道名（"price/how-to-buy/support/wiki/crypt
 | 模块 | 必备 | E-E-A-T 信号点 |
 |---|---|---|
 | 地区可用性矩阵 | ✅ | US-SEC / EU-MiCA / SG-MAS / JP-JFSA / HK-SFC 五区合规标 |
-| 操作步骤截图 | ✅ | 真实 BYDFi UI 截图（不要 mockup）|
+| 操作步骤截图 | ✅ | 真实 Platform UI 截图（不要 mockup）|
 | 时长估算 | ✅ | 经验值（"通常 5-10 分钟"）|
 | 支付方式（卡 / 银行 / OTC）| ✅ | 各方式手续费、限额、可用区域 |
 | **常见错误处理** | ✅ | 来自 /support 真实工单的归纳 |
@@ -70,7 +70,7 @@ Will 在他的版本里只列了频道名（"price/how-to-buy/support/wiki/crypt
 
 **Experience 信号增强**：
 
-- 截图必须含 BYDFi 真实 UI 元素（防 AI 生成误判）
+- 截图必须含 Platform 真实 UI 元素（防 AI 生成误判）
 - 步骤说明用第一人称视角（"你会看到..."）
 - 引用真实 support 工单数据（"约 12% 用户在第 3 步出错"）
 
@@ -94,7 +94,7 @@ Will 在他的版本里只列了频道名（"price/how-to-buy/support/wiki/crypt
 
 - UGC 答案不经审核直接进入索引
 - 客服旧答案没有 archived 状态
-- 答案内容与最新 BYDFi 产品功能不一致
+- 答案内容与最新 Platform 产品功能不一致
 
 ### 2.4 `/learn/*` Learn Center
 
@@ -164,17 +164,17 @@ ai_overview_eligibility_signals:
     - 内容超过 6 个月未更新（金融类）
 ```
 
-### 3.3 BYDFi 优化策略
+### 3.3 Platform 优化策略
 
 每个 `/learn` `/support` 页面顶部添加 **「TL;DR」段落**：
 
 ```markdown
 **TL;DR**: 比特币合约强平价格 = （入仓价 × 杠杆 - 入仓价） / 杠杆。
 具体取决于做多/做空方向、保证金模式、维护保证金率。本工具实时计算。
-来源：BYDFi 合约规则文档（2026-06 版）。
+来源：Platform 合约规则文档（2026-06 版）。
 ```
 
-这种结构**最容易被 AI Overview 抓取并引用**，引用时会带 BYDFi 链接。
+这种结构**最容易被 AI Overview 抓取并引用**，引用时会带 Platform 链接。
 
 ---
 
@@ -198,7 +198,7 @@ ai_overview_eligibility_signals:
 ```markdown
 ## BTC 合约强平价格如何计算
 比特币永续合约的强平价格 = 入仓价 × (1 - 1/杠杆 + 维护保证金率)。
-做多和做空公式不同。BYDFi 当前 BTC 维护保证金率为 0.5%。
+做多和做空公式不同。Platform 当前 BTC 维护保证金率为 0.5%。
 ```
 
 #### Fact Verifiability（事实可验证）
@@ -225,7 +225,7 @@ BTC 24h 交易量超过 300 亿美元（来源：CoinGecko, 2026-06-10）。
 ### 4.2 跨 LLM 引用率追踪
 
 V1 抽样测试：
-- 每月对 BYDFi 50 个核心页面，跑 Perplexity / ChatGPT Search / Claude / Gemini
+- 每月对 Platform 50 个核心页面，跑 Perplexity / ChatGPT Search / Claude / Gemini
 - 记录是否被引用 + 引用位置
 - 季度复盘哪些页面被引用最多 → 反向优化其他页面
 
@@ -235,12 +235,12 @@ V2 自动化：
 
 ---
 
-## 五、BYDFi 与 Will 知识库的关系
+## 五、Platform 与 Will 知识库的关系
 
-| 维度 | Will 版 | 我们 BYDFi 版 |
+| 维度 | Will 版 | 我们 Platform 版 |
 |---|---|---|
 | Google 原文蒸馏 | ✅ 蒸馏到位 | ✅ 同样蒸馏 + 引用 Will 的核心结论 |
-| BYDFi 频道对齐 | 列频道名 | 每频道给到字段级清单 |
+| Platform 频道对齐 | 列频道名 | 每频道给到字段级清单 |
 | AI Overview | ❌ 未覆盖 | ✅ 3.1-3.3 节 |
 | GEO（Perplexity/LLM 引擎）| ❌ 未覆盖 | ✅ 第 4 节 |
 | 实际审核可执行性 | ❌ 文字描述 | ✅ 对应 `e-e-a-t.yaml` 6 条结构化规则可直接 audit |
@@ -284,8 +284,8 @@ semantic-agent 在判断"是否符合 E-E-A-T"时使用以下决策树：
 
 - `_rules/e-e-a-t.yaml`：本文档对应的结构化规则
 - `_rules/structured-data-truthfulness.yaml`：Schema 真实性（E-E-A-T 信号之一）
-- `../../bydfi/fintech-compliance.yaml`：YMYL 金融合规规则
-- `../../bydfi/google-action-history.md`：MEXC 事故起因之一就是 E-E-A-T 信号弱
+- `../../platform/fintech-compliance.yaml`：YMYL 金融合规规则
+- `../../platform/google-action-history.md`：MEXC 事故起因之一就是 E-E-A-T 信号弱
 - `../llm-engines/_rules/perplexity.yaml`：GEO 对应规则
 
 ---
@@ -293,5 +293,5 @@ semantic-agent 在判断"是否符合 E-E-A-T"时使用以下决策树：
 ## 八、维护原则
 
 - 每次 Google Search Central 更新本文档时同步更新（daily-pull-agent 检测）
-- 每次 BYDFi 实际审核发现新模式时回写本文档
+- 每次 Platform 实际审核发现新模式时回写本文档
 - 季度回顾"哪些建议被反复触发" → 升级为 `_rules/*.yaml` 硬规则

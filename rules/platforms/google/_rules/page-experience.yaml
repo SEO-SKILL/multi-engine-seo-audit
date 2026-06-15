@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Core Web Vitals / INP / 页面体验信号"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 
 rules:
 
@@ -21,8 +21,8 @@ rules:
       inputs: [url]
       args:
         red_flag_p75_seconds: 2.5
-    bydfi_business_impact: |
-      LCP > 2.5s 影响 Google 排名。BYDFi 工具页 first contentful paint 必须 < 1.5s。
+    platform_business_impact: |
+      LCP > 2.5s 影响 Google 排名。Platform 工具页 first contentful paint 必须 < 1.5s。
     tags: [cwv, lcp, performance]
 
   - id: google.cwv.inp-poor
@@ -38,9 +38,9 @@ rules:
       inputs: [url]
       args:
         red_flag_p75_ms: 200
-    bydfi_business_impact: |
+    platform_business_impact: |
       INP（Interaction to Next Paint）取代 FID。
-      BYDFi 计算器交互卡顿 > 200ms 影响 CWV。
+      Platform 计算器交互卡顿 > 200ms 影响 CWV。
     tags: [cwv, inp, interactivity]
 
   - id: google.cwv.cls-poor
@@ -56,8 +56,8 @@ rules:
       inputs: [url]
       args:
         red_flag_p75: 0.1
-    bydfi_business_impact: |
-      CLS > 0.1 = 视觉抖动严重。BYDFi 行情卡懒加载需预留固定高度。
+    platform_business_impact: |
+      CLS > 0.1 = 视觉抖动严重。Platform 行情卡懒加载需预留固定高度。
     tags: [cwv, cls, layout-shift]
 
   - id: google.mobile.usability-issues
@@ -71,6 +71,6 @@ rules:
       type: external_api
       fn: integrations.gsc.mobile_usability_check
       inputs: [url]
-    bydfi_business_impact: |
+    platform_business_impact: |
       移动优先索引时代必备。GSC 移动可用性报告任何 issue 都要修。
     tags: [mobile, usability]

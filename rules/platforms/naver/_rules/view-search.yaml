@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Naver 整合搜索结果适配 — Naver SERP 与 Google 完全不同"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ko
 
 rules:
@@ -28,12 +28,12 @@ rules:
           - 이미지 (image)
           - 동영상 (video)
           - 지식인 (Q&A)
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver SERP 默认显示 VIEW collection（Naver 内部生态）在前。
-      BYDFi 想在 Naver 排名好，需要：
+      Platform 想在 Naver 排名好，需要：
       1. 自家页面进入 VIEW 困难（Naver 偏好 Naver Blog/Cafe）
       2. 考虑在 Naver Blog 建立官方账号
-      3. 通用搜索（통합검색）抓 BYDFi 网站，竞争激烈
+      3. 通用搜索（통합검색）抓 Platform 网站，竞争激烈
     tags: [naver, view-search, ecosystem]
 
   - id: naver.view.kakao-ecosystem-mention
@@ -53,7 +53,7 @@ rules:
           - KakaoTalk
           - Naver Pay
           - 韩国本土加密交易所（Upbit / Bithumb）
-    bydfi_business_impact: |
+    platform_business_impact: |
       韩国用户期望看到韩国本土生态引用。
-      BYDFi 韩文内容可在介绍 onboarding 时提及 KakaoTalk 验证等本地化流程。
+      Platform 韩文内容可在介绍 onboarding 时提及 KakaoTalk 验证等本地化流程。
     tags: [naver, korean-ecosystem]

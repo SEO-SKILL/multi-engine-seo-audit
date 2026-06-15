@@ -36,13 +36,13 @@
   export GA4_PROPERTY_ID="123456789"
   ```
 
-### 4. BYDFI_SLACK_WEBHOOK
+### 4. PLATFORM_SLACK_WEBHOOK
 - **注册**：
   1. Slack workspace → Apps → Incoming Webhooks
   2. https://api.slack.com/messaging/webhooks
   3. 选择频道（如 `#seo-alerts`）→ 复制 webhook URL
 - **成本**：免费
-- **导出**：`export BYDFI_SLACK_WEBHOOK="https://hooks.slack.com/services/T.../B.../..."`
+- **导出**：`export PLATFORM_SLACK_WEBHOOK="https://hooks.slack.com/services/T.../B.../..."`
 
 ---
 
@@ -96,7 +96,7 @@
 
 ```bash
 export ANTHROPIC_API_KEY="sk-ant-..."           # 解锁 LLM judges
-export BYDFI_SLACK_WEBHOOK="https://hooks..."   # 解锁告警
+export PLATFORM_SLACK_WEBHOOK="https://hooks..."   # 解锁告警
 
 uv run python cli.py doctor    # 验证
 ```
@@ -108,7 +108,7 @@ uv run python cli.py doctor    # 验证
 ```bash
 # 必配
 ANTHROPIC_API_KEY      ← 5 min
-BYDFI_SLACK_WEBHOOK    ← 3 min
+PLATFORM_SLACK_WEBHOOK    ← 3 min
 
 # 强推
 GSC_SERVICE_ACCOUNT_JSON ← 10 min（含给 GSC 加权限）

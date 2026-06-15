@@ -15,7 +15,7 @@ SKILL_ROOT = Path(__file__).parent.parent
 
 
 async def compare_pages(self_url: str, competitor_urls: list[str], output_path: str | None = None) -> dict:
-    """对比 BYDFi 与 N 个竞品页面，输出 HTML 仪表盘"""
+    """对比 Platform 与 N 个竞品页面，输出 HTML 仪表盘"""
     from orchestrator import Orchestrator
     orch = Orchestrator()
 
@@ -82,7 +82,7 @@ def _render_compare_html(results: list[dict]) -> str:
         )
 
     return f"""<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>BYDFi SEO Compare</title>
+<html><head><meta charset="UTF-8"><title>Platform SEO Compare</title>
 <style>
 :root {{ --brand-orange: #FF6B00; --brand-orange-light: #FFE4D0; }}
 body {{ font-family: -apple-system, sans-serif; padding: 32px; }}

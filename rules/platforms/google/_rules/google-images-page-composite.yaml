@@ -6,7 +6,7 @@
 
 file_version: "1.0"
 file_purpose: "图片密集型页面的综合最佳实践评分"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 source_doc:
   url: https://developers.google.com/search/docs/appearance/google-images
   last_updated: 2026-03-03
@@ -45,7 +45,7 @@ rules:
     patch_hint:
       template: patches/image_composite_remediation.md.j2
       priority: P1
-    bydfi_business_impact: |
+    platform_business_impact: |
       综合分 < 0.60 = 多个最佳实践同时缺失 → Google Images 流量损失大。
       报告会输出"最弱环节"，便于定向修复。
     tags: [image, composite, best-practices]
@@ -63,6 +63,6 @@ rules:
       inputs: [raw_html, rendered_html]
       args:
         report_weakest: true
-    bydfi_business_impact: |
+    platform_business_impact: |
       即使综合分及格，也要修复最弱环节（边际收益高）。
     tags: [image, composite, weakest-link]

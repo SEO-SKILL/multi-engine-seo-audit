@@ -152,7 +152,7 @@
   "audit_rows": [
     {
       "label": "homepage",
-      "url": "https://bydfi.com",
+      "url": "https://example.com",
       "locale": null,
       "current_score": 77.5,
       "verdict": "上线",
@@ -169,7 +169,7 @@
     },
     {
       "label": "futures",
-      "url": "https://bydfi.com/en/futures",
+      "url": "https://example.com/en/futures",
       "locale": "en",
       "current_score": 57.5,
       "verdict": "上线",
@@ -186,7 +186,7 @@
     },
     {
       "label": "learn",
-      "url": "https://bydfi.com/en/learn",
+      "url": "https://example.com/en/learn",
       "locale": "en",
       "current_score": 77.5,
       "verdict": "上线",
@@ -203,7 +203,7 @@
     },
     {
       "label": "price",
-      "url": "https://bydfi.com/en/price/btc",
+      "url": "https://example.com/en/price/btc",
       "locale": "en",
       "current_score": 77.5,
       "verdict": "上线",
@@ -220,7 +220,7 @@
     },
     {
       "label": "support",
-      "url": "https://bydfi.com/en/support",
+      "url": "https://example.com/en/support",
       "locale": "en",
       "current_score": 87.5,
       "verdict": "上线",
@@ -237,7 +237,7 @@
     },
     {
       "label": "homepage-ko",
-      "url": "https://bydfi.com/ko",
+      "url": "https://example.com/ko",
       "locale": "ko",
       "current_score": 77.5,
       "verdict": "上线",
@@ -254,7 +254,7 @@
     },
     {
       "label": "homepage-ja",
-      "url": "https://bydfi.com/ja",
+      "url": "https://example.com/ja",
       "locale": "ja",
       "current_score": 77.5,
       "verdict": "上线",

@@ -1,5 +1,5 @@
 """
-批量 audit BYDFi 关键页面（校准期工具）
+批量 audit Platform 关键页面（校准期工具）
 用法：uv run python scripts/batch_audit.py
 """
 from __future__ import annotations
@@ -15,17 +15,17 @@ sys.path.insert(0, str(SKILL_ROOT))
 
 from orchestrator import Orchestrator  # noqa: E402
 
-BYDFI_KEY_URLS = [
-    ("https://bydfi.com", "homepage", None),
-    ("https://bydfi.com/en/futures", "futures", "en"),
-    ("https://bydfi.com/en/copy-trading", "copy-trading", "en"),
-    ("https://bydfi.com/en/learn", "learn", "en"),
-    ("https://bydfi.com/en/price/btc", "price", "en"),
-    ("https://bydfi.com/en/support", "support", "en"),
-    ("https://bydfi.com/ko", "homepage-ko", "ko"),
-    ("https://bydfi.com/ja", "homepage-ja", "ja"),
-    ("https://bydfi.com/ru", "homepage-ru", "ru"),
-    ("https://bydfi.com/zh-CN", "homepage-zh", "zh-CN"),
+PLATFORM_KEY_URLS = [
+    ("https://example.com", "homepage", None),
+    ("https://example.com/en/futures", "futures", "en"),
+    ("https://example.com/en/copy-trading", "copy-trading", "en"),
+    ("https://example.com/en/learn", "learn", "en"),
+    ("https://example.com/en/price/btc", "price", "en"),
+    ("https://example.com/en/support", "support", "en"),
+    ("https://example.com/ko", "homepage-ko", "ko"),
+    ("https://example.com/ja", "homepage-ja", "ja"),
+    ("https://example.com/ru", "homepage-ru", "ru"),
+    ("https://example.com/zh-CN", "homepage-zh", "zh-CN"),
 ]
 
 
@@ -34,7 +34,7 @@ async def run_batch() -> dict:
     results = []
     summary = {"total": 0, "blocker_count": 0, "high_count": 0, "score_avg": 0.0}
 
-    for url, label, locale in BYDFI_KEY_URLS:
+    for url, label, locale in PLATFORM_KEY_URLS:
         print(f"\n[{label}] auditing {url}...")
         try:
             report = await orch.audit(url=url, locale=locale)

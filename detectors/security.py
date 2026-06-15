@@ -34,8 +34,17 @@ def ssl_expiry_check(ssl_cert: dict | None = None) -> dict:
 
 
 def hacked_content_check(page_content: str | None = None) -> dict:
+    """被黑内容启发式检测：典型 SEO spam 注入词（pharma/replica/loan）
+    casino/gambling/poker 已移除——加密内容天然有合规讨论会大面积误报
+    """
     import re
-    patterns = [r"\b(?:viagra|cialis|levitra)\b", r"\b(?:casino|gambling|poker)\b", r"\b(?:cheap\s+(?:jersey|replica))\b"]
+    # 注：仅保留高确信度 SEO spam 词，与加密内容主题完全无重叠
+    patterns = [
+        r"\b(?:viagra|cialis|levitra|tadalafil|sildenafil)\b",      # pharma spam
+        r"\b(?:cheap\s+(?:jersey|replica|nike|nfl|nba)|replica\s+watch)\b",  # 仿品 spam
+        r"\b(?:payday\s+loan|cash\s+advance|quick\s+loan)\b",         # loan spam
+        r"\b(?:essay\s+writing\s+service|write\s+my\s+essay)\b",      # essay mill spam
+    ]
     hits = [p for p in patterns if re.search(p, page_content or "", re.IGNORECASE)]
     return {"hacked_signals": hits, "suspicious": len(hits) > 0}
 

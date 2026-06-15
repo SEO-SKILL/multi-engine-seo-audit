@@ -1,5 +1,5 @@
 file_version: "1.0"
-maintainer: kelly@bydfi.com
+maintainer: kelly@example.com
 locale_focus: ko
 
 rules:
@@ -21,10 +21,10 @@ rules:
           - Naver Blog
           - Naver Cafe
           - Naver Post
-    bydfi_business_impact: |
+    platform_business_impact: |
       Naver SERP VIEW collection 优先 Naver 生态内容。
-      BYDFi 想在韩国曝光必须考虑：
-      1. 开 BYDFi Naver Blog 官方账号
+      Platform 想在韩国曝光必须考虑：
+      1. 开 Platform Naver Blog 官方账号
       2. 在加密类 Naver Cafe 建立存在
       3. Naver Post 发布精选内容
     tags: [naver, ecosystem, korean]
@@ -42,7 +42,7 @@ rules:
       prompt_template: prompts/naver_honorific_judge.md
       model: haiku
       inputs: [visible_text]
-    bydfi_business_impact: |
+    platform_business_impact: |
       韩文敬语等级必须一致（습니다체 vs 해요체）。
       混用会让韩国读者觉得"不专业"。
     tags: [naver, korean, honorific]

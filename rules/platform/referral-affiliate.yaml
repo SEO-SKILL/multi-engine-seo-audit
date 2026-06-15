@@ -1,0 +1,88 @@
+file_version: "1.0"
+maintainer: kelly@example.com
+
+rules:
+  - id: platform.referral.affiliate-disclosure
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.93
+    applies_to: {page_types: [crypto-review, compare], platforms: [platform]}
+    detector: {type: hard_rule, fn: detectors.platform.affiliate_disclosure_check, inputs: [page_content]}
+    platform_business_impact: "联盟链接必须有利益冲突声明（FTC + Google YMYL 要求）"
+    tags: [platform, affiliate, disclosure, ymyl]
+
+  - id: platform.referral.kol-disclosure
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [news, blog], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/kol_disclosure_judge.md, model: haiku}
+    platform_business_impact: "KOL 合作内容必须明示'赞助内容'/sponsored"
+    tags: [platform, kol, disclosure]
+
+  - id: platform.referral.airdrop-promo-compliance
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.85
+    applies_to: {page_types: [news, blog], platforms: [platform]}
+    detector: {type: llm_judge, prompt_template: prompts/airdrop_compliance_judge.md, model: haiku}
+    platform_business_impact: "空投活动页避免暗示保证收益"
+    tags: [platform, airdrop, compliance]
+
+  # === 推广中心专属：Platform /partnership /invite-friends /referral-program 业务规则 ===
+
+  - id: platform.referral.promo-page-thin-content
+    source: platform-compliance
+    severity: high
+    confidence_default: 0.78
+    applies_to: {page_types: [all], platforms: [platform]}
+    detector:
+      type: hybrid
+      fn: detectors.platform_promo.thin_promo_check
+      inputs: [page_url, raw_html, visible_text]
+    platform_business_impact: |
+      推广中心页（/partnership /invite-friends /referral-program）若只是 referral code + CTA 按钮
+      但缺少独立教程 / 收益示例 / 数据 → 直接对应 Google 事故原因 ①「内容贫乏的联属网站页面」。
+    tags: [platform, referral, thin-content, platform-incident-2026-05]
+
+  - id: platform.referral.code-density-spam
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.85
+    applies_to: {page_types: [all], platforms: [platform]}
+    detector:
+      type: hard_rule
+      fn: detectors.platform_promo.code_density_check
+      inputs: [raw_html]
+    platform_business_impact: |
+      单页 referral code / invite link 数量异常高（≥ 8）= spam 信号。
+      Google 视为 "scaled-content / link manipulation"。Platform 推广页应控制 referral 链接密度。
+    tags: [platform, referral, code-spam]
+
+  - id: platform.referral.value-proposition-missing
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.70
+    applies_to: {page_types: [all], platforms: [platform]}
+    detector:
+      type: hard_rule
+      fn: detectors.platform_promo.value_prop_check
+      inputs: [visible_text, raw_html]
+    platform_business_impact: |
+      推广页缺乏 Platform 产品价值阐述（手续费 / 安全 / 流动性 / 服务）→ Google 视为单纯营销 not 真信息。
+      Platform 推广页应明示：低手续费 0.026% / 储备金 ≥ 100% / KYC ≤ 5 分钟等。
+    tags: [platform, referral, value-prop, content-quality]
+
+  - id: platform.referral.duplicate-promo-template
+    source: platform-compliance
+    severity: medium
+    confidence_default: 0.65
+    applies_to: {page_types: [all], platforms: [platform]}
+    detector:
+      type: hybrid
+      fn: detectors.platform_promo.promo_template_check
+      inputs: [page_url, visible_text, page_corpus]
+    platform_business_impact: |
+      多个邀请活动页若用同模板（仅替换奖金金额）→ Google 视为 doorway。
+      Platform 不同活动页（春节抽奖 / 6 周年 / 圣诞 promo）必须独立文案 + 不同 hero 视觉。
+    tags: [platform, referral, doorway, template]

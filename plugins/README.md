@@ -1,4 +1,4 @@
-# BYDFi SEO Audit Skill — Plugins 目录
+# Platform SEO Audit Skill — Plugins 目录
 
 ## F11 — Plugin 扩展机制
 
@@ -17,13 +17,13 @@ plugins/
 
 ## 最小示例
 
-`plugins/example_bydfi_internal/__init__.py`:
+`plugins/example_platform_internal/__init__.py`:
 
 ```python
 from .detectors import custom_check
 
 def register(registry):
-    registry.custom_detectors["bydfi.internal.custom_check"] = custom_check
+    registry.custom_detectors["platform.internal.custom_check"] = custom_check
     registry.custom_judges["custom_judge"] = "prompts/custom_judge.md"
 ```
 

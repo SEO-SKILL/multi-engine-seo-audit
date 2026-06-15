@@ -3,7 +3,7 @@
 
 file_version: "1.0"
 file_purpose: "Yandex MatrixNet 用户行为权重适配"
-maintainer: kells@bydfi.com
+maintainer: kells@example.com
 locale_focus: ru
 
 rules:
@@ -25,9 +25,9 @@ rules:
           position_1: 0.20  # 排第 1 但 CTR < 20% 异常
           position_3: 0.10
           position_5: 0.05
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex 看 SERP CTR：用户看到但不点 = 标题/描述不吸引 = 降权。
-      BYDFi 俄文 title / description 必须符合俄罗斯用户阅读习惯。
+      Platform 俄文 title / description 必须符合俄罗斯用户阅读习惯。
     tags: [yandex, ctr, behavior]
 
   - id: yandex.behavior.return-rate-high
@@ -45,7 +45,7 @@ rules:
       args:
         red_flag_return_to_serp_within_seconds: 10
         red_flag_pogosticking_rate: 0.40
-    bydfi_business_impact: |
+    platform_business_impact: |
       Yandex 严重处罚 pogosticking（用户点进来 10s 内回到 SERP）。
       内容质量低 + 加载慢 = Yandex 直接降权。
     tags: [yandex, pogosticking, behavior]
@@ -62,6 +62,6 @@ rules:
       type: external_api
       fn: integrations.yandex_metrica.repeat_visitor_check
       inputs: [url]
-    bydfi_business_impact: |
-      Yandex 重视用户回访率。BYDFi 俄文内容应该有持续价值。
+    platform_business_impact: |
+      Yandex 重视用户回访率。Platform 俄文内容应该有持续价值。
     tags: [yandex, retention, behavior]
