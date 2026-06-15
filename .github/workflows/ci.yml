@@ -1,0 +1,73 @@
+name: Multi-Engine SEO Audit CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: latest
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint with ruff
+        run: uv run ruff check . --output-format=github
+        continue-on-error: true
+
+      - name: Type check (lenient)
+        run: uv run mypy . --ignore-missing-imports --no-strict-optional || true
+
+      - name: Import sanity check
+        run: |
+          uv run python -c "
+          import sys
+          sys.path.insert(0, '.')
+          from agents import technical, semantic, safety, crawler, geo, lifecycle, localization, report
+          from detectors import platform_promo, schema, eeat, hidden_content, google_2024, compliance, security
+          from _generic_detector_runner import run_generic_detectors, build_ctx, _applies_to_passes
+          from _modes import classify_rule
+          print('✓ All critical imports OK')
+          "
+
+      - name: Rule count sanity
+        run: |
+          uv run python -c "
+          from pathlib import Path
+          import yaml, sys
+          sys.path.insert(0, '.')
+          count = 0
+          for f in Path('rules').rglob('*.yaml'):
+              try:
+                  d = yaml.safe_load(f.read_text())
+                  if isinstance(d, dict):
+                      count += len(d.get('rules', []))
+              except Exception as e:
+                  print(f'⚠️ {f}: {e}')
+          print(f'✓ Loaded {count} rules')
+          assert count >= 400, f'Rule count regression: {count} < 400'
+          "
+
+      - name: Test detector ctx builder
+        run: |
+          uv run python -c "
+          from _generic_detector_runner import _applies_to_passes, _LOCALE_PLATFORMS
+          # naver rule must NOT pass on en locale
+          naver_rule = {'id': 'naver.crank.x', 'applies_to': {'platforms':['naver'], 'locales':['ko']}}
+          assert not _applies_to_passes(naver_rule, {'google'}, 'en'), 'cross-platform leak regression'
+          # naver rule MUST pass on ko locale
+          assert _applies_to_passes(naver_rule, {'naver','google'}, 'ko'), 'naver on ko broken'
+          print('✓ applies_to filter intact')
+          "
