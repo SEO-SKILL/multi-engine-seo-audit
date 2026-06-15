@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 480" font-family="-apple-system, BlinkMacSystemFont, SF Pro Display, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FF6B00"/>
+      <stop offset="100%" stop-color="#FF8533"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#222" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <!-- 背景 -->
+  <rect width="1280" height="480" fill="url(#bg)"/>
+  <rect width="1280" height="480" fill="url(#grid)" opacity="0.7"/>
+  <!-- 顶部色带 -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#brand)"/>
+
+  <!-- 左侧主标题区 -->
+  <g transform="translate(70, 95)">
+    <!-- 大标题 -->
+    <text x="0" y="0" font-size="58" font-weight="800" fill="#FFFFFF" letter-spacing="-1">
+      Multi-Engine
+    </text>
+    <text x="0" y="68" font-size="58" font-weight="800" fill="url(#brand)" letter-spacing="-1">
+      SEO Audit
+    </text>
+    <!-- 副标题 -->
+    <text x="0" y="118" font-size="20" font-weight="400" fill="#AAAAAA" letter-spacing="0.5">
+      深度审计 · 防 Manual Action · 多搜索引擎覆盖
+    </text>
+
+    <!-- Stats 行 -->
+    <g transform="translate(0, 170)" font-family="SF Mono, Menlo, monospace">
+      <g transform="translate(0, 0)">
+        <text font-size="34" font-weight="700" fill="#FF6B00">442</text>
+        <text y="22" font-size="12" fill="#888">SEO Rules</text>
+      </g>
+      <g transform="translate(115, 0)">
+        <text font-size="34" font-weight="700" fill="#FF6B00">4</text>
+        <text y="22" font-size="12" fill="#888">Search Engines</text>
+      </g>
+      <g transform="translate(225, 0)">
+        <text font-size="34" font-weight="700" fill="#FF6B00">9</text>
+        <text y="22" font-size="12" fill="#888">Locales</text>
+      </g>
+      <g transform="translate(330, 0)">
+        <text font-size="34" font-weight="700" fill="#FF6B00">22</text>
+        <text y="22" font-size="12" fill="#888">Agents</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- 右侧 终端模拟 -->
+  <g transform="translate(700, 70)">
+    <!-- 终端框 -->
+    <rect x="0" y="0" width="510" height="340" rx="10" ry="10" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+    <!-- 终端 header -->
+    <rect x="0" y="0" width="510" height="32" rx="10" ry="10" fill="#161B22"/>
+    <rect x="0" y="22" width="510" height="10" fill="#161B22"/>
+    <!-- 三个圆点 -->
+    <circle cx="18" cy="16" r="6" fill="#FF5F56"/>
+    <circle cx="38" cy="16" r="6" fill="#FFBD2E"/>
+    <circle cx="58" cy="16" r="6" fill="#27C93F"/>
+    <text x="255" y="20" font-size="11" fill="#8B949E" text-anchor="middle" font-family="SF Mono, monospace">multi-engine-seo-audit</text>
+
+    <!-- 终端内容 -->
+    <g font-family="SF Mono, Menlo, monospace" font-size="13">
+      <text x="22" y="65" fill="#FF6B00">$</text>
+      <text x="38" y="65" fill="#E6EDF3">uv run python web_dashboard.py</text>
+
+      <text x="22" y="95" fill="#7EE787">✓</text>
+      <text x="38" y="95" fill="#8B949E">442 rules loaded · Google / Naver / Yandex / Yahoo!JP</text>
+
+      <text x="22" y="120" fill="#7EE787">✓</text>
+      <text x="38" y="120" fill="#8B949E">22 agents ready · 9 locales routed</text>
+
+      <text x="22" y="145" fill="#7EE787">✓</text>
+      <text x="38" y="145" fill="#8B949E">Backend on 127.0.0.1:8080 (sealed)</text>
+
+      <text x="22" y="180" fill="#FF6B00">$</text>
+      <text x="38" y="180" fill="#E6EDF3">curl /api/audit -d '{"url":"...", "locale":"en"}'</text>
+
+      <text x="22" y="215" fill="#FFD54F">⚠</text>
+      <text x="38" y="215" fill="#E6EDF3">2 blockers · 35 highs · 57 mediums</text>
+
+      <text x="38" y="237" fill="#8B949E">→ google.schema.field-not-grounded (PriceBTC)</text>
+      <text x="38" y="259" fill="#8B949E">→ naver.crank.korean-content-authenticity (KO)</text>
+
+      <text x="22" y="295" fill="#FF6B00">$</text>
+      <text x="38" y="295" fill="#7EE787">▌</text>
+    </g>
+  </g>
+
+  <!-- 底部引擎徽标行 -->
+  <g transform="translate(70, 410)">
+    <text font-size="11" font-weight="600" fill="#666" letter-spacing="2">COVERS</text>
+    <g transform="translate(0, 25)" font-size="13" font-weight="600">
+      <g transform="translate(0, 0)">
+        <circle cx="6" cy="-4" r="5" fill="#4285F4"/>
+        <text x="18" fill="#DDD">Google</text>
+      </g>
+      <g transform="translate(95, 0)">
+        <circle cx="6" cy="-4" r="5" fill="#03C75A"/>
+        <text x="18" fill="#DDD">Naver</text>
+      </g>
+      <g transform="translate(180, 0)">
+        <circle cx="6" cy="-4" r="5" fill="#FF0000"/>
+        <text x="18" fill="#DDD">Yandex</text>
+      </g>
+      <g transform="translate(275, 0)">
+        <circle cx="6" cy="-4" r="5" fill="#FF0033"/>
+        <text x="18" fill="#DDD">Yahoo!JAPAN</text>
+      </g>
+    </g>
+  </g>
+</svg>
