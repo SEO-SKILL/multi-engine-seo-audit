@@ -25,7 +25,7 @@ brew install python@3.12 uv node
 
 # 2. clone 仓库
 gh auth login  # 用浏览器登录 GitHub
-gh repo clone twitter-bot-tech/multi-engine-seo-audit
+gh repo clone SEO-SKILL/multi-engine-seo-audit
 cd multi-engine-seo-audit
 
 # 3. 一键打 dmg
@@ -65,7 +65,7 @@ App 菜单栏：BYDFi SEO Audit → **设置 API Keys...**（⌘ + ,）
 brew install python@3.12 uv
 
 # 2. clone + 一键安装
-gh repo clone twitter-bot-tech/multi-engine-seo-audit
+gh repo clone SEO-SKILL/multi-engine-seo-audit
 cd multi-engine-seo-audit
 bash install.sh
 
@@ -209,4 +209,4 @@ PORT=8081 uv run python web_dashboard.py
 
 - 工具 bug / 规则误报：在 GitHub repo 开 Issue
 - API key / 共享账号：找 Kelly
-- 业务问题（KO 韩文页 / Price schema）：见 [Issues](https://github.com/twitter-bot-tech/multi-engine-seo-audit/issues)
+- 业务问题（KO 韩文页 / Price schema）：见 [Issues](https://github.com/SEO-SKILL/multi-engine-seo-audit/issues)
