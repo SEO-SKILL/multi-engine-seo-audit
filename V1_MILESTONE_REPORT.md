@@ -15,7 +15,7 @@
 | 结构化规则 | **~140 条** | V1 目标 300+ 的 47% |
 | 平台覆盖 | **5 个**（Google/Bing/Naver/Yandex/LLM-engines） | V1 必备全覆盖 ✅ |
 | 业务能力 | 15/16 V1 必备已设计 | 工程实施 ~40% |
-| MEXC 事故覆盖 | **7/7 类问题 100%** | ✅ |
+| 某加密交易所行业案例覆盖 | **7/7 类问题 100%** | ✅ |
 | Golden Fixtures | **5/5** | ✅ |
 | Self-Knowledge MDs | 3 篇 | 已超越 Will 对应主题 |
 | LLM Judge Prompts | 12 篇 | 含通用 system prompt |
@@ -55,7 +55,7 @@ rules/
 │   ├── fintech-compliance.yaml
 │   ├── republished-and-tagging.yaml
 │   ├── web3-specific.yaml
-│   └── google-action-history.md (MEXC 案例库)
+│   └── google-action-history.md (某加密交易所案例 案例库)
 ├── platforms/            # 平台规则（22 份）
 │   ├── google/_knowledge/ (3 篇知识 MD)
 │   ├── google/_rules/   (9 份)
@@ -81,13 +81,13 @@ rules/
 - **顶层设计**：PRD v1.2 + 战略定位（碾压 Will 知识库）
 - **元规则层**：4 个 _system YAML，所有规则共享同一"宪法"
 - **规则体系**：140 条结构化可执行规则，每条带 detector + LLM judge + patch hint + fixture
-- **MEXC 事故 7 类问题**：100% 对应规则覆盖（防复发）
+- **某加密交易所行业案例 7 类问题**：100% 对应规则覆盖（防复发）
 - **5 平台 V1**：Google + Bing + Naver + Yandex + LLM engines
 - **3 篇 self-knowledge MD**：helpful-content-eat / spam-policies-scale / ai-overview-eligibility
 - **工程骨架**：pyproject + orchestrator + cli + Pydantic schema + 10 agent stubs
 - **2 个 agent 业务实施**：technical-agent + safety-agent 可跑
 - **detectors 层**：canonical / hreflang / schema / eeat / compliance 5 个模块
-- **5 个 Golden Fixtures**：含 MEXC 事故页 (能复现 10+ findings)
+- **5 个 Golden Fixtures**：含 某加密交易所行业案例页 (能复现 10+ findings)
 - **Report 模板**：MD + HTML（橙白配色 + 左侧导航）+ Slack
 - **LLM Judge Prompts**：12 篇（覆盖核心 LLM 判断场景）
 - **Patch 模板**：11 个

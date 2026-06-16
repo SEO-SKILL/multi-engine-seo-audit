@@ -43,7 +43,7 @@ open dist/
 2. 等 splash 加载（~10 秒后自动弹主窗口）
 3. **菜单栏 → Multi-Engine SEO Audit → 设置 API Keys**（首次必须填）
 4. 顶部输入框填要审计的 URL → 选 locale → 点 🔍 一键深度诊断
-5. 或点 🚀 跑 BYDFi 8 核心页 一键批量
+5. 或点 🚀 跑核心 8 页 一键批量
 
 ### API Key 在哪填
 
@@ -203,7 +203,7 @@ PORT=8081 uv run python web_dashboard.py
 
 - [SKILL.md](SKILL.md) — 完整能力清单（所有 agent / 所有规则）
 - [PRD.md](PRD.md) — 产品需求文档
-- [deliverables/](deliverables/) — 5 个针对 BYDFi 的 patch 包
+- [deliverables/](deliverables/) — 针对内部业务的 patch 包（私有）
 
 ## 🐛 出问题找谁
 

@@ -32,7 +32,7 @@
 |---|---|---|
 | 某交易所用 AI 生成 5000+ "What is X coin" 页面 | 2024-Q2 | 全站去索引 |
 | 某 DeFi 项目模板化生成 200+ "How to stake on X chain" | 2024-Q4 | 主域 PageRank 大跌 |
-| MEXC 转载页（Platform 事故同源）| 2026-Q1 | 单页人工处置 |
+| 某加密交易所案例 转载页（Platform 事故同源）| 2026-Q1 | 单页人工处置 |
 
 **Platform 红线**：
 

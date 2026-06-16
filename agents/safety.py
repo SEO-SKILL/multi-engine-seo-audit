@@ -94,7 +94,7 @@ def _check_pros_ticker_misuse(raw_html: str, trace_id: str) -> list[Finding]:
             severity=Severity.BLOCKER,
             confidence=0.90,
             evidence=Evidence(text_snippet=f"PROS 在 title/h1 含通用词 {result['matched_blacklist_contexts']}"),
-            recommendation="移除 PROS ticker widget / relatedLink / 交易入口（MEXC 事故 L02 同类问题）",
+            recommendation="移除 PROS ticker widget / relatedLink / 交易入口（某加密交易所行业案例 L02 同类问题）",
             patch_hint=PatchHint(template="patches/remove_ticker_widget.diff.j2", priority="P0", requires_review=True),
         ))
     return findings

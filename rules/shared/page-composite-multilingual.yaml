@@ -27,5 +27,5 @@ rules:
         threshold_low: 0.60
     platform_business_impact: |
       多语言综合分低 = 该 locale 完全不参与本地搜索。
-      MEXC 事故 L03 同源问题——hreflang/canonical/语言匹配多项同时缺。
-    tags: [multilingual, composite, mexc-related]
+      某加密交易所行业案例 L03 同源问题——hreflang/canonical/语言匹配多项同时缺。
+    tags: [multilingual, composite, case-exchange-related]

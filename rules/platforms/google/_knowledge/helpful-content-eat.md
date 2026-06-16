@@ -285,7 +285,7 @@ semantic-agent 在判断"是否符合 E-E-A-T"时使用以下决策树：
 - `_rules/e-e-a-t.yaml`：本文档对应的结构化规则
 - `_rules/structured-data-truthfulness.yaml`：Schema 真实性（E-E-A-T 信号之一）
 - `../../platform/fintech-compliance.yaml`：YMYL 金融合规规则
-- `../../platform/google-action-history.md`：MEXC 事故起因之一就是 E-E-A-T 信号弱
+- `../../platform/google-action-history.md`：某加密交易所行业案例起因之一就是 E-E-A-T 信号弱
 - `../llm-engines/_rules/perplexity.yaml`：GEO 对应规则
 
 ---

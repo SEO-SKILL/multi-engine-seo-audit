@@ -24,8 +24,8 @@ def rules_dir() -> Path:
 
 
 @pytest.fixture
-def mexc_incident_html(fixtures_dir: Path) -> str:
-    return (fixtures_dir / "mexc-incident.html").read_text()
+def case-exchange_incident_html(fixtures_dir: Path) -> str:
+    return (fixtures_dir / "case-exchange-incident.html").read_text()
 
 
 @pytest.fixture

@@ -6,7 +6,7 @@ schema_version: "1.0"
 
 # 一、规则来源优先级（从高到低）
 source_priority:
-  1: platform-incident             # Platform 自家事故复盘（MEXC）权威性最高
+  1: platform-incident             # Platform 自家事故复盘（某加密交易所案例）权威性最高
   2: google-status-dashboard    # Google 实时状态
   3: google-spam-policy         # Google 垃圾内容政策
   4: google-search-central      # Google 官方文档

@@ -1,4 +1,4 @@
-# 结构化数据精通（Platform 防 MEXC L04 复发版）
+# 结构化数据精通（Platform 防 某加密交易所案例 L04 复发版）
 
 > 对标 Will 知识库 `18-结构化数据总览与通用规则.md`
 > 来源：https://developers.google.com/search/docs/appearance/structured-data
@@ -8,7 +8,7 @@
 
 ## 一、为什么 Platform 必须把这个学透
 
-**MEXC 事故 L04 就是 schema 字段虚假触发的 manual action**。
+**某加密交易所行业案例 L04 就是 schema 字段虚假触发的 manual action**。
 Schema 不是"加个 JSON-LD 就行"，是"每个字段必须对应可见内容"。
 
 ---
@@ -18,7 +18,7 @@ Schema 不是"加个 JSON-LD 就行"，是"每个字段必须对应可见内容"
 ### 原则 1：Grounded in Visible Content
 **Schema 字段必须对应页面可见内容**。
 
-❌ MEXC 事故同类违规：
+❌ 某加密交易所行业案例同类违规：
 ```html
 <!-- Schema 声明 AggregateRating -->
 <script type="application/ld+json">
@@ -47,7 +47,7 @@ Schema 不是"加个 JSON-LD 就行"，是"每个字段必须对应可见内容"
 
 Schema 必须在 raw HTML 中，不能仅 JS 注入。
 
-❌ MEXC 事故同类：
+❌ 某加密交易所行业案例同类：
 ```javascript
 window.addEventListener('DOMContentLoaded', () => {
   const s = document.createElement('script');
@@ -63,7 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 Schema 类型必须匹配页面真实用途。
 
-❌ MEXC 事故 L05 同类：
+❌ 某加密交易所行业案例 L05 同类：
 - Event schema 用在非活动页
 - Recipe schema 用在非食谱页
 
@@ -212,8 +212,8 @@ Schema 类型必须匹配页面真实用途。
 
 | 规则 ID | 检测 |
 |---|---|
-| `google.schema.field-not-grounded-in-visible-content` | MEXC L04 核心 - schema 字段虚假 |
-| `google.schema.jsonld-csr-only` | MEXC L04 子问题 - CSR 注入 |
+| `google.schema.field-not-grounded-in-visible-content` | 某加密交易所案例 L04 核心 - schema 字段虚假 |
+| `google.schema.jsonld-csr-only` | 某加密交易所案例 L04 子问题 - CSR 注入 |
 | `google.schema.aggregaterating-without-review-component` | AggregateRating 无可见评分 |
 | `google.schema.copyrightnotice-inconsistent` | 邮箱不一致 |
 | `google.schema.relatedlink-topic-mismatch` | relatedLink 主题不符 |
@@ -229,4 +229,4 @@ Schema 类型必须匹配页面真实用途。
 ## 六、Will 知识库对照
 
 Will `18-结构化数据总览与通用规则.md` 列了 schema 类型清单。
-我们这版 = 类型清单 + Platform 频道映射 + MEXC 事故防复发 + 实操模板。
+我们这版 = 类型清单 + Platform 频道映射 + 某加密交易所行业案例防复发 + 实操模板。

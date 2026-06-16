@@ -12,7 +12,7 @@ from pathlib import Path
 from agents._schema import AgentInput, AgentOutput, AgentStatus, Metrics
 
 
-COMPETITORS = ["binance.com", "bybit.com", "okx.com", "mexc.com", "weex.com", "coinglass.com"]
+COMPETITORS = ["binance.com", "bybit.com", "okx.com", "example.com", "weex.com", "coinglass.com"]
 
 
 async def run(input_: AgentInput) -> AgentOutput:

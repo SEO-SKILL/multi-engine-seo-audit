@@ -67,9 +67,9 @@ rules:
       auto_apply: false
       requires_review: true
     platform_business_impact: |
-      MEXC 事故核心：转载 BlockchainReporter 但 self-canonical 自己。
+      某加密交易所行业案例核心：转载 原始来源媒体 但 self-canonical 自己。
       转载内容必须 cross-domain canonical 到原文 或 noindex 或 补足原创增量。
-    tags: [platform-critical, canonical, mexc-incident, content-duplication]
+    tags: [platform-critical, canonical, case-exchange-incident, content-duplication]
     human_review_required: true
 
   - id: google.canonical.chain-too-long

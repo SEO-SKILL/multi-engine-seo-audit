@@ -48,7 +48,7 @@ uv run python cli.py audit https://example.com
 | Google E-E-A-T 检查 | 文字描述对照 | 8 维度 composite + 最弱环节定位 |
 | Schema 真实性 | 看 schema 字段 | 字段 vs 可见内容语义比对 |
 | Cloaking 检测 | 不查 | 多 UA 自动 diff |
-| MEXC 事故防复发 | 经验判断 | 7 类问题硬规则全覆盖 + e2e 测试 |
+| 某加密交易所行业案例防复发 | 经验判断 | 7 类问题硬规则全覆盖 + e2e 测试 |
 | 跨语言审核 | 单语言 | 9 语言路由 + Naver/Yandex 专属 |
 | GEO（LLM 引用率）| 不查 | Perplexity/ChatGPT/Claude/Gemini |
 | Negative SEO 监控 | 不查 | hacked content + 品牌词检测 |
@@ -86,7 +86,7 @@ uv run python scripts/batch_audit.py
 # Output: snapshots/batch-audit-YYYYMMDD-HHMMSS.json
 ```
 
-### 场景 3：判断要不要按 MEXC 事故口径处置某页
+### 场景 3：判断要不要按 某加密交易所行业案例口径处置某页
 ```bash
 uv run python cli.py audit https://example.com/news/some-news
 # 看 Final Verdict

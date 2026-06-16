@@ -68,7 +68,7 @@ default_by_source:
 
   industry_incident:
     baseline: 0.85
-    description: "行业事故案例推断（MEXC 等）"
+    description: "行业事故案例推断（某加密交易所案例 等）"
 
 # 升级策略：何时把 LLM 置信度低的判断升 Sonnet/Opus
 escalation:

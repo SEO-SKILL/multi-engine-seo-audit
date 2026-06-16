@@ -2,7 +2,7 @@
 
 > 来源：https://support.google.com/webmasters/answer/9044175?hl=zh-Hans
 > 创建：2026-06-10 / 维护：kelly@example.com
-> 战略价值：⭐⭐⭐ MEXC 事故（2026-Q1）后必备 SOP
+> 战略价值：⭐⭐⭐ 某加密交易所行业案例（2026-Q1）后必备 SOP
 
 ---
 
@@ -13,8 +13,8 @@
 | **严重网络垃圾问题（Pure Spam）** | ⚠️⚠️⚠️ 全站影响 | 程序化生成大量低质币种页 / 模板化复用 |
 | **被黑网页（Hacked Content）** | ⚠️⚠️⚠️ 安全+SEO 双重 | 被注入菠菜/赌博/色情 keyword |
 | **伪装真实内容/欺骗性重定向（Cloaking）** | ⚠️⚠️⚠️ 全站 | A/B test 误判 Googlebot / GeoIP 配置错 |
-| **内容贫乏，附加价值低（Thin Content）** | ⚠️⚠️ MEXC L01 同源 | 转载文章未补足原创增量 |
-| **结构化数据政策违规** | ⚠️⚠️ MEXC L04 同源 | AggregateRating 字段虚假 |
+| **内容贫乏，附加价值低（Thin Content）** | ⚠️⚠️ 某加密交易所案例 L01 同源 | 转载文章未补足原创增量 |
+| **结构化数据政策违规** | ⚠️⚠️ 某加密交易所案例 L04 同源 | AggregateRating 字段虚假 |
 | 指向网站的非自然链接 | ⚠️⚠️ | 竞品 negative SEO / 买过链接 |
 | 来自网站的非自然链接 | ⚠️⚠️ | KOL 联盟链接未加 rel='sponsored' |
 | 隐藏文字/关键字堆砌 | ⚠️⚠️ | 前端代码 bug 引入 |

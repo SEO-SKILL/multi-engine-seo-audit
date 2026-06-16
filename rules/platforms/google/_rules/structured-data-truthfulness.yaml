@@ -1,7 +1,7 @@
 # Google 结构化数据真实性校验
 # 创建：2026-06-10
 # ⭐ Will 知识库没有这一维度——我们独有
-# 直接对标 MEXC 事故 L04：schema 字段虚假 + 仅 CSR 渲染
+# 直接对标 某加密交易所行业案例 L04：schema 字段虚假 + 仅 CSR 渲染
 
 file_version: "1.0"
 file_purpose: "JSON-LD 字段必须反映页面可见内容，否则触发结构化数据人工处置"
@@ -55,9 +55,9 @@ rules:
       positive: fixtures/schema-fake-rating.html
       negative: fixtures/schema-grounded.html
     platform_business_impact: |
-      MEXC 事故 L04 核心问题：schema 塞了 MEXC App 的 AggregateRating，但页面没有评分组件。
+      某加密交易所行业案例 L04 核心问题：schema 塞了 某加密交易所案例 App 的 AggregateRating，但页面没有评分组件。
       Google 政策：所有 JSON-LD 字段必须对应可见内容，否则视为误导，触发人工处置。
-    tags: [platform-critical, schema, mexc-incident, structured-data-manual-action]
+    tags: [platform-critical, schema, case-exchange-incident, structured-data-manual-action]
     human_review_required: true
 
   - id: google.schema.jsonld-csr-only
@@ -80,7 +80,7 @@ rules:
       auto_apply: false
       requires_review: true
     platform_business_impact: |
-      MEXC 事故核心：raw HTML 没有 NewsArticle JSON-LD，仅渲染后出现。
+      某加密交易所行业案例核心：raw HTML 没有 NewsArticle JSON-LD，仅渲染后出现。
       Googlebot 抓取时可能看不到 schema。所有关键 schema 类型必须 SSR 输出。
     tags: [platform-critical, schema, ssr-required]
 
@@ -124,9 +124,9 @@ rules:
           - copyrightNotice.email
           - copyrightNotice.creditedAgent
     platform_business_impact: |
-      MEXC 事故 L04 子问题：copyrightNotice 邮箱和页面可见邮箱不一致。
+      某加密交易所行业案例 L04 子问题：copyrightNotice 邮箱和页面可见邮箱不一致。
       声明不一致降低富结果资格。
-    tags: [schema, mexc-incident, consistency]
+    tags: [schema, case-exchange-incident, consistency]
 
   - id: google.schema.relatedlink-topic-mismatch
     source: platform-incident
@@ -148,10 +148,10 @@ rules:
       template: patches/remove_unrelated_schema_links.diff.j2
       priority: P0
     platform_business_impact: |
-      MEXC 事故 L02 子问题：schema relatedLink 指向 PROS 价格页，
+      某加密交易所行业案例 L02 子问题：schema relatedLink 指向 PROS 价格页，
       但页面主题是 Techsslaash 评测。
       schema relatedLink 必须与页面主题语义一致。
-    tags: [platform-critical, schema, mexc-incident, ticker-mismatch]
+    tags: [platform-critical, schema, case-exchange-incident, ticker-mismatch]
 
   - id: google.schema.deprecated-types
     source: google-search-central

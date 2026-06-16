@@ -9,7 +9,7 @@
 
 ### L01 — 转载内容必须有原创增量
 
-**触发场景**：MEXC 页面转载 BlockchainReporter 原文，移除作者 bio / FAQ / 目录 / 部分外链，但保留 self-canonical。
+**触发场景**：案例页面转载 原始来源媒体 原文，移除作者 bio / FAQ / 目录 / 部分外链，但保留 self-canonical。
 
 **Why**：Google 对金融 / 科技 / 收益类内容更看重 E-E-A-T、来源、责任归属和独特价值。单纯转载且 self-canonical 容易被判低增量内容。
 
@@ -50,7 +50,7 @@
 
 ### L04 — Schema 字段必须反映页面真实内容
 
-**触发场景**：渲染后有 NewsArticle JSON-LD 但 raw HTML 中没有；schema 里塞 MEXC App 的 AggregateRating 但页面没有评分；copyrightNotice 邮箱与页面可见邮箱不一致。
+**触发场景**：渲染后有 NewsArticle JSON-LD 但 raw HTML 中没有；schema 里塞 某加密交易所案例 App 的 AggregateRating 但页面没有评分；copyrightNotice 邮箱与页面可见邮箱不一致。
 
 **Why**：Google 要求结构化数据反映用户可见内容。错误 rating 和不一致声明降低富结果资格，严重时有结构化数据人工处置风险。
 
@@ -77,7 +77,7 @@
 
 ### L06 — Google 处置成本远高于 SEO 失败
 
-**触发场景**：MEXC 页面已是 200 + index, follow + self-canonical，但内容质量问题导致 Google 人工处置。
+**触发场景**：案例页面已是 200 + index, follow + self-canonical，但内容质量问题导致 Google 人工处置。
 
 **Why**：技术 SEO 正常 ≠ 内容 SEO 正常。Google 处置一次，恢复成本可能是几个月 + 全站权重下降。
 
@@ -138,7 +138,7 @@
 - 修 `good-tools-page.html` E-E-A-T 信号让它真正合格（0.30 → 1.00）
 - 8 维度：eeat / schema / crawlability / performance / internal_linking / geo / multilingual / image
 
-**关键洞察**：MEXC 事故按单点看是 7 个问题，按 composite 看是「**E-E-A-T 综合分 0.10**」一个核心——这是更高层级的诊断。
+**关键洞察**：某加密交易所行业案例按单点看是 7 个问题，按 composite 看是「**E-E-A-T 综合分 0.10**」一个核心——这是更高层级的诊断。
 
 **新增**：
 - `detectors/composite.py`
@@ -170,7 +170,7 @@
 
 **触发场景**：补 Google 官方「人工处置措施」文档（https://support.google.com/webmasters/answer/9044175）到规则库。
 
-**Why**：Platform 2026-Q1 已经被 manual action 过一次（MEXC 事故）。Google 列了 18 大类型，**每一类都有专属预防规则 + Reconsideration Request 标准流程**。
+**Why**：Platform 2026-Q1 已经被 manual action 过一次（某加密交易所行业案例）。Google 列了 18 大类型，**每一类都有专属预防规则 + Reconsideration Request 标准流程**。
 
 **How to apply**：
 - 15 条规则覆盖 18 大类型（部分类型合并）
@@ -178,7 +178,7 @@
 - 6 条规则标 `human_review_required: true`（不允许 LLM 单独决策）
 - watch 命令必须监控 GSC「人工处置措施」报告 API（V2 接入）
 
-**关键洞察**：MEXC 事故 L01（转载）+ L04（schema 虚假）+ L05（标签错配）正好对应 manual action 的「Thin Content」+「Structured Data Violation」+「内容质量低」三个类型 → 我们的规则库现在已 100% 覆盖。
+**关键洞察**：某加密交易所行业案例 L01（转载）+ L04（schema 虚假）+ L05（标签错配）正好对应 manual action 的「Thin Content」+「Structured Data Violation」+「内容质量低」三个类型 → 我们的规则库现在已 100% 覆盖。
 
 **新增**：
 - `platforms/google/_rules/manual-actions-prevention.yaml`（15 条规则）
@@ -238,7 +238,7 @@
 - ✅ 5 项决策固化（PRD v1.1）
 - ✅ Will 知识库对照战略（PRD v1.2 + COMPARISON_WITH_WILL.md）
 - ✅ 4 个元规则文件落地（rule-schema / severity / confidence / conflict-resolution）
-- ✅ 12 条结构化业务规则落地（含 MEXC 事故 7 类全覆盖）
+- ✅ 12 条结构化业务规则落地（含 某加密交易所行业案例 7 类全覆盖）
 - ✅ 1 篇 self-knowledge 文档（helpful-content-eat.md，超越 Will 版本）
 
 ### W1 数据

@@ -19,7 +19,7 @@ severity_levels:
       - Hacked content（被黑塞菠菜/赌博/色情）
       - Cloaking 嫌疑（Googlebot 与真实用户看到不同主题内容）
       - Schema 字段虚假（AggregateRating 但页面无评价 → 触发结构化数据人工处置）
-      - 转载内容自 self-canonical 且原创增量 < 20%（MEXC 事故场景）
+      - 转载内容自 self-canonical 且原创增量 < 20%（某加密交易所行业案例场景）
       - 风险关键词违法表述（"guaranteed return" 在 SEC 监管区）
       - Ticker 上下文严重错配（PROS / Pharos 案例）
     gate_behavior: HARD_BLOCK  # Pre-publish Gate 必须阻断
@@ -38,10 +38,10 @@ severity_levels:
       显著影响 SEO 表现 / 高度可能导致索引问题或排名下降 /
       影响用户信任和品牌权威。需要在 1 周内修复。
     examples:
-      - hreflang 与 robots/canonical 冲突（MEXC 事故 L03）
-      - JSON-LD 仅 CSR 渲染（MEXC 事故 L04）
+      - hreflang 与 robots/canonical 冲突（某加密交易所行业案例 L03）
+      - JSON-LD 仅 CSR 渲染（某加密交易所行业案例 L04）
       - E-E-A-T 严重弱：YMYL 金融页无作者/审核/来源
-      - 分类标签明显不准（MEXC 事故 L05）
+      - 分类标签明显不准（某加密交易所行业案例 L05）
       - 关键页面不被 Googlebot 抓取
       - Sitemap 大量 404 / 重定向链
       - Cannibalization 严重（多个页面同关键词竞争）

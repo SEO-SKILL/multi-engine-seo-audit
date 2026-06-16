@@ -23,7 +23,7 @@
 - [x] **10 条种子规则落地（Day 2-3 / 2026-06-10）**
   - [x] `platform/pros-ticker-blacklist.yaml`（3 条规则 + Ticker 黑白名单）
   - [x] `platform/fintech-compliance.yaml`（4 条规则 + 跨国合规黑名单）
-  - [x] `platform/google-action-history.md`（MEXC 案例完整复盘）
+  - [x] `platform/google-action-history.md`（某加密交易所案例 案例完整复盘）
   - [x] `platforms/google/_rules/e-e-a-t.yaml`（6 条规则）
   - [x] `platforms/google/_rules/canonical.yaml`（5 条规则）
   - [x] `platforms/google/_rules/structured-data-truthfulness.yaml`（6 条规则 — Will 没有）
@@ -37,12 +37,12 @@
     - Platform 频道级业务对齐（vs Will 仅列频道名）
     - AI Overview 维度（Will 完全没有）
     - GEO 维度（Will 完全没有）
-- [x] **Day 5 — 补全 MEXC 事故剩余 2 类规则**
+- [x] **Day 5 — 补全 某加密交易所行业案例剩余 2 类规则**
   - [x] `platform/republished-and-tagging.yaml`（3 条规则）
     - `platform.l01.republished-content-low-increment`（L01 转载原创增量）
     - `platform.l05.tagging-topic-mismatch`（L05 分类标签错配）
     - `platform.l05.tag-page-quality`（标签页质量）
-- [x] **MEXC 事故 7 类问题对应规则：7/7 ✅ 全覆盖**
+- [x] **某加密交易所行业案例 7 类问题对应规则：7/7 ✅ 全覆盖**
 - [x] **W1 复盘已写入 lessons.md**
 
 ---
@@ -59,13 +59,13 @@
 ### Shared 跨平台通用规则
 - [x] `shared/technical-baseline.yaml`（6 条规则 — HTTPS / HTTP 状态 / robots / viewport / duplicate / page size）
 - [x] `shared/url-health.yaml`（8 条规则 — 重定向链 / 循环 / 参数 / 大小写 / orphan / broken link）
-- [x] `shared/sitemap-quality.yaml`（7 条规则 — 含 MEXC L03 类似 sitemap-robots 冲突检测）
+- [x] `shared/sitemap-quality.yaml`（7 条规则 — 含 某加密交易所案例 L03 类似 sitemap-robots 冲突检测）
 
 ### Self-Knowledge 知识 MD（继续超越 Will）
 - [x] `platforms/google/_knowledge/spam-policies-scale.md`（对照 Will 03，加加密行业案例 + AI 处置时间线 + Platform 程序化 SEO 红线）
 
 ### Golden Fixtures（V1 必备 5 个 HTML 测试样本）
-- [x] `fixtures/mexc-incident.html`（MEXC 事故页 — 必须能检出 10+ 个 finding）
+- [x] `fixtures/case-exchange-incident.html`（某加密交易所行业案例页 — 必须能检出 10+ 个 finding）
 - [x] `fixtures/good-tools-page.html`（合格 BTC liquidation calculator 样板）
 - [x] `fixtures/bad-hreflang.html`（hreflang 6 类问题集合）
 - [x] `fixtures/cloaking-suspect.html`（多 UA diff + CSR 嫌疑 + 隐藏文字）
@@ -206,7 +206,7 @@
 
 - [ ] **competitor-agent**（能力 #8 竞品深度对比）
   - [ ] Ahrefs CSV 导入
-  - [ ] 6 家竞品定时抓取（MEXC/WEEX/Binance/Bybit/OKX/CoinGlass）
+  - [ ] 6 家竞品定时抓取（某加密交易所案例/WEEX/Binance/Bybit/OKX/CoinGlass）
   - [ ] diff 引擎
   - [ ] HTML 仪表盘渲染（橙白配色 + 左侧导航）
 
@@ -250,7 +250,7 @@
 
 - [ ] `rules/platform/pros-ticker-blacklist.yaml`（PROS / SEC / BTC 等敏感 ticker）
 - [ ] `rules/platform/fintech-compliance.yaml`（风险提示模板 + 黑名单词）
-- [ ] `rules/platform/google-action-history.md`（MEXC 事故复盘 + 后续案例）
+- [ ] `rules/platform/google-action-history.md`（某加密交易所行业案例复盘 + 后续案例）
 - [ ] `rules/platform/seo-final-review-rules.yaml`（byd-google-seo-final-review 口径）
 - [ ] `rules/platform/sensitive-tickers.yaml`（加密 ticker 消歧义白名单）
 
@@ -312,7 +312,7 @@
 
 ## 🧪 Phase 6 — 测试 & Fixture（W3-W4）
 
-- [ ] `fixtures/mexc-incident.html`（MEXC 事故页 — V1 必备 golden）
+- [ ] `fixtures/case-exchange-incident.html`（某加密交易所行业案例页 — V1 必备 golden）
 - [ ] `fixtures/good-tools-page.html`（合格的工具页样板）
 - [ ] `fixtures/bad-hreflang.html`（hreflang 错配样例）
 - [ ] `fixtures/cloaking-suspect.html`（Cloaking 嫌疑样例）

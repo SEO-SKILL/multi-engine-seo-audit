@@ -2,7 +2,7 @@
 
 ## 任务
 
-判断页面标签是否真实反映正文主题（防 MEXC L05 事故）。
+判断页面标签是否真实反映正文主题（防 某加密交易所案例 L05 事故）。
 
 ## 输入
 
@@ -31,6 +31,6 @@
     "match_score": 0.0
   },
   "recommendation": "标签改为 AI / Fintech / Tech Review / Guest Posting",
-  "reasoning": "MEXC 事故 L05 同源问题：标签自动从 ticker 识别（SEC）但正文主题完全不同"
+  "reasoning": "某加密交易所行业案例 L05 同源问题：标签自动从 ticker 识别（SEC）但正文主题完全不同"
 }
 ```

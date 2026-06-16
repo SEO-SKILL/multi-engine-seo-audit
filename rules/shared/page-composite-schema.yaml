@@ -6,12 +6,12 @@ file_version: "1.0"
 maintainer: kelly@example.com
 
 composite_weights:
-  ssr_not_csr_only:           0.25  # 必须 SSR 输出（MEXC L04 同源）
+  ssr_not_csr_only:           0.25  # 必须 SSR 输出（某加密交易所案例 L04 同源）
   breadcrumb_list:            0.15
   organization_or_website:    0.15
   article_schema:             0.10
   sameas_links:               0.10
-  aggregaterating_grounded:   0.25  # 字段必须对应可见内容（MEXC L04 同源）
+  aggregaterating_grounded:   0.25  # 字段必须对应可见内容（某加密交易所案例 L04 同源）
 
 rules:
 
@@ -34,8 +34,8 @@ rules:
       template: patches/schema_composite_remediation.md.j2
       priority: P1
     platform_business_impact: |
-      Schema 综合分 < 0.50 = SSR 缺失 + 字段虚假同时存在 = MEXC 事故同源风险。
-    tags: [schema, composite, mexc-related]
+      Schema 综合分 < 0.50 = SSR 缺失 + 字段虚假同时存在 = 某加密交易所行业案例同源风险。
+    tags: [schema, composite, case-exchange-related]
 
   - id: shared.schema.page-composite-fake-rating
     source: platform-incident
@@ -51,7 +51,7 @@ rules:
       args:
         fail_if_fake_rating: true
     platform_business_impact: |
-      AggregateRating 字段虚假 = MEXC 事故 L04 同源 = 立即 manual action。
+      AggregateRating 字段虚假 = 某加密交易所行业案例 L04 同源 = 立即 manual action。
       Composite 直接降到 0。
-    tags: [schema, composite, mexc-critical, blocker]
+    tags: [schema, composite, case-exchange-critical, blocker]
     human_review_required: true

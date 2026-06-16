@@ -80,9 +80,9 @@ rules:
       fn: detectors.sitemap.robots_conflict_check
       inputs: [sitemap_urls, robots_txt_parsed]
     platform_business_impact: |
-      MEXC 事故 L03 类似问题：sitemap 包含 robots 禁止的 URL。
+      某加密交易所行业案例 L03 类似问题：sitemap 包含 robots 禁止的 URL。
       sitemap 里的 URL 必须能被 Googlebot 抓取。
-    tags: [sitemap, robots, mexc-incident]
+    tags: [sitemap, robots, case-exchange-incident]
 
   - id: shared.sitemap.missing-lastmod
     source: google-search-central

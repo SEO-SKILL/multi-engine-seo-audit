@@ -1,12 +1,12 @@
 # Platform 专属：Ticker 上下文消歧义规则
-# 直接对标事故：MEXC 页面 "Pros and Cons" 被识别成 Pharos PROS 代币
+# 直接对标事故：案例页面 "Pros and Cons" 被识别成 Pharos PROS 代币
 # 创建：2026-06-10
 
 file_version: "1.0"
 file_purpose: "防止 ticker 自动识别造成主题错配，触发 Google 误导风险"
 maintainer: kelly@example.com
 last_reviewed_at: 2026-06-10
-source_incident: Platform 2026-Q1 MEXC 页面事故复盘
+source_incident: Platform 2026-Q1 案例页面事故复盘
 
 # Ticker 消歧义黑白名单
 ticker_disambiguation:
@@ -95,15 +95,15 @@ rules:
       auto_apply: false
       requires_review: true
     fixtures:
-      positive: fixtures/mexc-incident.html
+      positive: fixtures/case-exchange-incident.html
       negative: fixtures/good-pharos-article.html
     platform_business_impact: |
-      防止 MEXC 事故复发。任何文章页 / 评测页 / 通用内容页里出现 PROS / SEC / GAS / APE
+      防止 某加密交易所行业案例复发。任何文章页 / 评测页 / 通用内容页里出现 PROS / SEC / GAS / APE
       等 ticker 时，必须经过上下文消歧义；不允许自动 ticker widget / relatedLink / 行情卡
       在错误上下文中渲染。
 
       影响频道：/news/*, /cointalk/*, /questions/*, /learn/*, /support/*
-    tags: [platform-critical, ticker, mexc-incident, web3-specific]
+    tags: [platform-critical, ticker, case-exchange-incident, web3-specific]
     human_review_required: true
 
   - id: platform.web3.ticker-must-be-linked
@@ -141,7 +141,7 @@ rules:
       fn: detectors.schema.related_link_topic_match
       inputs: [jsonld, page_topic_classification]
     platform_business_impact: |
-      事故复盘：MEXC 页面的 schema relatedLink 指向 PROS 价格页，但页面主题是 Techsslaash 评测。
+      事故复盘：案例页面的 schema relatedLink 指向 PROS 价格页，但页面主题是 Techsslaash 评测。
       schema relatedLink 必须与页面主题语义一致。
-    tags: [platform-critical, schema, mexc-incident]
+    tags: [platform-critical, schema, case-exchange-incident]
     human_review_required: true

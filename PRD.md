@@ -17,7 +17,7 @@
 
 ### 1.1 触发事件
 
-Platform 已经被 Google 人工处置过一次（MEXC 页面 + 原始来源 BlockchainReporter 转载事故）。事故复盘暴露了 7 类系统性问题：
+Platform 已经被 Google 人工处置过一次（案例页面 + 原始来源 原始来源媒体 转载事故）。事故复盘暴露了 7 类系统性问题：
 
 1. 转载内容缺少足够原创增量
 2. 自动识别 ticker 导致主题错配（PROS / Pharos 案例）
@@ -53,7 +53,7 @@ Platform 已经被 Google 人工处置过一次（MEXC 页面 + 原始来源 Blo
 - 防风险闭环：单页审核 + 发布前卡审 + 修复 patch 生成
 - 多平台规则库初始化（5 个平台）
 - 规则同步管道运转（每日 pull + 自动更新）
-- Platform 专属规则库初始化（含 MEXC 事故案例）
+- Platform 专属规则库初始化（含 某加密交易所行业案例案例）
 - 5 个 golden fixture + 测试覆盖
 
 ### 2.2 V2 目标（再 4-6 周）
@@ -84,9 +84,9 @@ Platform 已经被 Google 人工处置过一次（MEXC 页面 + 原始来源 Blo
 | 3 | 多源真实抓取 + Cloaking 检测 | 核心 | 防 Googlebot 看到错版本 |
 | 4 | Pre-publish Gate（Final Verdict）| 风控 | 上线前卡审 |
 | 5 | 决策闭环 + 修复 patch | 风控 | 不只检测还给改法 |
-| 6 | Google 算法对标 + 死亡案例库 | 风控 | MEXC 事故沉淀 |
+| 6 | Google 算法对标 + 死亡案例库 | 风控 | 某加密交易所行业案例沉淀 |
 | 7 | 矩阵视角 + Cannibalization 合并建议 | 增长 | 工具页矩阵闭环 |
-| 8 | 竞品深度情报快照 | 增长 | 对标 MEXC/Bybit/OKX |
+| 8 | 竞品深度情报快照 | 增长 | 对标 某加密交易所案例/Bybit/OKX |
 | 9 | GEO（Generative Engine Optimization）| AI | 2026 新流量入口 |
 | 10 | API/工具链集成核心（GSC/CrUX/Cloudflare/Slack）| 基础 | 数据通路 |
 | 11 | 组织级知识沉淀 + 自进化 | 基础 | 护城河起点 |
@@ -132,7 +132,7 @@ Platform 已经被 Google 人工处置过一次（MEXC 页面 + 原始来源 Blo
 | F3 | Error / Retry / Degrade | ✅ | — | 失败重试 + 降级 + 熔断 |
 | F4 | Secrets / Auth 统一 | ✅ | — | 多平台凭证管理 |
 | F5 | Observability / Tracing | ✅ | — | trace ID + agent 耗时 + LLM 日志 |
-| F6 | Testing / Fixture（含 MEXC golden）| ✅ | — | 硬规则单测 + LLM snapshot test |
+| F6 | Testing / Fixture（含 某加密交易所案例 golden）| ✅ | — | 硬规则单测 + LLM snapshot test |
 | F7 | Feedback Loop（自进化数据通路）| ✅ | — | 用户标注 → rules/ 自动更新 |
 | F8 | 规则同步管道（Rule Sync Pipeline）| ✅ | — | 每日 pull + LLM 提取 + 自动 PR |
 | F9 | 平台路由层（Platform Router）| ✅ | — | 按语言版本路由到对应规则集 |
@@ -270,7 +270,7 @@ Output Layer（MD / HTML / JSON / Slack / Git PR）
 │   ├── platform/
 │   │   ├── pros-ticker-blacklist.yaml
 │   │   ├── fintech-compliance.yaml
-│   │   ├── google-action-history.md   # MEXC 案例 + 后续积累
+│   │   ├── google-action-history.md   # 某加密交易所案例 案例 + 后续积累
 │   │   ├── seo-final-review-rules.yaml
 │   │   └── sensitive-tickers.yaml
 │   ├── platforms/
@@ -304,7 +304,7 @@ Output Layer（MD / HTML / JSON / Slack / Git PR）
 ├── snapshots/                        # 时间维度全量快照
 ├── cache/                            # 抓取缓存
 ├── fixtures/                         # Golden test fixtures
-│   ├── mexc-incident.html            # MEXC 事故页（V1 必备）
+│   ├── case-exchange-incident.html            # 某加密交易所行业案例页（V1 必备）
 │   ├── good-tools-page.html
 │   ├── bad-hreflang.html
 │   ├── cloaking-suspect.html
@@ -360,13 +360,13 @@ Output Layer（MD / HTML / JSON / Slack / Git PR）
 - [ ] `gate <md>` 能阻止有问题的 commit
 - [ ] `compare <urls>` 能输出 HTML 仪表盘
 - [ ] `watch <site>` 能跑周报
-- [ ] 5 个 golden fixture 全部能复现已知问题（含 MEXC 事故页）
+- [ ] 5 个 golden fixture 全部能复现已知问题（含 某加密交易所行业案例页）
 - [ ] 5 个平台规则库各有至少 10 条规则
 - [ ] 规则同步管道能每日自动跑
 
 **质量验收：**
 
-- [ ] MEXC 事故 7 类问题 100% 被检出
+- [ ] 某加密交易所行业案例 7 类问题 100% 被检出
 - [ ] 单页审核成本 < $0.02
 - [ ] 单页审核耗时 < 30 秒
 - [ ] Prompt Caching 命中率 ≥ 80%
@@ -469,7 +469,7 @@ Output Layer（MD / HTML / JSON / Slack / Git PR）
 
 ### 13.2 V1 不能降级的硬要求
 
-1. MEXC 事故 7 类问题 100% 检出
+1. 某加密交易所行业案例 7 类问题 100% 检出
 2. Pre-publish Gate blocker 机制
 3. raw HTML vs rendered DOM 的 JSON-LD/Schema 差异检测
 4. ticker 上下文判断（防 PROS 案例）

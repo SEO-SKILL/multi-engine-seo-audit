@@ -53,7 +53,7 @@ fields:
       - naver-search-advisor    # Naver Search Advisor 官方
       - yandex-webmaster        # Yandex Webmaster 官方
       - llm-engine-docs         # LLM 引擎官方文档（OpenAI/Anthropic/Perplexity）
-      - industry-incident       # 行业事故案例（MEXC/Bybit/KuCoin 等）
+      - industry-incident       # 行业事故案例（某加密交易所案例/Bybit/KuCoin 等）
       - third-party-research    # 第三方研究（仅作 alert，不作硬规则）
       - internal-llm-extraction # LLM 提取（需人工 review 后才能 promote）
 

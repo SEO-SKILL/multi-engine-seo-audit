@@ -36,9 +36,9 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 
 ### 2. Cross-domain canonical（跨域）
 
-⚠️ **MEXC 事故核心**：当 Platform 转载第三方文章时，必须 canonical 到原文。
+⚠️ **某加密交易所行业案例核心**：当 Platform 转载第三方文章时，必须 canonical 到原文。
 ```html
-<!-- Platform /news/some-news 转载 BlockchainReporter -->
+<!-- Platform /news/some-news 转载 原始来源媒体 -->
 <link rel="canonical" href="https://blockchainreporter.net/the-original">
 ```
 
@@ -67,7 +67,7 @@ Google 看到同一内容多个 URL（http/https / www/non-www / 大小写 / 参
 
 ---
 
-## 四、Canonical 常见错误（MEXC 事故同类）
+## 四、Canonical 常见错误（某加密交易所行业案例同类）
 
 ### 错误 1：CSR 注入 canonical
 ```javascript
@@ -98,9 +98,9 @@ Google 可能只跟随 1 跳。直接 canonical 到最终版。
 <meta name="robots" content="noindex">
 ```
 
-### 错误 4：Self-canonical on 转载内容（MEXC 事故 L01）
+### 错误 4：Self-canonical on 转载内容（某加密交易所行业案例 L01）
 ```html
-<!-- Platform /news/some-article 转载 BlockchainReporter -->
+<!-- Platform /news/some-article 转载 原始来源媒体 -->
 <!-- ❌ 错误：self-canonical 但内容是转载 -->
 <link rel="canonical" href="https://example.com/news/some-article">
 ```
@@ -139,7 +139,7 @@ Google 选择哪个不确定 → 信号弱。
 | 规则 | 检测什么 |
 |---|---|
 | `google.canonical.missing` | canonical 完全缺失 |
-| `google.canonical.self-canonical-on-republished` | 转载页 self-canonical（MEXC 事故同类）|
+| `google.canonical.self-canonical-on-republished` | 转载页 self-canonical（某加密交易所行业案例同类）|
 | `google.canonical.chain-too-long` | canonical 跳链 > 1 |
 | `google.canonical.points-to-noindex` | canonical 指向 noindex 页 |
 | `google.canonical.disagrees-with-google` | GSC 显示 Google 选定的 canonical 与我们声明不同 |
@@ -151,4 +151,4 @@ Google 选择哪个不确定 → 信号弱。
 ## 七、与 Will 知识库的关系
 
 Will `12-canonical规范化.md` 是 Google 文档的中文版。
-我们这版 = Will 内容 + Platform 频道级实操 + MEXC 事故案例对照 + 可执行规则 ID。
+我们这版 = Will 内容 + Platform 频道级实操 + 某加密交易所行业案例案例对照 + 可执行规则 ID。

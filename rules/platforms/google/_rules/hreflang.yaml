@@ -1,6 +1,6 @@
 # Google hreflang 一致性规则
 # 创建：2026-06-10
-# 对标 MEXC 事故 L03：hreflang + robots + canonical 信号冲突
+# 对标 某加密交易所行业案例 L03：hreflang + robots + canonical 信号冲突
 
 file_version: "1.0"
 file_purpose: "hreflang 配置一致性、可抓取性、语言匹配检测"
@@ -36,9 +36,9 @@ rules:
       positive: fixtures/bad-hreflang-404.html
       negative: fixtures/good-hreflang.html
     platform_business_impact: |
-      MEXC 事故 L03：alternate 返回 404 → Google 忽略整组 hreflang。
+      某加密交易所行业案例 L03：alternate 返回 404 → Google 忽略整组 hreflang。
       所有 alternate 必须真实存在且可访问。
-    tags: [platform-critical, hreflang, mexc-incident]
+    tags: [platform-critical, hreflang, case-exchange-incident]
 
   - id: google.hreflang.alternate-blocked-by-robots
     source: platform-incident
@@ -57,9 +57,9 @@ rules:
       auto_apply: false
       requires_review: true
     platform_business_impact: |
-      MEXC 事故 L03 核心：hreflang 输出了 `/bg-BG/news/1057200`，
+      某加密交易所行业案例 L03 核心：hreflang 输出了 `/bg-BG/news/1057200`，
       但 robots.txt 禁止 `/bg-BG/news/*`。Google 看到这种矛盾会忽略 hreflang。
-    tags: [platform-critical, hreflang, robots, mexc-incident]
+    tags: [platform-critical, hreflang, robots, case-exchange-incident]
     human_review_required: true
 
   - id: google.hreflang.language-mismatch
@@ -82,7 +82,7 @@ rules:
       prompt_template: prompts/hreflang_language_judge.md
       model: haiku
     platform_business_impact: |
-      MEXC 事故 L03 子问题：部分 alternate 声明是 `en-TR` 但内容是英文（不是土耳其语）。
+      某加密交易所行业案例 L03 子问题：部分 alternate 声明是 `en-TR` 但内容是英文（不是土耳其语）。
       hreflang 必须真实反映 alternate 页面的语言。
     tags: [hreflang, localization-quality]
 

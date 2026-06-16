@@ -35,7 +35,7 @@ description: Platform 专属的 SEO 风控 + 增长决策中台。防 Google 人
 - **租户**：Platform（单租户，架构留多租户 hook）
 - **域名**：example.com
 - **语言**：en, zh-CN, ja, ko, vi, tr, pt, es, ru
-- **竞品**：MEXC / WEEX / Binance / Bybit / OKX / CoinGlass
+- **竞品**：某加密交易所案例 / WEEX / Binance / Bybit / OKX / CoinGlass
 - **合规区域**：US-SEC / EU-MiCA / SG-MAS / JP-JFSA / HK-SFC
 
 ## 协作方式

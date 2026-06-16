@@ -1,7 +1,7 @@
 # Google Manual Actions 预防规则集
 # 创建：2026-06-10
 # 来源：https://support.google.com/webmasters/answer/9044175?hl=zh-Hans
-# 战略价值：⭐⭐⭐ Platform 2026-Q1 MEXC 事故防复发核心
+# 战略价值：⭐⭐⭐ Platform 2026-Q1 某加密交易所行业案例防复发核心
 
 file_version: "1.0"
 file_purpose: "针对 Google 18 类人工处置措施的预防 + 检测规则"
@@ -15,13 +15,13 @@ source_doc:
 manual_action_types:
   pure_spam: 严重网络垃圾 — 全站影响
   hacked_content: 被黑网页 — 安全问题
-  thin_content: 内容贫乏 — 通常 MEXC L01 同类
+  thin_content: 内容贫乏 — 通常 某加密交易所案例 L01 同类
   cloaking_or_deceptive_redirect: 伪装/欺骗性重定向 — 全站风险
   unnatural_inbound_links: 指向你的非自然链接
   unnatural_outbound_links: 你站发出的非自然链接
   user_generated_spam: 用户生成垃圾内容
   third_party_spam: 第三方垃圾内容大量充斥
-  structured_data_violation: 结构化数据违规（MEXC L04 类）
+  structured_data_violation: 结构化数据违规（某加密交易所案例 L04 类）
   hidden_text_keyword_stuffing: 隐藏文字/关键字堆砌
   cloaked_images: 伪装真实内容的图片
   deceptive_mobile_redirects: 欺骗性移动重定向
@@ -31,7 +31,7 @@ manual_action_types:
 
 rules:
 
-  # === 第 1 大类：内容贫乏类（MEXC L01 同源最高风险）===
+  # === 第 1 大类：内容贫乏类（某加密交易所案例 L01 同源最高风险）===
   - id: google.manual-action.thin-content-doorway
     source: google-spam-policy
     source_url: https://support.google.com/webmasters/answer/9044175
@@ -54,9 +54,9 @@ rules:
           - 自动生成无价值文字
     patch_hint: {template: patches/thin_content_remediation.md.j2, priority: P0, requires_review: true}
     platform_business_impact: |
-      MEXC 事故 L01 同类风险。Platform /news 转载、模板化币种页都要严格检查。
+      某加密交易所行业案例 L01 同类风险。Platform /news 转载、模板化币种页都要严格检查。
       触发 = Google 立即人工处置 + 全站权重下降。
-    tags: [manual-action, thin-content, mexc-related]
+    tags: [manual-action, thin-content, case-exchange-related]
     human_review_required: true
 
   # === 第 2 大类：Cloaking ===
@@ -235,7 +235,7 @@ rules:
       Will 知识库已强调（参考 disclosure rules）。
     tags: [manual-action, links, outbound, disclosure]
 
-  # === 第 7 大类：结构化数据违规（MEXC L04 同源）===
+  # === 第 7 大类：结构化数据违规（某加密交易所案例 L04 同源）===
   - id: google.manual-action.structured-data-policy-violation
     source: google-spam-policy
     severity: blocker
@@ -248,9 +248,9 @@ rules:
       fn: detectors.schema.field_grounding
       inputs: [jsonld_parsed, visible_text]
     platform_business_impact: |
-      MEXC 事故 L04 同源。AggregateRating 无对应可见评分 / Schema 字段虚假。
+      某加密交易所行业案例 L04 同源。AggregateRating 无对应可见评分 / Schema 字段虚假。
       触发结构化数据 manual action。
-    tags: [manual-action, schema, mexc-related, blocker]
+    tags: [manual-action, schema, case-exchange-related, blocker]
     human_review_required: true
 
   - id: google.manual-action.schema-misclassification

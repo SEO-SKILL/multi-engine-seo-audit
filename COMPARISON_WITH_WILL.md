@@ -80,7 +80,7 @@ fixtures:
   negative: fixtures/good-ssr-page.html
 platform_business_impact: |
   影响所有依赖 SSR/CSR 的页面，特别是 /price/*, /how-to-buy/*, /tools/*
-  MEXC 事故 L04 同源问题
+  某加密交易所行业案例 L04 同源问题
 ```
 
 **结论**：Will 的规则是给人看的，我们的规则是给机器跑的。
@@ -106,7 +106,7 @@ Will 在 `01-帮助性内容与E-E-A-T.md` 已经对齐 Platform 频道：
 1. **Cloaking 检测**：多 UA 抓取 diff → Googlebot 与真实用户看到不同内容
 2. **Cannibalization 检测**：同关键词多页面相争 + 合并建议
 3. **GEO（Generative Engine Optimization）**：llms.txt / answerable chunks / 跨 LLM 引用率
-4. **Schema 真实性校验**：不只是字段对不对，是字段对不对应可见内容（MEXC 事故 L04）
+4. **Schema 真实性校验**：不只是字段对不对，是字段对不对应可见内容（某加密交易所行业案例 L04）
 5. **Web3-specific**：Ticker 消歧义 / 合约地址识别 / 链名识别
 6. **竞品对比**：6 家快照 + diff 引擎 + HTML 仪表盘
 7. **Brand SEO Score**：0-100 综合健康分（CEO/CMO 单数字指标）
@@ -212,7 +212,7 @@ Will 切换过来不用学新东西。
 
 让 Will 验证我们 skill 比他强，跑这 5 个测试：
 
-### 测试 1：MEXC 事故页能否检出 7 类问题
+### 测试 1：某加密交易所行业案例页能否检出 7 类问题
 
 - Will 用知识库对照 → 能检出
 - 我们 skill → 必须自动检出（fixture 强制）

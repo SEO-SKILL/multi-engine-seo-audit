@@ -10,7 +10,7 @@ from typing import Any
 SKILL_ROOT = Path(__file__).parent
 
 
-# 30+ 详细修复指南（高频 + MEXC 事故 + 跨平台）
+# 30+ 详细修复指南（高频 + 某加密交易所行业案例 + 跨平台）
 FIX_GUIDES: dict[str, dict] = {
 
     # ========== Canonical (4 条) ==========
@@ -35,8 +35,8 @@ FIX_GUIDES: dict[str, dict] = {
     },
 
     "google.canonical.self-canonical-on-republished": {
-        "issue": "转载第三方文章但 canonical 指向自己（MEXC 事故 L01 同类）",
-        "why": "Google 对金融转载内容看 E-E-A-T。self-canonical 转载 = Google 判定低增量 = 触发人工处置（参考 MEXC 2026-Q1）。",
+        "issue": "转载第三方文章但 canonical 指向自己（某加密交易所行业案例 L01 同类）",
+        "why": "Google 对金融转载内容看 E-E-A-T。self-canonical 转载 = Google 判定低增量 = 触发人工处置（参考 某加密交易所案例 2026-Q1）。",
         "steps": [
             {"title": "Step 1（推荐）: cross-domain canonical 到原文",
              "code_before": "<link rel='canonical' href='https://example.com/news/X'>",
@@ -48,14 +48,14 @@ FIX_GUIDES: dict[str, dict] = {
         ],
         "verify": "重审后 republished-content-low-increment finding 消失", "effort_minutes": 120,
         "related": ["platform.l01.republished-content-low-increment", "google.eeat.author-attribution-missing"],
-        "references": [{"label": "Platform MEXC 事故复盘", "url": "rules/platform/google-action-history.md"}],
+        "references": [{"label": "Platform 某加密交易所行业案例复盘", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "防 Google 人工处置 / Brand SEO Score +20+",
     },
 
     # ========== E-E-A-T (5 条) ==========
     "google.eeat.author-attribution-missing": {
         "issue": "缺作者署名（meta[name=author] / JSON-LD author / 可见 byline 全无）",
-        "why": "YMYL 金融内容缺作者 = 来源不可追溯 = 永远不进 SERP 前 10。MEXC 事故起因之一就是移除原作者 Max Clark。",
+        "why": "YMYL 金融内容缺作者 = 来源不可追溯 = 永远不进 SERP 前 10。某加密交易所行业案例起因之一就是移除原作者署名。",
         "steps": [
             {"title": "Step 1: <head> 加 meta author",
              "code_after": "<meta name='author' content='Platform Research Team'>", "language": "html"},
@@ -118,8 +118,8 @@ FIX_GUIDES: dict[str, dict] = {
 
     # ========== Schema (4 条) ==========
     "google.schema.jsonld-csr-only": {
-        "issue": "JSON-LD 仅 CSR 渲染（raw HTML 无）— MEXC 事故 L04 同类",
-        "why": "Googlebot 抓 raw HTML 时可能看不到 JSON-LD。MEXC 事故就是这样触发 manual action 的。",
+        "issue": "JSON-LD 仅 CSR 渲染（raw HTML 无）— 某加密交易所行业案例 L04 同类",
+        "why": "Googlebot 抓 raw HTML 时可能看不到 JSON-LD。某加密交易所行业案例就是这样触发 manual action 的。",
         "steps": [
             {"title": "Step 1: JSON-LD 必须 SSR 输出",
              "code_before": "// 仅 JS 注入 - 错\nwindow.addEventListener('DOMContentLoaded', () => {\n  const s = document.createElement('script');\n  s.type = 'application/ld+json';\n  s.textContent = '...';\n  document.head.appendChild(s);\n});",
@@ -130,12 +130,12 @@ FIX_GUIDES: dict[str, dict] = {
         ],
         "verify": "schema composite ssr_not_csr_only 应为 1.0", "effort_minutes": 90,
         "related": ["google.schema.field-not-grounded-in-visible-content"],
-        "references": [{"label": "MEXC 事故复盘", "url": "rules/platform/google-action-history.md"}],
+        "references": [{"label": "某加密交易所行业案例复盘", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "防 manual action / schema composite +0.25",
     },
 
     "google.schema.field-not-grounded-in-visible-content": {
-        "issue": "JSON-LD 字段与可见内容不一致（MEXC 事故 L04）— 如 AggregateRating 但页面无评分组件",
+        "issue": "JSON-LD 字段与可见内容不一致（某加密交易所行业案例 L04）— 如 AggregateRating 但页面无评分组件",
         "why": "Google 政策：schema 字段必须对应可见内容。虚假 schema = 结构化数据人工处置高危。",
         "steps": [
             {"title": "Step 1: 列出所有 schema 字段并核对可见内容",
@@ -144,7 +144,7 @@ FIX_GUIDES: dict[str, dict] = {
              "code_before": '"aggregateRating": {"ratingValue": "4.8", "reviewCount": "10234"}\n// 但页面无评分组件',
              "code_after": '// 直接删除 aggregateRating\n// 或：添加真实可见评分组件', "language": "json"},
             {"title": "Step 3: copyrightNotice 邮箱与 footer 一致",
-             "note": "MEXC 事故子问题：copyrightNotice.email = legal@mexc.com 但 footer 显示 support@mexc.com"},
+             "note": "某加密交易所行业案例子问题：copyrightNotice.email = legal@example.com 但 footer 显示 support@example.com"},
         ],
         "verify": "schema composite aggregaterating_grounded = 1.0", "effort_minutes": 45,
         "related": ["google.schema.aggregaterating-without-review-component", "google.schema.copyrightnotice-inconsistent"],
@@ -152,8 +152,8 @@ FIX_GUIDES: dict[str, dict] = {
     },
 
     "google.schema.relatedlink-topic-mismatch": {
-        "issue": "schema relatedLink 主题与页面无关（MEXC 事故 L02 同类）",
-        "why": "MEXC 事故：文章讲 Techsslaash 评测，但 schema relatedLink 指向 PROS 价格页。Google 视为操纵关联。",
+        "issue": "schema relatedLink 主题与页面无关（某加密交易所行业案例 L02 同类）",
+        "why": "某加密交易所行业案例：文章讲 Techsslaash 评测，但 schema relatedLink 指向 PROS 价格页。Google 视为操纵关联。",
         "steps": [
             {"title": "Step 1: 删除主题不符的 relatedLink",
              "code_before": '"relatedLink": ["/price/PROS", "/trade/PROS_USDT"]\n// 但文章讲 Techsslaash 评测',
@@ -177,8 +177,8 @@ FIX_GUIDES: dict[str, dict] = {
 
     # ========== hreflang (3 条) ==========
     "google.hreflang.alternate-blocked-by-robots": {
-        "issue": "hreflang alternate URL 被 robots.txt 禁止（MEXC 事故 L03）",
-        "why": "MEXC 事故核心：alternate `/bg-BG/news/X` 在 hreflang 中，但 robots.txt 禁止 `/bg-BG/news/*`。Google 看到矛盾 → 忽略整组 hreflang。",
+        "issue": "hreflang alternate URL 被 robots.txt 禁止（某加密交易所行业案例 L03）",
+        "why": "某加密交易所行业案例核心：alternate `/bg-BG/news/X` 在 hreflang 中，但 robots.txt 禁止 `/bg-BG/news/*`。Google 看到矛盾 → 忽略整组 hreflang。",
         "steps": [
             {"title": "Step 1: 列出 hreflang alternate 中被 robots 禁止的 URL",
              "command": "curl -s SITE/robots.txt\n# 对照 HTML 中所有 hreflang alternate URL"},
@@ -187,7 +187,7 @@ FIX_GUIDES: dict[str, dict] = {
         ],
         "verify": "hreflang-alternate-blocked-by-robots finding 消失", "effort_minutes": 30,
         "related": ["google.hreflang.alternate-returns-404", "google.hreflang.language-mismatch"],
-        "references": [{"label": "MEXC 事故 L03", "url": "rules/platform/google-action-history.md"}],
+        "references": [{"label": "某加密交易所行业案例 L03", "url": "rules/platform/google-action-history.md"}],
         "expected_impact": "9 语言版本恢复 hreflang 信号 / 跨语言流量 +10-15%",
     },
 
@@ -246,10 +246,10 @@ FIX_GUIDES: dict[str, dict] = {
         "expected_impact": "防 YMYL 降权 / 合规风险",
     },
 
-    # ========== Platform MEXC 事故规则 (3 条) ==========
+    # ========== Platform 某加密交易所行业案例规则 (3 条) ==========
     "platform.l02.ticker-context-mismatch": {
-        "issue": "Ticker 在错配上下文中（MEXC 事故 L02 — PROS / Pharos 案例）",
-        "why": "MEXC 事故核心：文章标题含 'Pros and Cons'，自动识别成 Pharos PROS 代币，触发 ticker widget / relatedLink。Google 判定主题污染。",
+        "issue": "Ticker 在错配上下文中（某加密交易所行业案例 L02 — PROS / Pharos 案例）",
+        "why": "某加密交易所行业案例核心：文章标题含 'Pros and Cons'，自动识别成 Pharos PROS 代币，触发 ticker widget / relatedLink。Google 判定主题污染。",
         "steps": [
             {"title": "Step 1: 移除上下文不符的 ticker widget",
              "code_before": '<!-- 文章讲 "Pros and Cons" 但插了 PROS 代币行情 -->\n<div class="ticker-widget" data-symbol="PROS">\n  <span>PROS Price: $0.42</span>\n  <a href="/trade/PROS_USDT">Buy PROS Now</a>\n</div>',
@@ -260,15 +260,15 @@ FIX_GUIDES: dict[str, dict] = {
              "code_before": '"relatedLink": ["/price/PROS", "/trade/PROS_USDT"]',
              "code_after": '// 删除 PROS 相关 link'},
         ],
-        "verify": "ticker-context-mismatch 消失 + 跑 MEXC golden fixture", "effort_minutes": 60,
+        "verify": "ticker-context-mismatch 消失 + 跑 某加密交易所案例 golden fixture", "effort_minutes": 60,
         "related": ["platform.l02.related-link-schema-pollution", "google.schema.relatedlink-topic-mismatch"],
-        "references": [{"label": "MEXC 事故完整复盘", "url": "rules/platform/google-action-history.md"}],
-        "expected_impact": "防 MEXC 事故复发（最高战略价值）",
+        "references": [{"label": "某加密交易所行业案例完整复盘", "url": "rules/platform/google-action-history.md"}],
+        "expected_impact": "防 某加密交易所行业案例复发（最高战略价值）",
     },
 
     "platform.l01.republished-content-low-increment": {
-        "issue": "转载内容原创增量 < 20%（MEXC 事故 L01）",
-        "why": "MEXC 事故：转载 BlockchainReporter，self-canonical，移除作者 bio + FAQ + 目录 = 低增量 = manual action。",
+        "issue": "转载内容原创增量 < 20%（某加密交易所行业案例 L01）",
+        "why": "某加密交易所行业案例：转载 原始来源媒体，self-canonical，移除作者 bio + FAQ + 目录 = 低增量 = manual action。",
         "steps": [
             {"title": "Option A: cross-domain canonical 到原文",
              "code_after": "<link rel='canonical' href='https://original-source.com/article'>"},
@@ -282,8 +282,8 @@ FIX_GUIDES: dict[str, dict] = {
     },
 
     "platform.l05.tagging-topic-mismatch": {
-        "issue": "页面标签与正文主题不符（MEXC 事故 L05）",
-        "why": "MEXC 事故：页面标签 SEC/Lending，但正文是 AI/Fintech/Creator。标签把页面塞错主题簇，削弱站点架构。",
+        "issue": "页面标签与正文主题不符（某加密交易所行业案例 L05）",
+        "why": "某加密交易所行业案例：页面标签 SEC/Lending，但正文是 AI/Fintech/Creator。标签把页面塞错主题簇，削弱站点架构。",
         "steps": [
             {"title": "Step 1: 用 LLM 重新分类正文主题",
              "command": "uv run python3 -c 'from agents.semantic import classify_topic; print(classify_topic(html))'"},
@@ -520,8 +520,8 @@ def _auto_generate(finding: dict) -> dict:
         impact_lines.append("YMYL 金融类内容 — 直接影响排名")
     if "schema" in tags:
         impact_lines.append("结构化数据 — 富结果资格 / Schema manual action 风险")
-    if "mexc-incident" in tags or "mexc-critical" in tags:
-        impact_lines.append("⚠️ MEXC 事故同源风险 — 立即处理")
+    if "case-exchange-incident" in tags or "case-exchange-critical" in tags:
+        impact_lines.append("⚠️ 某加密交易所行业案例同源风险 — 立即处理")
     if "blocker" in tags:
         impact_lines.append("BLOCKER 级 — 不可上线")
     if "naver-critical" in tags:

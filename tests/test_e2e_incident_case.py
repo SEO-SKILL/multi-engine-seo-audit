@@ -1,4 +1,4 @@
-"""E2E 测试：MEXC 事故 fixture 必须能检出 7 类问题（已实现版）"""
+"""E2E 测试：某加密交易所行业案例 fixture 必须能检出 7 类问题（已实现版）"""
 import asyncio
 import sys
 from pathlib import Path
@@ -19,7 +19,7 @@ async def _audit_fixture(fixture_html: str, simulate_csr: bool = False, locale: 
     if simulate_csr:
         # 模拟 CSR：raw_html 无 JSON-LD，rendered_html 有
         raw_html = fixture_html
-        injected_jsonld = '<script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"MEXC News","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"10234"}}</script>'
+        injected_jsonld = '<script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"某加密交易所案例 News","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"10234"}}</script>'
         rendered_html = fixture_html.replace("</body>", injected_jsonld + "</body>")
     else:
         raw_html = fixture_html
@@ -48,30 +48,30 @@ async def _audit_fixture(fixture_html: str, simulate_csr: bool = False, locale: 
     return findings
 
 
-def test_mexc_fixture_detects_blocker_pros_ticker(mexc_incident_html: str):
-    """MEXC 事故页必须检出 PROS ticker 错配（blocker）"""
-    findings = asyncio.run(_audit_fixture(mexc_incident_html, simulate_csr=True))
+def test_case-exchange_fixture_detects_blocker_pros_ticker(case-exchange_incident_html: str):
+    """某加密交易所行业案例页必须检出 PROS ticker 错配（blocker）"""
+    findings = asyncio.run(_audit_fixture(case-exchange_incident_html, simulate_csr=True))
     assert "platform.l02.ticker-context-mismatch" in findings, \
-        f"MEXC fixture should detect PROS misidentification, got: {findings}"
+        f"某加密交易所案例 fixture should detect PROS misidentification, got: {findings}"
 
 
-def test_mexc_fixture_detects_csr_only_jsonld(mexc_incident_html: str):
-    """MEXC 事故页必须检出 JSON-LD CSR-only (MEXC L04)"""
-    findings = asyncio.run(_audit_fixture(mexc_incident_html, simulate_csr=True))
+def test_case-exchange_fixture_detects_csr_only_jsonld(case-exchange_incident_html: str):
+    """某加密交易所行业案例页必须检出 JSON-LD CSR-only (某加密交易所案例 L04)"""
+    findings = asyncio.run(_audit_fixture(case-exchange_incident_html, simulate_csr=True))
     assert "google.schema.jsonld-csr-only" in findings, \
-        f"MEXC fixture should detect CSR-only JSON-LD, got: {findings}"
+        f"某加密交易所案例 fixture should detect CSR-only JSON-LD, got: {findings}"
 
 
-def test_mexc_fixture_detects_publication_date_missing(mexc_incident_html: str):
-    """MEXC 事故页缺日期 (E-E-A-T)"""
-    findings = asyncio.run(_audit_fixture(mexc_incident_html, simulate_csr=True))
+def test_case-exchange_fixture_detects_publication_date_missing(case-exchange_incident_html: str):
+    """某加密交易所行业案例页缺日期 (E-E-A-T)"""
+    findings = asyncio.run(_audit_fixture(case-exchange_incident_html, simulate_csr=True))
     assert "google.eeat.publication-date-missing-or-stale" in findings, \
-        f"MEXC fixture should detect missing dates, got: {findings}"
+        f"某加密交易所案例 fixture should detect missing dates, got: {findings}"
 
 
-def test_mexc_fixture_minimum_findings(mexc_incident_html: str):
-    """MEXC 事故页至少应检出 4 个 finding（多类问题）"""
-    findings = asyncio.run(_audit_fixture(mexc_incident_html, simulate_csr=True))
+def test_case-exchange_fixture_minimum_findings(case-exchange_incident_html: str):
+    """某加密交易所行业案例页至少应检出 4 个 finding（多类问题）"""
+    findings = asyncio.run(_audit_fixture(case-exchange_incident_html, simulate_csr=True))
     assert len(findings) >= 4, f"Expected ≥ 4 findings, got {len(findings)}: {findings}"
 
 

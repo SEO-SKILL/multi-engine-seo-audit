@@ -8,14 +8,14 @@
 
 ## 一句话总结
 
-**单日内交付一套**比市面任何工具都覆盖更广 + 比 Will 团队 SEO 知识库更可执行的「SEO 风控 + 增长决策中台」，**直接对标 MEXC 事故 7 类问题 100% 覆盖**，并已在 example.com / example.com 实跑通过。
+**单日内交付一套**比市面任何工具都覆盖更广 + 比 Will 团队 SEO 知识库更可执行的「SEO 风控 + 增长决策中台」，**直接对标 某加密交易所行业案例 7 类问题 100% 覆盖**，并已在 example.com / example.com 实跑通过。
 
 ---
 
 ## 二、为什么做这件事
 
 ### 触发事件
-Platform 2026-Q1 经历 Google 人工处置（MEXC 转载页事件），暴露 7 类系统性问题：
+Platform 2026-Q1 经历 Google 人工处置（某加密交易所案例 转载页事件），暴露 7 类系统性问题：
 1. 转载内容缺原创增量
 2. Ticker 自动识别误关联（PROS / Pharos）
 3. hreflang / robots / canonical 冲突
@@ -47,7 +47,7 @@ Platform 2026-Q1 经历 Google 人工处置（MEXC 转载页事件），暴露 7
 | Integration 模块 | 6 个（GSC / CrUX / Cloudflare / Slack / Ahrefs / Anthropic） |
 | Self-Knowledge 文档 | 3 篇（helpful-content-eat / spam-policies-scale / ai-overview-eligibility） |
 | LLM Judge Prompts | 13 个 |
-| Golden Fixtures | 5 个（含 MEXC 事故页 fixture） |
+| Golden Fixtures | 5 个（含 某加密交易所行业案例页 fixture） |
 | Patch 修复模板 | 11 个 |
 | 单元测试 | **9 全通过** |
 
@@ -72,7 +72,7 @@ Platform 2026-Q1 经历 Google 人工处置（MEXC 转载页事件），暴露 7
 | Cross-LLM 验证 | 无 | Haiku/Sonnet/Opus 三家交叉 | **独有** |
 | Cloaking 检测 | 无 | 多 UA diff（Googlebot vs 真实用户） | **独有** |
 | Web3 专属 | 无 | Ticker 消歧义 / 合约地址识别 / DeFi 数据引用 | **独有** |
-| MEXC 事故覆盖 | 部分（事后总结） | **7/7 类问题硬规则全覆盖** | **完整** |
+| 某加密交易所行业案例覆盖 | 部分（事后总结） | **7/7 类问题硬规则全覆盖** | **完整** |
 
 ---
 
@@ -100,7 +100,7 @@ cron 每周
 
 ### Compare（竞品对比）
 ```
-拿 Platform URL + 6 家竞品（MEXC/WEEX/Binance/Bybit/OKX/CoinGlass）
+拿 Platform URL + 6 家竞品（某加密交易所案例/WEEX/Binance/Bybit/OKX/CoinGlass）
 ↓ 多 agent 并行检测
 ↓ HTML 仪表盘（橙白配色 + 左侧导航 + 滚动高亮）
 ```
@@ -109,11 +109,11 @@ cron 每周
 
 ## 六、实跑证据
 
-### 1. MEXC 事故页 Golden Fixture
+### 1. 某加密交易所行业案例页 Golden Fixture
 
 ```
 $ uv run python3 -c "..."
-=== Total Findings on MEXC fixture: 5 ===
+=== Total Findings on 某加密交易所案例 fixture: 5 ===
 [blocker ] safety     → platform.l02.ticker-context-mismatch       ← PROS 误识别 ✅
 [high    ] technical  → google.schema.jsonld-csr-only           ← Schema CSR ✅
 [medium  ] technical  → google.eeat.publication-date-missing-or-stale

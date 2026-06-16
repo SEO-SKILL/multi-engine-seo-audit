@@ -53,7 +53,7 @@ rules:
       对 Platform 的 /learn /support /questions /crypto-review 频道必须严格执行。
       尤其交易策略 / 评测 / 风险讲解类，作者权威性直接影响 Google 排名。
 
-      MEXC 事故起因之一就是移除了原作者 Max Clark 的 bio。
+      某加密交易所行业案例起因之一就是移除了原作者 的 bio。
     tags: [eeat, ymyl, fintech]
 
   - id: google.eeat.first-hand-experience-missing
@@ -102,7 +102,7 @@ rules:
       auto_apply: yes_with_diff_preview
     platform_business_impact: |
       金融内容超过 12 个月未更新会被 Google 视为 stale。
-      日期必须 JSON-LD + 可见文本 + HTTP header 三处一致（MEXC 事故曾出现日期不一致）。
+      日期必须 JSON-LD + 可见文本 + HTTP header 三处一致（某加密交易所行业案例曾出现日期不一致）。
     tags: [eeat, freshness, ymyl]
 
   - id: google.eeat.fake-freshness-pattern
