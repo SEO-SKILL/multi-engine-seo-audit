@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import importlib
 import re
-from typing import Any
 from urllib.parse import urlparse
 
 from agents._schema import Evidence, Finding, FindingSource, Platform, Severity
@@ -22,7 +21,8 @@ TRIGGER_FIELDS_POSITIVE = [  # field=True 触发
     "suspect_keyword_stuffing", "suspect_ugc_spam", "first_5_misuse_lazy", "later_missing_lazy",
     "suspect_soft_404", "needs_pagination_handling", "suspicious", "spam_suspect", "spam_detected",
     "suspect_paid", "suspect_ai_generated", "suspect_auto_generated", "suspect_low_value",
-    "suspect_thin_promo", "suspect_code_spam", "missing_value_prop", "suspect_plagiarism_no_value_add",
+    "suspect_thin_promo", "suspect_code_spam", "missing_value_prop",
+    "suspect_plagiarism_no_value_add",
     "weak_trust", "weak_citation", "shallow_review", "topic_mismatch", "mixed_honorific_suspect",
     "mixed_script_suspect", "over_optimized", "discloses_non_registration",
     # Will 9 兜底
@@ -59,10 +59,7 @@ def _trigger(result: dict) -> bool:
     for f in TRIGGER_FIELDS_POSITIVE:
         if result.get(f):
             return True
-    for f in TRIGGER_FIELDS_NEGATIVE:
-        if f in result and not result[f]:
-            return True
-    return False
+    return any(f in result and not result[f] for f in TRIGGER_FIELDS_NEGATIVE)
 
 
 def _platform_from_rid(rid: str) -> Platform:
@@ -74,8 +71,11 @@ def _platform_from_rid(rid: str) -> Platform:
 
 
 def _severity(sev_str: str) -> Severity:
-    return {"blocker": Severity.BLOCKER, "high": Severity.HIGH, "medium": Severity.MEDIUM,
-            "low": Severity.LOW, "info": Severity.INFO}.get((sev_str or "low").lower(), Severity.LOW)
+    sev_map = {
+        "blocker": Severity.BLOCKER, "high": Severity.HIGH, "medium": Severity.MEDIUM,
+        "low": Severity.LOW, "info": Severity.INFO,
+    }
+    return sev_map.get((sev_str or "low").lower(), Severity.LOW)
 
 
 def _build_kwargs(inputs: list[str], ctx: dict) -> dict:
@@ -125,7 +125,7 @@ def _applies_to_passes(rule: dict, active_platforms: set[str], locale: str) -> b
     if isinstance(locs, str):
         locs = [locs]
     if locs:
-        loc_set = {str(l).lower().strip() for l in locs}
+        loc_set = {str(loc).lower().strip() for loc in locs}
         if "all" in loc_set or "" in loc_set:
             return True
         # locale 前缀匹配：rule[ko] 匹配 ko / ko-KR；rule[ko-KR] 严格
@@ -137,7 +137,7 @@ def _applies_to_passes(rule: dict, active_platforms: set[str], locale: str) -> b
 
 
 def _build_recommendation(rule: dict, result: dict) -> str:
-    """生成精确 recommendation：优先用规则定义的 patch_hint / 显式 recommendation，再 fallback platform_impact"""
+    """生成精确 recommendation：patch_hint / 显式 recommendation > tags > business_impact 兜底"""
     # 1. 显式 recommendation 字段
     if rule.get("recommendation"):
         return str(rule["recommendation"])[:300]
@@ -148,11 +148,11 @@ def _build_recommendation(rule: dict, result: dict) -> str:
     # 3. tags 反推一句话提示
     tags = rule.get("tags", []) or []
     if "manual-action-risk" in tags or "manual-action" in tags:
-        return f"⚠️ Manual Action 风险 — 立即修复（参考 source_doc）"
+        return "⚠️ Manual Action 风险 — 立即修复（参考 source_doc）"
     if "spam-policy" in tags:
-        return f"⚠️ Spam policy 违反 — 整改后申请复审"
+        return "⚠️ Spam policy 违反 — 整改后申请复审"
     if "ymyl" in tags or "compliance" in tags:
-        return f"⚠️ YMYL/合规底线 — 必须修复"
+        return "⚠️ YMYL/合规底线 — 必须修复"
     # 4. platform_impact 首段
     bi = (rule.get("business_impact") or "").strip()
     if bi:
@@ -161,8 +161,13 @@ def _build_recommendation(rule: dict, result: dict) -> str:
     return f"修复 {rule.get('id','此规则')}（详见规则定义）"
 
 
-def run_generic_detectors(rules: list[dict], ctx: dict, hooked_rule_ids: set[str],
-                          locale: str = "", active_platforms: set[str] | None = None) -> list[Finding]:
+def run_generic_detectors(
+    rules: list[dict],
+    ctx: dict,
+    hooked_rule_ids: set[str],
+    locale: str = "",
+    active_platforms: set[str] | None = None,
+) -> list[Finding]:
     """
     遍历 rules，对每条规则：
     1. 跳过已被 hook 的（避免重复）
@@ -233,7 +238,6 @@ def run_generic_detectors(rules: list[dict], ctx: dict, hooked_rule_ids: set[str
 def build_ctx(raw_html: str, rendered_dom: str, headers: dict, page_url: str,
               soup, jsonld_parsed: list, visible_text: str) -> dict:
     """构造 detector 通用 ctx — 覆盖大部分 inputs 名字"""
-    import re as _re
     # 提取常见 input
     images = []
     for img in soup.find_all("img"):
