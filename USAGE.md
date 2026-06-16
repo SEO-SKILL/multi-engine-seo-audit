@@ -41,13 +41,13 @@ open dist/
 
 1. **Launchpad 搜「SEO」** → 双击启动
 2. 等 splash 加载（~10 秒后自动弹主窗口）
-3. **菜单栏 → BYDFi SEO Audit → 设置 API Keys**（首次必须填）
+3. **菜单栏 → Multi-Engine SEO Audit → 设置 API Keys**（首次必须填）
 4. 顶部输入框填要审计的 URL → 选 locale → 点 🔍 一键深度诊断
 5. 或点 🚀 跑 BYDFi 8 核心页 一键批量
 
 ### API Key 在哪填
 
-App 菜单栏：BYDFi SEO Audit → **设置 API Keys...**（⌘ + ,）
+App 菜单栏：Multi-Engine SEO Audit → **设置 API Keys...**（⌘ + ,）
 
 向 Kelly 申请共享 key 或自己去 [console.anthropic.com](https://console.anthropic.com) 申请。
 

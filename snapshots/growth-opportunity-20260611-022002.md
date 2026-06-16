@@ -74,4 +74,4 @@
 | homepage-ja | https://example.com/ja | 78 | 上线 |
 
 ---
-*本报告由 Platform SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*
+*本报告由 Multi-Engine SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*

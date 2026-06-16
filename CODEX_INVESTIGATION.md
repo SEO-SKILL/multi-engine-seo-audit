@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill Phase 0 技术调研报告
+# Multi-Engine SEO Audit Skill Phase 0 技术调研报告
 
 > 日期：2026-06-10  
 > 范围：只做技术调研，不写实现代码。  

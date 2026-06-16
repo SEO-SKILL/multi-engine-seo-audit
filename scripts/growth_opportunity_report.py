@@ -180,7 +180,7 @@ def render_md(report: dict) -> str:
             out.append(f"| {r['label']} | {r['url']} | — | Error |")
         else:
             out.append(f"| {r['label']} | {r['url']} | {r.get('current_score', 0):.0f} | {r.get('verdict', '?')} |")
-    out.append("\n---\n*本报告由 Platform SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*")
+    out.append("\n---\n*本报告由 Multi-Engine SEO Audit Skill 自动生成。具体修复方案见 `PLATFORM_REMEDIATION_PLAN.md`。*")
     return "\n".join(out)
 
 

@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — V1 + V2 PRD
+# Multi-Engine SEO Audit Skill — V1 + V2 PRD
 
 > 版本：v1.0
 > 创建日期：2026-06-10

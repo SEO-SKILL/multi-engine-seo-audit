@@ -1,5 +1,5 @@
 """
-Platform SEO Audit — Web Dashboard v3
+Multi-Engine SEO Audit — Web Dashboard v3
 重设计：黑橙金 / 守门员置顶 / 一句话结论 / 雷达图 / 业务术语
 """
 from __future__ import annotations
@@ -58,7 +58,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Platform SEO Audit · 守门员 + 优化</title>
+<title>Multi-Engine SEO Audit · 守门员 + 优化</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1281,7 +1281,7 @@ def export_markdown():
             if f.get("platform_impact"):
                 md.append(f"- **对 Platform**: {f['platform_impact'][:200]}")
             md.append("")
-    md.append("\n*本报告由 Platform SEO Audit Skill 生成，可粘贴到飞书 / Notion / GitHub 等支持 Markdown 的工具。*")
+    md.append("\n*本报告由 Multi-Engine SEO Audit Skill 生成，可粘贴到飞书 / Notion / GitHub 等支持 Markdown 的工具。*")
 
     return jsonify({"markdown": "\n".join(md), "filename": f"platform-seo-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}.md"})
 
@@ -1419,7 +1419,7 @@ def export_batch_markdown():
     md.append("- 详细 patch 包: `/Users/coco/.claude/skills/seo-audit/deliverables/`（5 个可直接 apply 的 fix 文件）")
     md.append("- 单页 audit 详情: 任意 Platform 工程师在本机起 dashboard 后查任意 run_id")
     md.append("")
-    md.append("*本报告由 Platform SEO Audit Skill 生成 · 可粘贴到飞书 / Notion / GitHub*")
+    md.append("*本报告由 Multi-Engine SEO Audit Skill 生成 · 可粘贴到飞书 / Notion / GitHub*")
 
     return jsonify({
         "markdown": "\n".join(md),

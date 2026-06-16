@@ -14,7 +14,7 @@ fi
 
 cat > "$HOOK_PATH" << 'EOF'
 #!/usr/bin/env bash
-# Platform SEO Audit pre-commit hook
+# Multi-Engine SEO Audit pre-commit hook
 SKILL_DIR="$HOME/.claude/skills/seo-audit"
 
 # 找到所有 staged 的 MD/HTML 文件
@@ -46,5 +46,5 @@ EOF
 
 chmod +x "$HOOK_PATH"
 echo "✅ Installed pre-commit hook at $HOOK_PATH"
-echo "   现在每次 commit 前会自动跑 Platform SEO Audit Skill gate 命令"
+echo "   现在每次 commit 前会自动跑 Multi-Engine SEO Audit Skill gate 命令"
 echo "   如需绕过: git commit --no-verify"

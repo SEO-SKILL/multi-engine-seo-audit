@@ -1,6 +1,6 @@
 {
   "name": "platform-seo-audit",
-  "productName": "Platform SEO Audit",
+  "productName": "Multi-Engine SEO Audit",
   "version": "1.0.0",
   "description": "Platform 内部 SEO 深度审计工具（442+ 规则 · 4 大搜索引擎 · 9 locale 路由）",
   "main": "main.js",
@@ -23,7 +23,7 @@
   },
   "build": {
     "appId": "com.platform.seo-audit",
-    "productName": "Platform SEO Audit",
+    "productName": "Multi-Engine SEO Audit",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -74,7 +74,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "Platform SEO Audit ${version}",
+      "title": "Multi-Engine SEO Audit ${version}",
       "icon": "build/icon.png",
       "contents": [
         {

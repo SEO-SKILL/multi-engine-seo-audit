@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — 经验沉淀
+# Multi-Engine SEO Audit Skill — 经验沉淀
 
 > 按 CLAUDE.md「Self-Evolution Loop」规范：每次用户纠错或踩坑后立即记录。
 > 创建：2026-06-10

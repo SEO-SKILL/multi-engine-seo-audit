@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — 执行清单（V1 + V2）
+# Multi-Engine SEO Audit Skill — 执行清单（V1 + V2）
 
 > 按 CLAUDE.md「Task Management」规范：每完成一项立即勾选。
 > 排期：V1 ≈ 4 周 / V2 ≈ 4-6 周

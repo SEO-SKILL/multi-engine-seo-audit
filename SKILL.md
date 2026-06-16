@@ -3,7 +3,7 @@ name: seo-audit
 description: Platform 专属的 SEO 风控 + 增长决策中台。防 Google 人工处置 + 跑通合约工具页 SEO MVP。覆盖 34 项业务能力 / 11 个框架模块 / 8 个搜索引擎平台规则库。Triggers on '/seo-audit', 'SEO检测', 'SEO审核', 'pre-publish 卡审', '竞品 SEO 对比', '工具页 SEO 验收'.
 ---
 
-# Platform SEO Audit Skill
+# Multi-Engine SEO Audit Skill
 
 ## 一句话
 

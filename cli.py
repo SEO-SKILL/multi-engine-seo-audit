@@ -1,4 +1,4 @@
-"""Platform SEO Audit CLI 入口"""
+"""Multi-Engine SEO Audit CLI 入口"""
 from __future__ import annotations
 
 import asyncio
@@ -217,7 +217,7 @@ def init(
         raise typer.Exit(code=1)
 
     env_template = repo / ".env.seo-audit.template"
-    env_template.write_text("""# Platform SEO Audit Skill - 配置模板
+    env_template.write_text("""# Multi-Engine SEO Audit Skill - 配置模板
 ANTHROPIC_API_KEY=
 GSC_SERVICE_ACCOUNT_JSON=
 CLOUDFLARE_API_TOKEN=

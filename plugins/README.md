@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — Plugins 目录
+# Multi-Engine SEO Audit Skill — Plugins 目录
 
 ## F11 — Plugin 扩展机制
 

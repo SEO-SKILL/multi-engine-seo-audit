@@ -46,14 +46,14 @@ Google 文档明确要求重新审核请求包含三个要素：
 - URL Y: 已删除 AggregateRating schema 字段
 
 **已实施的预防措施**：
-- 上线 Platform SEO Audit Skill Pre-publish Gate（防复发）
+- 上线 Multi-Engine SEO Audit Skill Pre-publish Gate（防复发）
 - 添加每周 Watch 全站 audit
 - ContentForge 集成 audit pre-check
 
 ## 3. 记录您在采取措施后获得的成果
 
 **修复后的证据**：
-- Platform SEO Audit Skill 跑 audit 输出（含 0 blocker / 0 high finding）
+- Multi-Engine SEO Audit Skill 跑 audit 输出（含 0 blocker / 0 high finding）
 - 截图：受影响页面修复前后对比
 - GSC URL 检查工具显示已修复
 - 流量恢复趋势图（如适用）
@@ -90,7 +90,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 4. 启动 audit `--mode forensic` 全站扫描
 
 ### 4.3 修复阶段（1-7 天）
-1. 用 Platform SEO Audit Skill 检出根因
+1. 用 Multi-Engine SEO Audit Skill 检出根因
 2. 应用 patch 模板（已有 11 个）
 3. 跑 `seo-audit audit <修复后 URL>` 验证 0 blocker
 4. 跑 golden fixture 测试不退化
@@ -98,7 +98,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 
 ### 4.4 提交 Reconsideration（修复完成后）
 1. 用上述「标准模板」准备文档
-2. 附 Platform SEO Audit Report（PDF/JSON）作证据
+2. 附 Multi-Engine SEO Audit Report（PDF/JSON）作证据
 3. Kelly 在 GSC 提交
 4. 邮件归档审核确认信
 5. 进入等待期
@@ -111,7 +111,7 @@ Google 文档明确要求重新审核请求包含三个要素：
 
 ---
 
-## 五、与 Platform SEO Audit Skill 的对接
+## 五、与 Multi-Engine SEO Audit Skill 的对接
 
 | Skill 能力 | 用于 Manual Action 流程的哪一步 |
 |---|---|

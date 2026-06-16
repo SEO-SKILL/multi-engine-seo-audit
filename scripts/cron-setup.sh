@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 安装 Platform SEO Audit 的 cron 任务（daily-pull + watch + quarterly review）
+# 安装 Multi-Engine SEO Audit 的 cron 任务（daily-pull + watch + quarterly review）
 
 set -e
 

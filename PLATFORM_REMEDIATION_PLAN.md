@@ -198,5 +198,5 @@ uv run python cli.py gate path/to/new-article.md
 
 ---
 
-*本方案基于 Platform SEO Audit Skill V1+V2 真实跑出的数据生成。*
+*本方案基于 Multi-Engine SEO Audit Skill V1+V2 真实跑出的数据生成。*
 *跑 `uv run python scripts/batch_audit.py` 可重复验证。*

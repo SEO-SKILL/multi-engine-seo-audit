@@ -16,7 +16,7 @@ def is_configured() -> bool:
 
 async def pre_publish_check(content_md: str, locale: str = "en") -> dict:
     """
-    ContentForge AI 写完内容 → 调用此 hook → 自动跑 Platform SEO Audit gate
+    ContentForge AI 写完内容 → 调用此 hook → 自动跑 Multi-Engine SEO Audit gate
     返回 pass/fail，让 ContentForge 决定是否打回 AI 重写
     """
     import tempfile

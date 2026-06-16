@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — 高管汇报版
+# Multi-Engine SEO Audit Skill — 高管汇报版
 
 > 日期：2026-06-10（单日全栈交付）
 > Owner：Kelly Chen (kelly@example.com)

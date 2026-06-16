@@ -1,4 +1,4 @@
-# Platform SEO Audit · 桌面 App（Electron）
+# Multi-Engine SEO Audit · 桌面 App（Electron）
 
 把 SEO audit skill 包装成本地桌面应用，给 Platform 内部同事（SEO / 内容运营 / 法务 / 工程）一键使用。
 
@@ -6,7 +6,7 @@
 
 ```
 1. 双击 Platform-SEO-Audit-1.0.0.dmg
-2. 拖拽 Platform SEO Audit.app 到 Applications
+2. 拖拽 Multi-Engine SEO Audit.app 到 Applications
 3. 首次启动会弹「无法验证开发者」 → 右键打开 → 仍要打开
 4. App 自动启动 → 设置菜单填入 API key → 开始审计
 ```
@@ -52,7 +52,7 @@ npm run build:win
 
 ```
 ┌──────────────────────────────────────────────┐
-│  Electron App (Platform SEO Audit)              │
+│  Electron App (Multi-Engine SEO Audit)              │
 │  ┌────────────────────────────────────────┐  │
 │  │ Main Process (main.js)                 │  │
 │  │ - 启动时 spawn Flask backend           │  │

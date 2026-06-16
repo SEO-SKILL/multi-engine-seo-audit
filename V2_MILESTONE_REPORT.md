@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — V2 里程碑报告
+# Multi-Engine SEO Audit Skill — V2 里程碑报告
 
 > 日期：2026-06-10
 > 状态：**V2 业务能力骨架交付（同日推进）**

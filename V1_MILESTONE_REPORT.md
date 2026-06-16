@@ -1,4 +1,4 @@
-# Platform SEO Audit Skill — V1 里程碑报告
+# Multi-Engine SEO Audit Skill — V1 里程碑报告
 
 > 日期：2026-06-10（单日全栈推进）
 > Owner：Kelly
@@ -153,4 +153,4 @@ rules/
 
 ---
 
-*Generated 2026-06-10 by Claude (Opus 4.7) — Platform SEO Audit Skill V1 设计阶段交付*
+*Generated 2026-06-10 by Claude (Opus 4.7) — Multi-Engine SEO Audit Skill V1 设计阶段交付*

@@ -134,7 +134,7 @@
 
 ---
 
-## 八、与 Platform SEO Audit Skill 集成
+## 八、与 Multi-Engine SEO Audit Skill 集成
 
 | 迁移阶段 | Skill 命令 |
 |---|---|

@@ -1,4 +1,4 @@
-// Platform SEO Audit — Electron 主进程
+// Multi-Engine SEO Audit — Electron 主进程
 // 职责：spawn Flask 后端 → 等 health → 开窗 → 退出时 kill
 
 const { app, BrowserWindow, ipcMain, shell, dialog, Menu } = require('electron');
@@ -11,18 +11,30 @@ const isDev = process.argv.includes('--dev') || !app.isPackaged;
 const BACKEND_PORT = 8080;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 
+// macOS GUI App 默认不继承 shell PATH（看不到 ~/.local/bin / homebrew）
+// 主动扩展 PATH 让 preflightCheck 和 spawn 都能找到 uv / python / node
+process.env.PATH = [
+  path.join(process.env.HOME || '', '.local', 'bin'),  // uv 默认安装路径
+  '/opt/homebrew/bin',                                 // Apple Silicon brew
+  '/opt/homebrew/sbin',
+  '/usr/local/bin',                                    // Intel brew
+  '/usr/local/sbin',
+  process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin',
+].filter(Boolean).join(':');
+
 // 确定 skill 根目录（开发 = ../，打包 = process.resourcesPath/skill）
 function skillRoot() {
   if (isDev) return path.resolve(__dirname, '..');
   return path.join(process.resourcesPath, 'skill');
 }
 
-// 检查前置环境（uv + python3）
+// 检查前置环境（uv + python3）— 用扩展后的 PATH
 function preflightCheck() {
   const errors = [];
-  try { execSync('which uv', { stdio: 'pipe' }); }
+  const checkEnv = { ...process.env };  // 包含我们注入的扩展 PATH
+  try { execSync('which uv', { stdio: 'pipe', env: checkEnv }); }
   catch { errors.push('uv (Python 包管理器)'); }
-  try { execSync('which python3', { stdio: 'pipe' }); }
+  try { execSync('which python3', { stdio: 'pipe', env: checkEnv }); }
   catch { errors.push('python3'); }
   return errors;
 }
@@ -45,7 +57,7 @@ function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1440, height: 900,
     minWidth: 1100, minHeight: 700,
-    title: 'Platform SEO Audit',
+    title: 'Multi-Engine SEO Audit',
     icon: path.join(__dirname, 'build', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -188,9 +200,9 @@ ipcMain.handle('app:open-deliverables', () => {
 function buildMenu() {
   const template = [
     {
-      label: 'Platform SEO Audit',
+      label: 'Multi-Engine SEO Audit',
       submenu: [
-        { label: '关于 Platform SEO Audit', role: 'about' },
+        { label: '关于 Multi-Engine SEO Audit', role: 'about' },
         { type: 'separator' },
         { label: '设置 API Keys...', accelerator: 'CmdOrCtrl+,', click: () => ipcMain.emit('open-settings-direct') },
         { label: '打开 Deliverables 文件夹', click: () => shell.openPath(path.join(skillRoot(), 'deliverables')) },
@@ -237,7 +249,7 @@ app.whenReady().then(async () => {
   if (missing.length > 0) {
     dialog.showErrorBox(
       '环境检查失败',
-      `Platform SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n安装方法：\n  brew install python uv`
+      `Multi-Engine SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n安装方法：\n  brew install python uv`
     );
     app.quit();
     return;
