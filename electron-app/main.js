@@ -11,16 +11,35 @@ const isDev = process.argv.includes('--dev') || !app.isPackaged;
 const BACKEND_PORT = 8080;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 
-// macOS GUI App 默认不继承 shell PATH（看不到 ~/.local/bin / homebrew）
+// GUI App 默认不继承 shell PATH（看不到 ~/.local/bin / homebrew / winget）
 // 主动扩展 PATH 让 preflightCheck 和 spawn 都能找到 uv / python / node
+const homeDir = process.env.HOME || process.env.USERPROFILE || '';
+const isWin = process.platform === 'win32';
+const extraPaths = isWin
+  ? [
+      path.join(homeDir, '.local', 'bin'),                              // uv 默认（uv installer）
+      path.join(homeDir, '.cargo', 'bin'),                              // rust 工具链
+      path.join(homeDir, 'AppData', 'Local', 'Programs', 'Python', 'Python312'),
+      path.join(homeDir, 'AppData', 'Local', 'Programs', 'Python', 'Python312', 'Scripts'),
+      path.join(homeDir, 'AppData', 'Local', 'Programs', 'Python', 'Python313'),
+      path.join(homeDir, 'AppData', 'Local', 'Programs', 'Python', 'Python313', 'Scripts'),
+      path.join(process.env.LOCALAPPDATA || '', 'Microsoft', 'WinGet', 'Packages'),
+      'C:\\Program Files\\Python312',
+      'C:\\Program Files\\Python313',
+      'C:\\Program Files\\nodejs',
+    ]
+  : [
+      path.join(homeDir, '.local', 'bin'),
+      '/opt/homebrew/bin',
+      '/opt/homebrew/sbin',
+      '/usr/local/bin',
+      '/usr/local/sbin',
+    ];
+
 process.env.PATH = [
-  path.join(process.env.HOME || '', '.local', 'bin'),  // uv 默认安装路径
-  '/opt/homebrew/bin',                                 // Apple Silicon brew
-  '/opt/homebrew/sbin',
-  '/usr/local/bin',                                    // Intel brew
-  '/usr/local/sbin',
-  process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin',
-].filter(Boolean).join(':');
+  ...extraPaths,
+  process.env.PATH || (isWin ? '' : '/usr/bin:/bin:/usr/sbin:/sbin'),
+].filter(Boolean).join(path.delimiter);
 
 // 确定 skill 根目录（开发 = ../，打包 = process.resourcesPath/skill）
 function skillRoot() {
@@ -28,14 +47,16 @@ function skillRoot() {
   return path.join(process.resourcesPath, 'skill');
 }
 
-// 检查前置环境（uv + python3）— 用扩展后的 PATH
+// 检查前置环境（uv + python3）— 用扩展后的 PATH · 跨平台
 function preflightCheck() {
   const errors = [];
-  const checkEnv = { ...process.env };  // 包含我们注入的扩展 PATH
-  try { execSync('which uv', { stdio: 'pipe', env: checkEnv }); }
+  const checkEnv = { ...process.env };
+  const whichCmd = isWin ? 'where' : 'which';
+  const pyCmd = isWin ? 'python' : 'python3';
+  try { execSync(`${whichCmd} uv`, { stdio: 'pipe', env: checkEnv }); }
   catch { errors.push('uv (Python 包管理器)'); }
-  try { execSync('which python3', { stdio: 'pipe', env: checkEnv }); }
-  catch { errors.push('python3'); }
+  try { execSync(`${whichCmd} ${pyCmd}`, { stdio: 'pipe', env: checkEnv }); }
+  catch { errors.push(pyCmd); }
   return errors;
 }
 
@@ -247,9 +268,12 @@ app.whenReady().then(async () => {
   // 前置环境检查
   const missing = preflightCheck();
   if (missing.length > 0) {
+    const installHint = isWin
+      ? '安装方法（PowerShell 管理员）：\n  winget install Python.Python.3.12\n  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"'
+      : '安装方法（Terminal）：\n  brew install python uv';
     dialog.showErrorBox(
       '环境检查失败',
-      `Multi-Engine SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n安装方法：\n  brew install python uv`
+      `Multi-Engine SEO Audit 需要以下工具：\n\n${missing.map(m => '  • ' + m).join('\n')}\n\n${installHint}`
     );
     app.quit();
     return;
