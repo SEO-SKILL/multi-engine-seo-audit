@@ -250,13 +250,19 @@ def build_ctx(raw_html: str, rendered_dom: str, headers: dict, page_url: str,
             n = m.get("name") or m.get("property") or m.get("http-equiv")
             if n:
                 head_meta[n.lower()] = m.get("content", "")
-    head_scripts = [{"src": s.get("src"), "async": s.has_attr("async"), "defer": s.has_attr("defer")}
-                   for s in (soup.head.find_all("script") if soup.head else [])]
+    head_scripts = [
+        {"src": s.get("src"), "async": s.has_attr("async"), "defer": s.has_attr("defer")}
+        for s in (soup.head.find_all("script") if soup.head else [])
+    ]
     page_scripts = [str(s) for s in soup.find_all("script") if s.string]
-    internal_links = [{"href": a.get("href", ""), "text": a.get_text(strip=True), "rel": a.get("rel", [])}
-                     for a in soup.find_all("a", href=True) if a.get("href", "").startswith("/")]
-    outbound_links = [{"href": a.get("href", ""), "text": a.get_text(strip=True), "rel": a.get("rel", [])}
-                     for a in soup.find_all("a", href=True) if a.get("href", "").startswith("http")]
+    internal_links = [
+        {"href": a.get("href", ""), "text": a.get_text(strip=True), "rel": a.get("rel", [])}
+        for a in soup.find_all("a", href=True) if a.get("href", "").startswith("/")
+    ]
+    outbound_links = [
+        {"href": a.get("href", ""), "text": a.get_text(strip=True), "rel": a.get("rel", [])}
+        for a in soup.find_all("a", href=True) if a.get("href", "").startswith("http")
+    ]
     canonical_tag = soup.find("link", rel="canonical")
     canonical_url = canonical_tag.get("href") if canonical_tag else None
     title = soup.title.get_text() if soup.title else ""
