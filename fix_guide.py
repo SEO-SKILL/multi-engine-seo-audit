@@ -509,6 +509,7 @@ def _auto_generate(finding: dict) -> dict:
     source = finding.get("source", "")
     patch_template = finding.get("patch_template")
     tags = finding.get("tags", [])
+    platform_impact = finding.get("platform_impact", "")
 
     # 按 severity 估算工时
     effort_by_sev = {"blocker": 90, "high": 60, "medium": 30, "low": 15, "info": 5}

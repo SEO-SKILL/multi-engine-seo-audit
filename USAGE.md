@@ -1,14 +1,26 @@
 # 同事使用指南 · 怎么跑 SEO 审计
 
-3 类同事 3 套使用方式 —— 选适合你的。
+4 套使用方式 —— 选适合你的。
 
 ## 🎯 我是哪一类？
 
 | 你是 | 推荐方式 | 装机时间 |
 |------|---------|---------|
+| 任何角色（最快体验） | **☁️ 云端 Dashboard** | 0 分钟 |
 | 内容运营 / 法务 / 产品 | **A · 桌面 App** | 5 分钟 |
-| SEO 运营 / 增长 | **B · Web Dashboard** | 10 分钟 |
+| SEO 运营 / 增长 | **B · Web Dashboard（本地）** | 10 分钟 |
 | 前端 / 工程 / 数据 | **C · CLI + API** | 5 分钟 |
+
+---
+
+## ☁️ 云端 Dashboard（推荐先用这个）
+
+直接打开浏览器：**https://multi-engine-seo-audit.fly.dev**
+
+- ✅ 无需安装、无需配 API key（已托管）
+- ✅ 任何设备都能用，团队共享
+- ✅ 7×24 在线（auto-scale，闲时停机省费）
+- ⚠️ 仅适合临时审计 / 演示；隐私敏感页面请用本地版（A/B）
 
 ---
 
@@ -94,7 +106,7 @@ uv run python web_dashboard.py    # 后台启动
 ### 单页审计
 
 ```bash
-curl -X POST http://localhost:8080/api/audit \
+curl -X POST https://multi-engine-seo-audit.fly.dev/api/audit \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://example.com/en/price/btc",
@@ -108,7 +120,7 @@ curl -X POST http://localhost:8080/api/audit \
 ### 批量审计 8 页
 
 ```bash
-curl http://localhost:8080/api/batch | jq '.results[] | {label, score, blockers, highs}'
+curl https://multi-engine-seo-audit.fly.dev/api/batch | jq '.results[] | {label, score, blockers, highs}'
 ```
 
 ### 自定义批量

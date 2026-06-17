@@ -18,3 +18,10 @@ PLATFORM_REMEDIATION_PLAN.md
 fixtures
 tests
 .DS_Store
+electron-app
+cache
+deliverables
+*.egg-info
+tasks
+assets
+.github
