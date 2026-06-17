@@ -16,7 +16,10 @@ logger = structlog.get_logger(__name__)
 REGISTERED_SECRETS = {
     "ANTHROPIC_API_KEY": {"required_for": ["semantic-agent", "rule_sync (LLM extract)", "content_generator"], "optional": True},
     "GSC_SERVICE_ACCOUNT_JSON": {"required_for": ["log-agent", "compare (real data)"], "optional": True},
-    "GSC_OAUTH_TOKEN": {"required_for": ["log-agent (alt)"], "optional": True},
+    "GSC_OAUTH_TOKEN": {"required_for": ["log-agent (alt, legacy)"], "optional": True},
+    "GSC_OAUTH_CLIENT_ID": {"required_for": ["GSC OAuth refresh-token flow (personal account)"], "optional": True},
+    "GSC_OAUTH_CLIENT_SECRET": {"required_for": ["GSC OAuth refresh-token flow (personal account)"], "optional": True},
+    "GSC_OAUTH_REFRESH_TOKEN": {"required_for": ["GSC OAuth refresh-token flow (personal account)"], "optional": True},
     "GOOGLE_APPLICATION_CREDENTIALS": {"required_for": ["log-agent (ADC alt — auto-detect ~/.config/gcloud/)"], "optional": True},
     "CLOUDFLARE_API_TOKEN": {"required_for": ["log-agent (server logs)"], "optional": True},
     "LARK_WEBHOOK": {"required_for": ["watch alerts (Platform uses Lark/飞书)"], "optional": True},

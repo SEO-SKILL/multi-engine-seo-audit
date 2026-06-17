@@ -1152,6 +1152,15 @@ def audit():
     orch = Orchestrator()
     report = asyncio.run(orch.audit(url=url, locale=locale, no_cache=no_cache))
 
+    gsc_data: dict = {}
+    try:
+        from integrations import gsc as _gsc
+        if _gsc.is_configured():
+            gsc_data = asyncio.run(_gsc.url_inspection(url))
+    except Exception as e:
+        app.logger.warning(f"gsc_inspection_failed url={url} err={e}")
+        gsc_data = {"skipped": True, "reason": "gsc_exception", "detail": str(e)[:200]}
+
     composite = {}
     for o in report.agent_outputs:
         if o.agent == "crawler" and o.artifacts.get("composite_scores"):
@@ -1184,6 +1193,7 @@ def audit():
             "skipped_count": len(report.skipped_rules or []),
         },
         "run_id": report.run_id, "trace_id": report.trace_id,
+        "gsc": gsc_data,
     }
     _persist_run(report.run_id, payload)
     return jsonify(payload)

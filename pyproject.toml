@@ -6,6 +6,9 @@ requires-python = ">=3.12"
 dependencies = [
     "anthropic>=0.109.1",
     "beautifulsoup4>=4.15.0",
+    "google-api-python-client>=2.150.0",
+    "google-auth>=2.35.0",
+    "google-auth-oauthlib>=1.2.1",
     "diskcache>=5.6.3",
     "flask>=3.0.0",
     "httpx>=0.28.1",
