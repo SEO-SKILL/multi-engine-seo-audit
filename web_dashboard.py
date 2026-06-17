@@ -116,6 +116,15 @@ header.top{padding-left:max(32px,calc((100vw - 1800px)/2 + 24px));padding-right:
 /* SCORE + RADAR side by side */
 .metrics-row{display:grid;grid-template-columns:300px 1fr;gap:24px;margin-bottom:24px}
 @media(max-width:900px){.metrics-row{grid-template-columns:1fr}}
+.gsc-card{background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-radius:16px;padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
+.gsc-card.skipped{background:#F5F5F5}
+.gsc-header{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:16px}
+.gsc-skip{color:var(--mute);font-size:14px}
+.gsc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.gsc-cell{background:white;border-radius:10px;padding:14px}
+.gsc-cell .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.gsc-cell .v{font-size:14px;font-weight:600;color:var(--ink)}
+.gsc-cell .v.good{color:#2E7D32}.gsc-cell .v.warn{color:#F57F17}.gsc-cell .v.bad{color:#C62828}.gsc-cell .v.mute{color:var(--mute)}
 .score-card{background:white;border-radius:16px;padding:28px;box-shadow:var(--shadow);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .score-ring{width:180px;height:180px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:10px solid var(--orange);background:white;margin-bottom:16px;position:relative}
 .score-ring.good{border-color:var(--opt)}
@@ -609,6 +618,9 @@ function renderAudit(d) {
   html += '<div class="text"><h2>' + heroTitle + '</h2><p>' + esc(heroSub) + '</p>';
   html += '<div class="url">' + esc(d.url) + ' · run_id=' + esc(d.run_id) + '</div></div></div>';
 
+  // === GSC 真数据卡片（Google Search Console）===
+  html += renderGscCard(d.gsc);
+
   // === SCORE RING + RADAR ===
   html += '<div class="metrics-row">';
   // Score
@@ -684,6 +696,35 @@ function renderAudit(d) {
   }
 
   resultEl.innerHTML = html;
+}
+
+function renderGscCard(gsc) {
+  if (!gsc || Object.keys(gsc).length === 0) return '';
+  if (gsc.skipped) {
+    const reason = gsc.reason || 'unknown';
+    const hint = reason === 'gsc_not_configured' ? '未配置 GSC 凭证 — 跳过' :
+                 reason === 'gsc_no_permission' ? 'GSC 权限不足 — 该 property 未加 ppmworker@gmail.com' :
+                 reason === 'gsc_property_not_found' ? 'GSC 未注册该 property — 加进 Search Console 即可' :
+                 'GSC 跳过：' + reason;
+    return '<div class="gsc-card skipped"><div class="gsc-header">🔎 Google Search Console</div><div class="gsc-skip">' + esc(hint) + '</div></div>';
+  }
+  const verdictColor = gsc.verdict === 'PASS' ? 'good' : gsc.verdict === 'PARTIAL' ? 'warn' : gsc.verdict === 'FAIL' ? 'bad' : 'mute';
+  const coverageEmoji = gsc.coverage_state && gsc.coverage_state.includes('indexed') ? '✅' :
+                        gsc.coverage_state && gsc.coverage_state.includes('Excluded') ? '❌' : '⏸️';
+  const canonicalMatch = gsc.user_canonical && gsc.google_canonical && gsc.user_canonical === gsc.google_canonical;
+  const lastCrawl = gsc.last_crawl_time ? new Date(gsc.last_crawl_time).toLocaleString('zh-CN', {dateStyle:'short', timeStyle:'short'}) : '—';
+  let html = '<div class="gsc-card"><div class="gsc-header">🔎 Google Search Console · 真实索引数据</div>';
+  html += '<div class="gsc-grid">';
+  html += '<div class="gsc-cell"><div class="k">Google verdict</div><div class="v ' + verdictColor + '">' + esc(gsc.verdict || '—') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">覆盖状态</div><div class="v">' + coverageEmoji + ' ' + esc(gsc.coverage_state || '—') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">索引允许</div><div class="v">' + (gsc.indexing_state === 'INDEXING_ALLOWED' ? '✅ ' : '❌ ') + esc(gsc.indexing_state || '—') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">最后抓取</div><div class="v">' + esc(lastCrawl) + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">Robots</div><div class="v">' + (gsc.robots_txt_state === 'ALLOWED' ? '✅ ' : '⚠️ ') + esc(gsc.robots_txt_state || '—') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">页面抓取</div><div class="v">' + (gsc.page_fetch_state === 'SUCCESSFUL' ? '✅ ' : '⚠️ ') + esc(gsc.page_fetch_state || '—') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">Canonical 一致</div><div class="v">' + (canonicalMatch ? '✅ 对齐' : '⚠️ 不一致') + '</div></div>';
+  html += '<div class="gsc-cell"><div class="k">Rich Results</div><div class="v">' + (gsc.rich_results_verdict === 'PASS' ? '✅ ' : '—') + esc(gsc.rich_results_verdict || '') + '</div></div>';
+  html += '</div></div>';
+  return html;
 }
 
 function renderRadar(composite) {
