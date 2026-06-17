@@ -10,14 +10,11 @@ WORKDIR /app
 # uv（极速包管理）
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 
-# 先装依赖（利用 Docker 层缓存）
-COPY pyproject.toml ./
-RUN uv pip install --system --no-cache \
-      anthropic beautifulsoup4 diskcache flask httpx jinja2 jsonschema \
-      lxml orjson pydantic pyyaml structlog tenacity typer
-
-# 业务代码
+# 业务代码 + pyproject.toml（依赖来源就是 pyproject.toml）
 COPY . .
+
+# 装依赖：读 pyproject.toml，避免 hardcode 漂移
+RUN uv pip install --system --no-cache -e .
 
 ENV PYTHONUNBUFFERED=1 \
     PORT=8080

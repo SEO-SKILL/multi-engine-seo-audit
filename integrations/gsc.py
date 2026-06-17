@@ -69,7 +69,7 @@ def _load_credentials() -> Any:
     client_id = os.environ.get("GSC_OAUTH_CLIENT_ID")
     client_secret = os.environ.get("GSC_OAUTH_CLIENT_SECRET")
     if refresh and client_id and client_secret:
-        _credentials_cache = OAuthCredentials(
+        creds = OAuthCredentials(
             token=None,
             refresh_token=refresh,
             client_id=client_id,
@@ -77,6 +77,11 @@ def _load_credentials() -> Any:
             token_uri="https://oauth2.googleapis.com/token",
             scopes=_SCOPES,
         )
+        # quota_project 必须设：Google 后端对 ADC client_id 拒绝无 quota_project 的请求
+        quota_project = os.environ.get("GSC_QUOTA_PROJECT") or os.environ.get("GOOGLE_CLOUD_PROJECT")
+        if quota_project:
+            creds = creds.with_quota_project(quota_project)
+        _credentials_cache = creds
         return _credentials_cache
 
     # 3. GOOGLE_APPLICATION_CREDENTIALS 文件路径
