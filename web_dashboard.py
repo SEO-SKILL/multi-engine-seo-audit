@@ -1165,6 +1165,92 @@ def _enrich(f, rules_map, page_type=None):
     return base
 
 
+def _gsc_to_findings(gsc, url):
+    """把 GSC URL Inspection 真数据合成为 finding，反哺 audit pipeline。
+    Google 自己告诉你的状态比任何 detector 都准 — 直接当 ground truth。
+    """
+    if not gsc or gsc.get("skipped"):
+        return []
+    out = []
+
+    def _mk(rule_id, sev, recommendation, evidence, impact, mode="gatekeeper"):
+        return {
+            "id": rule_id, "severity": sev, "confidence": 1.0,
+            "recommendation": recommendation,
+            "evidence_snippet": evidence[:200],
+            "source": "Google Search Console (URL Inspection API)",
+            "source_doc_url": "https://search.google.com/search-console",
+            "platform_impact": impact,
+            "tags": ["gsc", "ground-truth", "blocker" if sev == "blocker" else "high"],
+            "patch_template": None, "human_review_required": False,
+            "platform": "google", "mode": mode,
+        }
+
+    coverage = (gsc.get("coverage_state") or "").lower()
+    indexing = gsc.get("indexing_state") or ""
+    robots = gsc.get("robots_txt_state") or ""
+    fetch = gsc.get("page_fetch_state") or ""
+    uc, gc = gsc.get("user_canonical"), gsc.get("google_canonical")
+    rich = gsc.get("rich_results_verdict") or ""
+
+    if "excluded" in coverage or "not indexed" in coverage or "error" in coverage:
+        out.append(_mk(
+            "gsc.coverage.excluded", "blocker",
+            f"Google 报告此页未被索引：{gsc.get('coverage_state')}。需立刻排查 noindex / robots / canonical / 抓取错误。",
+            f"coverage_state={gsc.get('coverage_state')} verdict={gsc.get('verdict')}",
+            "未被索引 = 100% 流量丢失。Google ground-truth 比任何 detector 都准。",
+        ))
+
+    if indexing and indexing != "INDEXING_ALLOWED":
+        out.append(_mk(
+            "gsc.indexing.blocked", "blocker",
+            f"Google 报告 indexing_state={indexing}（不允许索引）。检查 meta robots / X-Robots-Tag。",
+            f"indexing_state={indexing}",
+            "索引被禁 = 永远不会进 SERP。",
+        ))
+
+    if robots and robots not in ("ALLOWED", ""):
+        out.append(_mk(
+            "gsc.robots.blocked", "blocker",
+            f"Google 报告 robots_txt_state={robots}。检查 robots.txt 是否误 disallow 此 URL。",
+            f"robots_txt_state={robots}",
+            "robots.txt 误封 = 同 noindex 效果。MEXC 行业案例同源风险。",
+        ))
+
+    if fetch and fetch != "SUCCESSFUL":
+        out.append(_mk(
+            "gsc.fetch.failed", "high",
+            f"Google 报告 page_fetch_state={fetch}（Googlebot 抓取异常）。检查 CDN / 防火墙 / UA 限速。",
+            f"page_fetch_state={fetch}",
+            "Googlebot 抓不到 = 索引信号断流。",
+        ))
+
+    if uc and gc and uc != gc:
+        out.append(_mk(
+            "gsc.canonical.mismatch", "high",
+            f"Google 选了不同的 canonical：user={uc} → google={gc}。检查是否有更强信号（外链 / 内链 / sitemap）覆盖了你声明的 canonical。",
+            f"user={uc} | google={gc}",
+            "Canonical 漂移 = 权重分散 / 流量被竞品页面接走（同 MEXC 案例 L02）。",
+        ))
+
+    if rich == "FAIL":
+        out.append(_mk(
+            "gsc.rich-results.fail", "high",
+            "Google Rich Results 验证失败 — 检查 Schema markup 错误（缺必填字段 / 类型不匹配）。",
+            f"rich_results_verdict={rich}",
+            "Rich Results 失败 = 无富结果展示 = CTR 折损 30-50%。",
+            mode="optimizer",
+        ))
+
+    # fix_guide for synthesized findings
+    from fix_guide import generate_fix_guide
+    for f in out:
+        fg = generate_fix_guide(f)
+        if fg:
+            f["fix_guide"] = fg
+    return out
+
+
 def _action_plan(findings, composite):
     sw = {"blocker": 100, "high": 60, "medium": 30, "low": 10, "info": 0}
     em = {"P0": 1, "P1": 2, "P2": 3, "P3": 5}
@@ -1219,6 +1305,11 @@ def audit():
     for sev_findings in report.findings_by_severity.values():
         for f in sev_findings:
             all_findings.append(_enrich(f, rules_map, page_type=page_type))
+
+    # GSC ground-truth findings — Google 自己说的状态直接当结论
+    for gf in _gsc_to_findings(gsc_data, url):
+        if not any(existing["id"] == gf["id"] for existing in all_findings):
+            all_findings.append(gf)
 
     from _modes import mode_summary
     payload = {
